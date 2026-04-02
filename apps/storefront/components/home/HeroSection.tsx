@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -14,12 +15,61 @@ interface HeroSectionProps {
   current: number;
   onNav: (dir: number) => void;
   onDot: (i: number) => void;
+  onPause: () => void;
+  onResume: () => void;
 }
 
-export default function HeroSection({ slides, current, onNav, onDot }: HeroSectionProps) {
+const SWIPE_THRESHOLD = 50;
+
+export default function HeroSection({ slides, current, onNav, onDot, onPause, onResume }: HeroSectionProps) {
+  const pointerStartX = useRef<number | null>(null);
+  const swiping = useRef(false);
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    pointerStartX.current = e.clientX;
+    swiping.current = false;
+    if (e.pointerType === "touch") {
+      onPause();
+    }
+  }, [onPause]);
+
+  const handlePointerMove = useCallback((e: React.PointerEvent) => {
+    if (pointerStartX.current === null) return;
+    const dx = e.clientX - pointerStartX.current;
+    if (Math.abs(dx) >= SWIPE_THRESHOLD) {
+      swiping.current = true;
+    }
+  }, []);
+
+  const handlePointerUp = useCallback((e: React.PointerEvent) => {
+    if (pointerStartX.current === null) return;
+    const dx = e.clientX - pointerStartX.current;
+    pointerStartX.current = null;
+
+    if (Math.abs(dx) >= SWIPE_THRESHOLD) {
+      onNav(dx < 0 ? 1 : -1);
+      // onNav already pauses + schedules resume
+    } else if (e.pointerType === "touch") {
+      // Touch tap without swipe — resume after delay
+      onResume();
+    }
+  }, [onNav, onResume]);
+
+  const handlePointerCancel = useCallback(() => {
+    pointerStartX.current = null;
+    swiping.current = false;
+    onResume();
+  }, [onResume]);
+
   return (
     <section
-      className="relative w-full overflow-hidden min-h-[580px] sm:min-h-0 sm:aspect-video"
+      className="relative w-full overflow-hidden min-h-[580px] sm:min-h-0 sm:aspect-video touch-pan-y"
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerCancel}
+      onMouseEnter={onPause}
+      onMouseLeave={onResume}
     >
 
       {/* Carousel track */}
@@ -114,7 +164,7 @@ export default function HeroSection({ slides, current, onNav, onDot }: HeroSecti
                 className="inline-flex items-center justify-center gap-2 bg-white font-bold px-7 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(0,0,0,0.2)] shadow-[0_4px_20px_rgba(0,0,0,0.15)]"
                 style={{ color: "#005088", fontSize: "clamp(14px, 3.5vw, 15px)" }}
               >
-                Conocé los parches
+                Conoce los parches
                 <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>

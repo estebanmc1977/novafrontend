@@ -43,7 +43,7 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
     slug: "glow",
     name: "Glow",
     description:
-      "La piel refleja cómo te cuidás, no solo lo que te ponés encima. Glow trabaja desde adentro, día a día, para acompañar el bienestar que con el tiempo se nota hacia afuera.",
+      "La piel refleja cómo te cuidas, no solo lo que te pones encima. Glow trabaja desde adentro, día a día, para acompañar el bienestar que con el tiempo se nota hacia afuera.",
     ingredients: [
       "Vitamin C (Magnesium Ascorbyl Phosphate)",
       "Hyaluronic Acid",
@@ -57,7 +57,7 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
     color: "#C94030",
     bg: "#FAF0EE",
     taglineColor: "#B83525",
-    quote: '"La piel también refleja cómo te cuidás."',
+    quote: '"La piel también refleja cómo te cuidas."',
     tags: ["Bienestar desde adentro", "Constancia"],
     popular: true,
   },

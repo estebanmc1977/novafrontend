@@ -95,8 +95,8 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-[#0D1B35]/10">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-3">
-          <Image src="/logos/logocolor.webp" alt="NovaPatch" width={130} height={36} className="h-7 w-auto object-contain opacity-50" />
-          <p className="text-xs text-[#0D1B35]/35 text-center">© 2025 NovaPatch®. Todos los derechos reservados.</p>
+          <Image src="/logos/logocolor.webp" alt="Novapatch" width={130} height={36} className="h-7 w-auto object-contain opacity-50" />
+          <p className="text-xs text-[#0D1B35]/35 text-center">© 2026 Novapatch®. Todos los derechos reservados.</p>
           <div className="flex items-center gap-1.5">
             {["Visa", "Mastercard", "OXXO", "SPEI"].map((m) => (
               <span key={m} className="px-2 py-1 bg-[#0D1B35]/8 rounded text-[10px] text-[#0D1B35]/50 font-medium">{m}</span>

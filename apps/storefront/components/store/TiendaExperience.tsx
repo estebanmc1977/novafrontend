@@ -27,7 +27,7 @@ const META: Record<string, {
     color: "#C94030",
     bg: "#FAF0EE",
     taglineColor: "#C94030",
-    quote: '"La piel también refleja cómo te cuidás."',
+    quote: '"La piel también refleja cómo te cuidas."',
     tags: ["Bienestar desde adentro", "Constancia"],
     popular: true,
   },

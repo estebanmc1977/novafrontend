@@ -54,7 +54,7 @@ export default function SignInPage() {
               <span style={{ color: "#E8503A" }}>siempre contigo.</span>
             </h2>
             <p className="text-[15px] leading-relaxed" style={{ color: "rgba(250,247,242,0.7)" }}>
-              Ingresá para ver tus pedidos, gestionar suscripciones y mucho más.
+              Ingresa para ver tus pedidos, gestionar suscripciones y mucho más.
             </p>
           </div>
 

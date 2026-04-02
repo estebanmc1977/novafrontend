@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Montserrat } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { CartProvider } from "@/contexts/CartContext";
 import CartDrawer from "@/components/CartDrawer";
 import { novapatchAppearance, esLocalization } from "@/lib/clerk-theme";
 import "./globals.css";
+
+const montserrat = Montserrat({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-montserrat",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
 
 export const metadata: Metadata = {
   title: "Novapatch — Bienestar que no interrumpe tu día",
@@ -24,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       signUpFallbackRedirectUrl="/"
     >
     <html lang="es">
-      <body className="min-h-screen">
+      <body className={`${montserrat.variable} min-h-screen`}>
         <CartProvider>
           {children}
           <CartDrawer />

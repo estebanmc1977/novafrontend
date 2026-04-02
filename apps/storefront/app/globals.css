@@ -18,8 +18,8 @@
   --color-lime-dark:   #A8B42A;
 
   /* Typography */
-  --font-display: "Avenir Next", "Montserrat", "Helvetica Neue", sans-serif;
-  --font-body:    "Avenir Next", "Montserrat", "Helvetica Neue", sans-serif;
+  --font-display: "Montserrat", var(--font-montserrat), system-ui, sans-serif;
+  --font-body:    "Montserrat", var(--font-montserrat), system-ui, sans-serif;
 }
 
 html {
@@ -70,3 +70,12 @@ body {
 }
 .pac-matched { color: #E8503A; }
 .pac-icon { display: none; } /* Ocultar ícono de Google Maps */
+
+/* Product card button — dynamic accent via CSS custom property */
+.product-card-btn {
+  background: transparent;
+}
+.product-card-btn:hover {
+  background: var(--btn-accent);
+  color: #fff;
+}

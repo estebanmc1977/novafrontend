@@ -36,7 +36,7 @@ const cards = [
     title: "Cómo solicitarlo",
     featured: false,
     items: [
-      "Llenás el formulario de Solicitar reembolso",
+      "Llenas el formulario de Solicitar reembolso",
       "Indica tu número de pedido y nombre completo",
       "Cuéntanos brevemente qué notaste o qué no funcionó",
       "Procesamos el reembolso en 5–7 días hábiles",
@@ -255,7 +255,7 @@ export default function GarantiaPage() {
                 className="font-black tracking-[-0.02em]"
                 style={{ fontSize: "clamp(20px, 2.2vw, 32px)", color: "#005088" }}
               >
-                Todo lo que necesitás saber
+                Todo lo que necesitas saber
               </h2>
             </motion.div>
 
@@ -332,7 +332,7 @@ export default function GarantiaPage() {
         >
           <div className="max-w-3xl mx-auto text-center">
             <motion.p {...fade(0)} className="text-sm leading-relaxed" style={{ color: "#6B7280" }}>
-              Llenás el{" "}
+              Llenas el{" "}
               <Link
                 href="/reembolso"
                 className="font-semibold transition-colors hover:underline"
@@ -398,7 +398,7 @@ export default function GarantiaPage() {
               className="font-black text-[#005088] leading-[1.05] tracking-[-0.02em] mb-4"
               style={{ fontSize: "clamp(24px, 3.2vw, 44px)" }}
             >
-              Probá Novapatch.<br />Si no funciona, te devolvemos tu dinero.
+              Prueba Novapatch.<br />Si no funciona, te devolvemos tu dinero.
             </motion.h2>
 
             <motion.p

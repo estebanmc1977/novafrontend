@@ -30,17 +30,14 @@ export default function ComparisonTable() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <p className="text-[12px] font-bold uppercase tracking-[0.12em] mb-2.5" style={{ color: "#3CBFAB" }}>
-            Por qué Novapatch
-          </p>
           <h2
             className="font-extrabold text-[#005088] leading-[1.15] tracking-[-0.02em]"
             style={{ fontSize: "clamp(26px,3vw,40px)" }}
           >
-            El formato también es parte del bienestar.
+            ¿Pastillas, gomitas o parches?
           </h2>
-          <p className="text-[16px] text-[#6B7280] mt-3 leading-[1.6]">
-            Elegir cómo te cuidás importa tanto como qué tomás.
+          <p className="text-[16px] text-[#6B7280] mt-3 leading-[1.6] max-w-[520px]">
+            El formato importa tanto como lo que tomas. Así se comparan:
           </p>
         </motion.div>
 

@@ -316,7 +316,7 @@ export default function NosotrosPage() {
                     Por eso todo lo que hacemos apunta a lo mismo: eliminar la
                     fricción. Hacer que cuidarse sea tan fácil que no haya
                     excusa para no hacerlo. Un solo gesto, integrado a lo que
-                    ya hacés, sin rituales que mantener ni horarios que
+                    ya haces, sin rituales que mantener ni horarios que
                     respetar.
                   </p>
                 </motion.div>
@@ -395,11 +395,11 @@ export default function NosotrosPage() {
                 >
                   {[
                     {
-                      cond: "Si buscás resultados de un día para el otro,",
+                      cond: "Si buscas resultados de un día para el otro,",
                       result: "no somos lo tuyo.",
                     },
                     {
-                      cond: "Si buscás un hábito que sí puedas sostener,",
+                      cond: "Si buscas un hábito que sí puedas sostener,",
                       result: "bienvenido.",
                     },
                   ].map((item, i) => (
@@ -453,7 +453,7 @@ export default function NosotrosPage() {
 
             <motion.div {...fade(0.2)}>
               <Link
-                href="/productos"
+                href="/tienda"
                 className="inline-flex items-center gap-3 font-bold rounded-full transition-all duration-200 hover:-translate-y-0.5"
                 style={{
                   background: "#E8503A",
@@ -463,7 +463,7 @@ export default function NosotrosPage() {
                   boxShadow: "0 8px 32px rgba(232,80,58,0.35)",
                 }}
               >
-                Conocé el portfolio
+                Conoce el portfolio
                 <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>

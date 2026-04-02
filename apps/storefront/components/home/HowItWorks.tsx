@@ -6,18 +6,18 @@ import Image from "next/image";
 const steps = [
   {
     n: 1,
-    title: "Elegís tu parche",
-    desc: "Energy, Sleep, Zen, Shield, Glow o Woman. Uno solo, según lo que necesitás hoy.",
+    title: "Eliges tu parche",
+    desc: "Energy, Sleep, Zen, Shield, Glow o Woman. Uno solo, según lo que necesitas hoy.",
   },
   {
     n: 2,
-    title: "Lo ponés en segundos",
+    title: "Lo pones en segundos",
     desc: "En piel limpia, donde te sea cómodo. Sin agua, sin planificación, sin ritual.",
   },
   {
     n: 3,
     title: "Listo. Ya está.",
-    desc: "Durante las próximas horas el parche trabaja mientras vos vivís tu día normal.",
+    desc: "Durante las próximas horas el parche trabaja mientras tú vives tu día normal.",
   },
 ];
 

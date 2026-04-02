@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 
 const faqs = [
@@ -23,7 +23,7 @@ const faqs = [
   },
   {
     q: "¿Qué pasa si no estoy satisfecho con mi compra?",
-    a: "Ofrecemos una garantía de satisfacción de 30 días. Si no estás conforme, completá el formulario de reembolso en novapatch.care/reembolso — es rápido y nuestro equipo revisará tu caso en 2 a 5 días hábiles. Te devolvemos el 100% del valor del primer pedido, sin complicaciones.",
+    a: "Ofrecemos una garantía de satisfacción de 30 días. Si no estás conforme, completa el formulario de reembolso en novapatch.care/reembolso — es rápido y nuestro equipo revisará tu caso en 2 a 5 días hábiles. Te devolvemos el 100% del valor del primer pedido, sin complicaciones.",
   },
 ];
 
@@ -56,24 +56,19 @@ function FAQItem({
         </span>
       </button>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden"
+      <div
+        className="grid transition-[grid-template-rows] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
+        style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
+      >
+        <div className="overflow-hidden">
+          <p
+            className="leading-[1.75] text-[#6B7280]"
+            style={{ fontSize: "15px", paddingBottom: isOpen ? "20px" : "0px", paddingRight: "48px", transition: "padding-bottom 0.35s" }}
           >
-            <p
-              className="leading-[1.75] text-[#6B7280]"
-              style={{ fontSize: "15px", paddingBottom: "20px", paddingRight: "48px" }}
-            >
-              {faq.a}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {faq.a}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -120,13 +115,7 @@ export default function HomeFAQ() {
           <p className="text-[16px] text-[#6B7280] mb-5">¿No encontraste lo que buscabas?</p>
           <Link
             href="/contacto"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-white font-bold text-[15px] transition-all duration-200 hover:-translate-y-0.5"
-            style={{
-              background: "#005088",
-              boxShadow: "0 4px 16px rgba(0,80,136,0.3)",
-            }}
-            onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = "#003d6b")}
-            onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = "#005088")}
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-white font-bold text-[15px] transition-all duration-200 hover:-translate-y-0.5 bg-[#005088] hover:bg-[#003d6b] shadow-[0_4px_16px_rgba(0,80,136,0.3)]"
           >
             Contactar soporte
           </Link>

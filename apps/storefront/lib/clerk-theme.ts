@@ -205,11 +205,11 @@ function deepMerge<T extends Record<string, any>>(base: T, overrides: DeepPartia
 const novapatchOverrides = {
   signIn: {
     start: {
-      subtitle: "Ingresá a tu cuenta de Novapatch",
+      subtitle: "Ingresa a tu cuenta de Novapatch",
     },
     alternativeMethods: {
       getHelp: {
-        content: "Si tenés problemas para acceder, escribinos a soporte@novapatch.mx",
+        content: "Si tienes problemas para acceder, escríbenos a soporte@novapatch.mx",
       },
     },
   },
