@@ -127,12 +127,15 @@ export default function AbsorptionSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          <p
-            className="text-[11px] font-bold uppercase tracking-[0.14em] mb-3"
-            style={{ color: "#1CB1BC" }}
-          >
-            La ciencia detrás del parche
-          </p>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-[3px] rounded-full bg-[#1CB1BC]" />
+            <p
+              className="text-[11px] font-bold uppercase tracking-[0.14em]"
+              style={{ color: "#1CB1BC" }}
+            >
+              La ciencia
+            </p>
+          </div>
 
           <h2
             className="font-black leading-[1.1] tracking-[-0.02em] mb-5"
@@ -192,7 +195,7 @@ export default function AbsorptionSection() {
             className="inline-flex items-center gap-2 bg-[#005088] text-white font-bold text-[15px] px-8 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#003d6b] hover:shadow-[0_8px_32px_rgba(0,80,136,0.28)] shadow-[0_4px_20px_rgba(0,80,136,0.18)]"
             style={{ color: "white" }}
           >
-            Encontrá tu parche
+            Encuentra tu parche
             <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>

@@ -4,13 +4,17 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useCart } from "@/contexts/CartContext";
 
+const RETAIL_PRICE = 750;
+const SUB_DISCOUNT = 0.2;
+const SUB_PRICE = Math.round(RETAIL_PRICE * (1 - SUB_DISCOUNT));
+
 const products = [
   {
     name: "Energy",
     slug: "energy",
-    tagline: "Nutrición diaria para energía celular sostenida",
+    tagline: "Energía celular sostenida",
     taglineColor: "#1A5C9A",
-    quote: '"Tu día no para. Tu energía tampoco."',
+    quote: "Tu día no para. Tu energía tampoco.",
     tags: ["Energía sostenida", "Sin picos ni caídas"],
     color: "#2B7CC1",
     bg: "#EBF4FB",
@@ -20,9 +24,9 @@ const products = [
   {
     name: "Sleep",
     slug: "sleep",
-    tagline: "Inductor natural para un sueño profundo y reparador",
+    tagline: "Sueño profundo y reparador",
     taglineColor: "#0F6B5C",
-    quote: '"Porque descansar también es cuidarse."',
+    quote: "Porque descansar también es cuidarse.",
     tags: ["Descanso nocturno", "Sin somníferos"],
     color: "#138A75",
     bg: "#EBF7F5",
@@ -34,7 +38,7 @@ const products = [
     slug: "glow",
     tagline: "Belleza y juventud para una piel visiblemente renovada",
     taglineColor: "#B83525",
-    quote: '"La piel también refleja cómo te cuidás."',
+    quote: "La piel también refleja cómo te cuidas.",
     tags: ["Bienestar desde adentro", "Constancia"],
     color: "#C94030",
     bg: "#FAF0EE",
@@ -44,9 +48,9 @@ const products = [
   {
     name: "Shield",
     slug: "shield",
-    tagline: "Fortaleza inmune para tus defensas naturales",
+    tagline: "Fortaleza inmune natural",
     taglineColor: "#8C6000",
-    quote: '"Tu rutina de cuidado empieza hoy, no cuando algo pasa."',
+    quote: "Tu rutina de cuidado empieza hoy.",
     tags: ["Cuidado preventivo", "Uso diario"],
     color: "#A07000",
     bg: "#FAF6E9",
@@ -56,9 +60,9 @@ const products = [
   {
     name: "Zen",
     slug: "zen",
-    tagline: "Equilibrio emocional para la calma mental diaria",
+    tagline: "Calma mental diaria",
     taglineColor: "#2A5490",
-    quote: '"El equilibrio que no se ve, pero se siente."',
+    quote: "El equilibrio que no se ve, pero se siente.",
     tags: ["Calma funcional", "Días intensos"],
     color: "#3A6FA8",
     bg: "#EBF0F9",
@@ -68,9 +72,9 @@ const products = [
   {
     name: "Woman",
     slug: "woman",
-    tagline: "Soporte herbal para el bienestar hormonal femenino",
+    tagline: "Bienestar hormonal femenino",
     taglineColor: "#6B3080",
-    quote: '"Escucharte también es una forma de cuidarte."',
+    quote: "Escucharte también es una forma de cuidarte.",
     tags: ["Bienestar femenino", "Ritmos naturales"],
     color: "#8A3EBE",
     bg: "#F3EBF9",
@@ -79,24 +83,240 @@ const products = [
   },
 ];
 
+/* ── Hero card — featured product (Glow) ──────────────────────────────── */
+
+function HeroProductCard({
+  product,
+  onAdd,
+}: {
+  product: (typeof products)[0];
+  onAdd: () => void;
+}) {
+  const p = product;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div
+        className="group relative grid grid-cols-1 md:grid-cols-2 gap-0 rounded-[28px] overflow-hidden border border-black/[0.06] shadow-[0_8px_40px_rgba(0,0,0,0.08)]"
+        style={{ background: p.bg }}
+      >
+        {/* Image */}
+        <div className="relative flex items-center justify-center py-12 px-8 md:py-16 md:px-12">
+          <div className="relative w-56 h-56 md:w-72 md:h-72">
+            <Image
+              src={p.imgSrc}
+              alt={`NovaPatch ${p.name}`}
+              fill
+              className="object-contain group-hover:scale-[1.04] transition-transform duration-500"
+            />
+          </div>
+          <span
+            className="absolute top-5 left-5 text-white text-[11px] font-extrabold uppercase tracking-[0.08em] px-3.5 py-1.5 rounded-full"
+            style={{ background: p.color }}
+          >
+            Más popular
+          </span>
+        </div>
+
+        {/* Content */}
+        <div className="flex flex-col justify-center px-8 py-10 md:px-12 md:py-16 bg-white">
+          <p
+            className="text-[28px] md:text-[36px] font-black tracking-[-0.02em] leading-tight"
+            style={{ color: p.taglineColor }}
+          >
+            {p.name}
+          </p>
+          <p
+            className="text-[15px] font-semibold leading-[1.5] mt-1 opacity-80"
+            style={{ color: p.taglineColor }}
+          >
+            {p.tagline}
+          </p>
+          <p className="text-[15px] text-[#6B7280] italic leading-[1.6] mt-4">
+            &ldquo;{p.quote}&rdquo;
+          </p>
+
+          <div className="flex flex-wrap gap-1.5 mt-5">
+            {p.tags.map((tag) => (
+              <span
+                key={tag}
+                className="text-[11px] font-bold px-3 py-1 rounded-full border-[1.5px]"
+                style={{ borderColor: p.color, color: p.color }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Pricing */}
+          <div className="mt-6 flex items-baseline gap-3 flex-wrap">
+            <span
+              className="text-[28px] font-black"
+              style={{ color: p.taglineColor }}
+            >
+              ${RETAIL_PRICE}
+              <span className="text-[14px] font-medium text-[#9CA3AF] ml-1">MXN</span>
+            </span>
+            <span className="text-[13px] text-[#16A34A] font-bold bg-[#F0FDF4] px-2.5 py-1 rounded-lg">
+              Desde ${SUB_PRICE} con suscripción
+            </span>
+          </div>
+
+          <button
+            onClick={onAdd}
+            className="mt-5 w-full md:w-auto md:px-10 py-3.5 rounded-xl text-[15px] font-bold text-white transition-all duration-200 active:scale-[0.97] hover:brightness-110 hover:-translate-y-0.5 hover:shadow-lg"
+            style={{ background: p.color }}
+          >
+            Agregar al carrito
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ── Standard product card ────────────────────────────────────────────── */
+
+function ProductCard({
+  product,
+  index,
+  onAdd,
+}: {
+  product: (typeof products)[0];
+  index: number;
+  onAdd: () => void;
+}) {
+  const p = product;
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{
+        delay: index * 0.08,
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="h-full"
+    >
+      <div className="group flex flex-col bg-white rounded-[20px] overflow-hidden border border-black/[0.06] shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:-translate-y-[5px] transition-all duration-300 h-full">
+        {/* Image area */}
+        <div
+          className="relative flex items-center justify-center"
+          style={{ background: p.bg, padding: "36px 24px" }}
+        >
+          <div className="relative w-36 h-36">
+            <Image
+              src={p.imgSrc}
+              alt={`NovaPatch ${p.name}`}
+              fill
+              className="object-contain group-hover:scale-[1.06] transition-transform duration-300"
+            />
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="p-5 flex flex-col gap-2 flex-1">
+          <div>
+            <p
+              className="text-[20px] font-black tracking-[-0.01em]"
+              style={{ color: p.taglineColor }}
+            >
+              {p.name}
+            </p>
+            <p
+              className="text-[13px] font-semibold leading-[1.45] mt-0.5 opacity-75"
+              style={{ color: p.taglineColor }}
+            >
+              {p.tagline}
+            </p>
+          </div>
+
+          <p className="text-[13px] text-[#6B7280] italic leading-[1.5]">
+            &ldquo;{p.quote}&rdquo;
+          </p>
+
+          <div className="flex flex-wrap gap-1.5">
+            {p.tags.map((tag) => (
+              <span
+                key={tag}
+                className="text-[11px] font-bold px-3 py-1 rounded-full border-[1.5px]"
+                style={{ borderColor: p.color, color: p.color }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Pricing */}
+          <div className="mt-auto pt-3 flex items-baseline gap-2">
+            <span
+              className="text-[22px] font-black"
+              style={{ color: p.taglineColor }}
+            >
+              ${RETAIL_PRICE}
+            </span>
+            <span className="text-[12px] font-medium text-[#9CA3AF]">MXN</span>
+          </div>
+          <p className="text-[11px] text-[#16A34A] font-semibold -mt-1">
+            Desde ${SUB_PRICE}/caja con suscripción
+          </p>
+
+          <button
+            onClick={onAdd}
+            className="product-card-btn mt-2 w-full py-3 rounded-xl border-2 text-[14px] font-bold transition-all duration-200 active:scale-[0.97]"
+            style={
+              {
+                "--btn-accent": p.color,
+                borderColor: p.color,
+                color: p.color,
+              } as React.CSSProperties
+            }
+          >
+            Agregar al carrito
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ── Main grid ────────────────────────────────────────────────────────── */
+
 export default function ProductGrid() {
   const { addToCart } = useCart();
+
+  const heroProduct = products.find((p) => p.popular)!;
+  const rest = products.filter((p) => !p.popular);
+
+  const handleAdd = (p: (typeof products)[0]) => {
+    addToCart({
+      slug: p.slug,
+      title: p.name,
+      image: p.imgSrc,
+      price: RETAIL_PRICE,
+      color: p.color,
+      bg: p.bg,
+      mode: "once",
+      freq: 30,
+    });
+  };
 
   return (
     <section id="productos" className="bg-[#F9FAFB]" style={{ padding: "80px 48px 64px" }}>
       <div className="max-w-[1200px] mx-auto">
-
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-14"
         >
-          <p className="text-[12px] font-bold uppercase tracking-[0.12em] mb-2.5" style={{ color: "#3CBFAB" }}>
-            Catálogo
-          </p>
           <h2
             className="font-black text-[#005088] tracking-[-0.02em] mb-3"
             style={{ fontSize: "clamp(26px,3vw,38px)" }}
@@ -108,98 +328,21 @@ export default function ProductGrid() {
           </p>
         </motion.div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-          {products.map((p, i) => (
-            <motion.div
-              key={p.name}
-              initial={{ opacity: 0, y: 32 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <div className="group flex flex-col bg-white rounded-[20px] overflow-hidden border border-black/[0.06] shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:-translate-y-[5px] transition-all duration-300 h-full">
+        {/* Featured product — Glow */}
+        <HeroProductCard
+          product={heroProduct}
+          onAdd={() => handleAdd(heroProduct)}
+        />
 
-                {/* Image area */}
-                <div
-                  className="relative flex items-center justify-center"
-                  style={{ background: p.bg, padding: "40px 24px" }}
-                >
-                  {p.popular && (
-                    <span
-                      className="absolute top-3 right-3 text-white text-[10px] font-extrabold uppercase tracking-[0.06em] px-3 py-1.5 rounded-full"
-                      style={{ background: "#E8503A" }}
-                    >
-                      Más popular
-                    </span>
-                  )}
-                  <div className="relative w-40 h-40">
-                    <Image
-                      src={p.imgSrc}
-                      alt={`NovaPatch ${p.name}`}
-                      fill
-                      className="object-contain group-hover:scale-[1.06] transition-transform duration-300"
-                    />
-                  </div>
-                </div>
-
-                {/* Body */}
-                <div className="p-5 flex flex-col gap-2.5 flex-1">
-                  <div>
-                    <p
-                      className="text-[22px] font-black tracking-[-0.01em]"
-                      style={{ color: p.taglineColor }}
-                    >
-                      {p.name}
-                    </p>
-                    <p className="text-[13px] font-semibold leading-[1.45] mt-0.5" style={{ color: p.taglineColor }}>
-                      {p.tagline}
-                    </p>
-                  </div>
-
-                  <p className="text-[13px] text-[#6B7280] italic leading-[1.5]">{p.quote}</p>
-
-                  <div className="flex flex-wrap gap-1.5">
-                    {p.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-[11px] font-bold px-3 py-1 rounded-full border-[1.5px]"
-                        style={{ borderColor: p.color, color: p.color }}
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  <button
-                    className="mt-1 w-full py-3 rounded-xl border-2 text-[14px] font-bold transition-all duration-200 active:scale-[0.97]"
-                    style={{ borderColor: p.color, color: p.color, background: "transparent" }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = p.color;
-                      e.currentTarget.style.color = "#fff";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "transparent";
-                      e.currentTarget.style.color = p.color;
-                    }}
-                    onClick={() =>
-                      addToCart({
-                        slug: p.slug,
-                        title: p.name,
-                        image: p.imgSrc,
-                        price: 750,
-                        color: p.color,
-                        bg: p.bg,
-                        mode: "once",
-                        freq: 30,
-                      })
-                    }
-                  >
-                    Agregar al carrito
-                  </button>
-                </div>
-              </div>
-            </motion.div>
+        {/* Remaining products */}
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {rest.map((p, i) => (
+            <ProductCard
+              key={p.slug}
+              product={p}
+              index={i}
+              onAdd={() => handleAdd(p)}
+            />
           ))}
         </div>
       </div>

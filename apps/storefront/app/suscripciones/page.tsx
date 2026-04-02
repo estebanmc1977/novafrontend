@@ -424,7 +424,7 @@ export default function SuscripcionesPage() {
                 Un solo plan. Cada producto llega cuando tiene que llegar.
               </p>
               <Link
-                href="/productos"
+                href="/tienda"
                 className="inline-flex items-center gap-2 font-bold text-[15px] px-7 py-3.5 rounded-full text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(13,27,53,0.3)]"
                 style={{ background: "#3CBFAB" }}
               >
@@ -579,7 +579,7 @@ export default function SuscripcionesPage() {
                 Elige tus parches, define la frecuencia de cada uno y deja que el bienestar llegue solo.
               </p>
               <Link
-                href="/productos"
+                href="/tienda"
                 className="inline-flex items-center gap-2 font-bold text-[16px] px-9 py-4 rounded-full text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_36px_rgba(13,27,53,0.3)] shadow-[0_4px_20px_rgba(13,27,53,0.2)]"
                 style={{ background: "#3CBFAB" }}
               >

@@ -288,7 +288,7 @@ function Step5({ data, set, toggle }: {
 
       {/* Menos gustó */}
       <div>
-        <FieldLabel>¿Qué fue lo que menos te gustó? <span className="text-[12px] font-normal text-[#9CA3AF] ml-1">(podés elegir más de uno)</span></FieldLabel>
+        <FieldLabel>¿Qué fue lo que menos te gustó? <span className="text-[12px] font-normal text-[#9CA3AF] ml-1">(puedes elegir más de uno)</span></FieldLabel>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {menosGusto.map((item) => (
             <Checkbox key={item} label={item} checked={data.menos_gusto.includes(item)} onChange={() => toggle(item)} />
@@ -438,7 +438,7 @@ export default function ReembolsoPage() {
               Solicitud de reembolso
             </h1>
             <p className="text-[15px] text-[#0D1B35]/60">
-              Completá el formulario y te contactamos en 2–5 días hábiles.
+              Completa el formulario y te contactamos en 2–5 días hábiles.
             </p>
           </motion.div>
 

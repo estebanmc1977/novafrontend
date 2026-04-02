@@ -13,31 +13,71 @@ export const slides = [
   { src: "/carousel/Zen-new.webp",    alt: "Novapatch Zen",    accent: "#4E82BC" },
 ];
 
+const AUTO_ADVANCE_MS = 4500;
+const RESUME_DELAY_MS = 6000;
+
 export default function HeroWithBar() {
   const [current, setCurrent] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const pausedRef = useRef(false);
+  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const resetTimer = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => {
-      setCurrent((c) => (c + 1) % slides.length);
-    }, 4500);
+  const clearResumeTimer = useCallback(() => {
+    if (resumeTimerRef.current) {
+      clearTimeout(resumeTimerRef.current);
+      resumeTimerRef.current = null;
+    }
   }, []);
 
+  const startAutoAdvance = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      if (!pausedRef.current) {
+        setCurrent((c) => (c + 1) % slides.length);
+      }
+    }, AUTO_ADVANCE_MS);
+  }, []);
+
+  const pause = useCallback(() => {
+    pausedRef.current = true;
+    clearResumeTimer();
+  }, [clearResumeTimer]);
+
+  const scheduleResume = useCallback(() => {
+    clearResumeTimer();
+    resumeTimerRef.current = setTimeout(() => {
+      pausedRef.current = false;
+      startAutoAdvance();
+    }, RESUME_DELAY_MS);
+  }, [clearResumeTimer, startAutoAdvance]);
+
   useEffect(() => {
-    resetTimer();
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [resetTimer]);
+    startAutoAdvance();
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      clearResumeTimer();
+    };
+  }, [startAutoAdvance, clearResumeTimer]);
 
   const handleNav = (dir: number) => {
     setCurrent((c) => (c + dir + slides.length) % slides.length);
-    resetTimer();
+    pause();
+    scheduleResume();
   };
 
   const handleDot = (i: number) => {
     setCurrent(i);
-    resetTimer();
+    pause();
+    scheduleResume();
   };
+
+  const handlePause = useCallback(() => {
+    pause();
+  }, [pause]);
+
+  const handleResume = useCallback(() => {
+    scheduleResume();
+  }, [scheduleResume]);
 
   return (
     <>
@@ -46,6 +86,8 @@ export default function HeroWithBar() {
         current={current}
         onNav={handleNav}
         onDot={handleDot}
+        onPause={handlePause}
+        onResume={handleResume}
       />
       <AttributeBar current={current} accent={slides[current].accent} />
     </>

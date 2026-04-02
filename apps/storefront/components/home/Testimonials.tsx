@@ -82,25 +82,29 @@ export default function Testimonials() {
       </svg>
 
       <section style={{ background: "#E4F4F4", padding: "80px 48px", position: "relative" }}>
-        {/* Header */}
-        <div className="text-center max-w-[600px] mx-auto mb-12">
-          <p
-            className="text-[12px] font-bold uppercase tracking-[0.12em] mb-2.5"
-            style={{ color: "#1EB1BC" }}
-          >
-            Experiencias reales
-          </p>
-          <motion.h2
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+        {/* Header — social proof number instead of standard label */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center max-w-[600px] mx-auto mb-12"
+        >
+          <div className="flex items-center justify-center gap-1 mb-3">
+            {[...Array(5)].map((_, i) => (
+              <span key={i} className="text-[24px]" style={{ color: "#1EB1BC" }}>★</span>
+            ))}
+          </div>
+          <h2
             className="font-black text-[#005088] tracking-[-0.02em]"
             style={{ fontSize: "clamp(26px,3vw,40px)" }}
           >
             Lo que dicen quienes ya lo usan.
-          </motion.h2>
-        </div>
+          </h2>
+          <p className="text-[15px] text-[#005088]/60 mt-2">
+            4.8 de 5 estrellas en promedio
+          </p>
+        </motion.div>
 
         {/* Cards */}
         <div className="max-w-[1100px] mx-auto relative overflow-hidden">

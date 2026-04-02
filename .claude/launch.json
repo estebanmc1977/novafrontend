@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "storefront",
+      "runtimeExecutable": "/bin/bash",
+      "runtimeArgs": ["-c", "export PATH=/opt/homebrew/bin:$HOME/.nvm/versions/node/v20.20.0/bin:$PATH && cd apps/storefront && pnpm run dev"],
+      "port": 3000
+    }
+  ]
+}

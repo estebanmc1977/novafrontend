@@ -9,8 +9,8 @@ const plans = [
     days: "Cada 30",
     unit: "días",
     discount: "−20%",
-    original: "Antes: MX$749",
-    price: "MX$599 / caja",
+    original: "Antes: MX$750",
+    price: "MX$600 / caja",
     features: [
       "Recibe tus parches cada 30 días",
       "Pausa o cancela cuando quieras",
@@ -25,8 +25,8 @@ const plans = [
     days: "Cada 60",
     unit: "días",
     discount: "−15%",
-    original: "Antes: MX$749",
-    price: "MX$637 / caja",
+    original: "Antes: MX$750",
+    price: "MX$638 / caja",
     features: [
       "Recibe tus parches cada 60 días",
       "Pausa o cancela cuando quieras",
@@ -39,8 +39,8 @@ const plans = [
     days: "Cada 90",
     unit: "días",
     discount: "−10%",
-    original: "Antes: MX$749",
-    price: "MX$674 / caja",
+    original: "Antes: MX$750",
+    price: "MX$675 / caja",
     features: [
       "Recibe tus parches cada 90 días",
       "Pausa o cancela cuando quieras",
@@ -187,30 +187,11 @@ export default function CTABanner() {
               {/* CTA */}
               <Link
                 href="/suscripciones"
-                className="block w-full py-3 rounded-full text-[15px] font-bold text-center transition-all duration-200"
-                style={
+                className={`block w-full py-3 rounded-full text-[15px] font-bold text-center transition-all duration-200 ${
                   plan.best
-                    ? {
-                        background: "#005088",
-                        borderColor: "#005088",
-                        color: "white",
-                        border: "2px solid #005088",
-                        boxShadow: "0 4px 16px rgba(0,80,136,0.3)",
-                      }
-                    : {
-                        background: "transparent",
-                        border: "2px solid rgba(255,255,255,0.55)",
-                        color: "white",
-                      }
-                }
-                onMouseEnter={(e) => {
-                  if (!plan.best) (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.15)";
-                  else (e.currentTarget as HTMLElement).style.background = "#003d6b";
-                }}
-                onMouseLeave={(e) => {
-                  if (!plan.best) (e.currentTarget as HTMLElement).style.background = "transparent";
-                  else (e.currentTarget as HTMLElement).style.background = "#005088";
-                }}
+                    ? "bg-[#005088] text-white border-2 border-[#005088] shadow-[0_4px_16px_rgba(0,80,136,0.3)] hover:bg-[#003d6b]"
+                    : "bg-transparent text-white border-2 border-white/55 hover:bg-white/15"
+                }`}
               >
                 Elegir plan
               </Link>
