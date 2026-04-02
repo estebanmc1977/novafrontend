@@ -50,8 +50,8 @@ export default function ComparisonTable() {
           className="mt-14 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-14 items-start"
         >
           {/* Table */}
-          <div className="overflow-x-auto -mx-1 px-1">
-          <div className="rounded-[20px] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.10)] bg-white min-w-[420px]">
+          <div style={{ overflowX: "auto" }}>
+          <div style={{ minWidth: "480px" }} className="rounded-[20px] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.10)] bg-white">
             {/* Header */}
             <div className="grid border-b-2 border-[#E5E7EB]" style={{ gridTemplateColumns: "1.6fr 1fr 1fr 1fr", minHeight: "100px" }}>
               <div className="p-4 text-[14px] font-bold text-[#6B7280] flex items-center">Características</div>
