@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand — Novapatch */
+  --color-coral:       #E8503A;
+  --color-coral-light: #FF7A65;
+  --color-coral-dark:  #C43B28;
+
+  --color-navy:        #0D1B35;
+  --color-navy-light:  #1D3461;
+
+  --color-sky:         #5BA8D5;
+  --color-sky-light:   #B8DDEF;
+  --color-sky-pale:    #EAF5FB;
+
+  --color-cream:       #FAF7F2;
+  --color-lime:        #C9D849;
+  --color-lime-dark:   #A8B42A;
+
+  /* Typography */
+  --font-display: "Avenir Next", "Montserrat", "Helvetica Neue", sans-serif;
+  --font-body:    "Avenir Next", "Montserrat", "Helvetica Neue", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body), system-ui, sans-serif;
+  background-color: #ffffff;
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar        { width: 5px; }
+::-webkit-scrollbar-track  { background: #FAF7F2; }
+::-webkit-scrollbar-thumb  { background: #E8503A; border-radius: 4px; }
+
+/* Selection */
+::selection { background: #E8503A; color: #fff; }
+
+/* Google Places Autocomplete dropdown — encima de modales y drawers */
+.pac-container {
+  z-index: 9999 !important;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(13, 27, 53, 0.12);
+  font-family: var(--font-body), system-ui, sans-serif;
+  margin-top: 4px;
+  overflow: hidden;
+}
+.pac-item {
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #0D1B35;
+  cursor: pointer;
+  border-top: 1px solid #F1F5F9;
+}
+.pac-item:first-child { border-top: none; }
+.pac-item:hover,
+.pac-item-selected {
+  background-color: #EAF5FB;
+}
+.pac-item-query {
+  font-weight: 600;
+  color: #005088;
+}
+.pac-matched { color: #E8503A; }
+.pac-icon { display: none; } /* Ocultar ícono de Google Maps */
