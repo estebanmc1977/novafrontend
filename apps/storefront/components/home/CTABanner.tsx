@@ -77,7 +77,7 @@ export default function CTABanner() {
           transition={{ duration: 0.6 }}
         >
           <p
-            className="text-[12px] font-bold uppercase tracking-[0.12em] mb-3"
+            className="text-[11px] font-bold uppercase tracking-[0.12em] mb-3"
             style={{ color: "rgba(255,255,255,0.7)" }}
           >
             Ahorra con suscripción

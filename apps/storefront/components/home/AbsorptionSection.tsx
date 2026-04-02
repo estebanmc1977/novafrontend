@@ -46,8 +46,8 @@ function SkinDiagram() {
       {[55, 90, 125, 160, 195, 230, 265, 300, 335].map((x) => (
         <circle key={`b${x}`} cx={x} cy="70" r="2.8" fill="rgba(0,0,0,0.18)" />
       ))}
-      <text x="190" y="39" textAnchor="middle" fontFamily="system-ui,sans-serif" fontSize="13" fontWeight="800" fill="#005088" letterSpacing="1.5">NOVAPATCH</text>
-      <text x="190" y="57" textAnchor="middle" fontFamily="system-ui,sans-serif" fontSize="10" fill="rgba(0,0,0,0.48)" fontWeight="500">Liberación controlada · 10–12 horas</text>
+      <text x="190" y="39" textAnchor="middle" fontFamily="Montserrat,system-ui,sans-serif" fontSize="13" fontWeight="800" fill="#005088" letterSpacing="1.5">NOVAPATCH</text>
+      <text x="190" y="57" textAnchor="middle" fontFamily="Montserrat,system-ui,sans-serif" fontSize="10" fill="rgba(0,0,0,0.48)" fontWeight="500">Liberación controlada · 10–12 horas</text>
 
       {/* dashed connectors patch → skin */}
       {[88, 148, 195, 248, 298].map((x) => (
@@ -56,11 +56,11 @@ function SkinDiagram() {
 
       {/* ── Estrato córneo ── */}
       <path d="M8 84 C68 78 130 90 190 84 C250 78 312 90 372 84 L372 122 C312 128 250 116 190 122 C130 128 68 116 8 122 Z" fill="#002E4E" />
-      <text x="22" y="106" fontFamily="system-ui,sans-serif" fontSize="9" fontWeight="700" fill="rgba(255,255,255,0.5)" letterSpacing="0.6">ESTRATO CÓRNEO</text>
+      <text x="22" y="106" fontFamily="Montserrat,system-ui,sans-serif" fontSize="9" fontWeight="700" fill="rgba(255,255,255,0.5)" letterSpacing="0.6">ESTRATO CÓRNEO</text>
 
       {/* ── Epidermis ── */}
       <path d="M8 124 C68 118 130 130 190 124 C250 118 312 130 372 124 L372 192 C312 198 250 186 190 192 C130 198 68 186 8 192 Z" fill="#00223C" />
-      <text x="22" y="162" fontFamily="system-ui,sans-serif" fontSize="9" fontWeight="700" fill="rgba(255,255,255,0.5)" letterSpacing="0.6">EPIDERMIS</text>
+      <text x="22" y="162" fontFamily="Montserrat,system-ui,sans-serif" fontSize="9" fontWeight="700" fill="rgba(255,255,255,0.5)" letterSpacing="0.6">EPIDERMIS</text>
 
       {/* ── Dermis ── */}
       <path d="M8 194 C68 188 130 200 190 194 C250 188 312 200 372 194 L372 302 C312 308 250 296 190 302 C130 308 68 296 8 302 Z" fill="#001628" />
@@ -68,17 +68,17 @@ function SkinDiagram() {
       {[[28,220,140,238],[80,264,220,278],[200,212,350,230],[155,260,270,272],[70,288,210,298]].map(([x1,y1,x2,y2],i)=>(
         <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(255,255,255,0.055)" strokeWidth="1.5"/>
       ))}
-      <text x="22" y="255" fontFamily="system-ui,sans-serif" fontSize="9" fontWeight="700" fill="rgba(255,255,255,0.5)" letterSpacing="0.6">DERMIS</text>
+      <text x="22" y="255" fontFamily="Montserrat,system-ui,sans-serif" fontSize="9" fontWeight="700" fill="rgba(255,255,255,0.5)" letterSpacing="0.6">DERMIS</text>
 
       {/* ── Blood vessel layer ── */}
       <rect x="8" y="304" width="364" height="72" fill="#000D1A" />
       <path d="M18 326 Q110 318 200 326 Q290 334 362 326" stroke="#D94F4F" strokeWidth="6" strokeLinecap="round" opacity="0.72" />
       <path d="M18 350 Q100 358 210 350 Q295 342 362 350" stroke="#D94F4F" strokeWidth="3.5" strokeLinecap="round" opacity="0.40" />
-      <text x="22" y="368" fontFamily="system-ui,sans-serif" fontSize="9" fontWeight="700" fill="rgba(217,79,79,0.65)" letterSpacing="0.6">TORRENTE SANGUÍNEO</text>
+      <text x="22" y="368" fontFamily="Montserrat,system-ui,sans-serif" fontSize="9" fontWeight="700" fill="rgba(217,79,79,0.65)" letterSpacing="0.6">TORRENTE SANGUÍNEO</text>
 
       {/* ── <500 Da badge ── */}
       <rect x="258" y="88" width="104" height="22" rx="11" fill="rgba(28,177,188,0.14)" stroke="rgba(28,177,188,0.45)" strokeWidth="1" />
-      <text x="310" y="103" textAnchor="middle" fontFamily="system-ui,sans-serif" fontSize="10" fontWeight="700" fill="#1CB1BC">{"< 500 Daltons"}</text>
+      <text x="310" y="103" textAnchor="middle" fontFamily="Montserrat,system-ui,sans-serif" fontSize="10" fontWeight="700" fill="#1CB1BC">{"< 500 Daltons"}</text>
 
       {/* ── Animated molecules ── */}
       {MOLECULES.map((m, i) => (
@@ -130,7 +130,7 @@ export default function AbsorptionSection() {
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-[3px] rounded-full bg-[#1CB1BC]" />
             <p
-              className="text-[11px] font-bold uppercase tracking-[0.14em]"
+              className="text-[11px] font-bold uppercase tracking-[0.12em]"
               style={{ color: "#1CB1BC" }}
             >
               La ciencia
@@ -146,7 +146,7 @@ export default function AbsorptionSection() {
           </h2>
 
           <p
-            className="leading-[1.8] mb-5"
+            className="leading-[1.65] mb-5"
             style={{ fontSize: "16px", color: "rgba(13,27,53,0.65)" }}
           >
             Para atravesar la piel, un ingrediente necesita tener menos de{" "}
@@ -156,7 +156,7 @@ export default function AbsorptionSection() {
           </p>
 
           <p
-            className="leading-[1.8] mb-10"
+            className="leading-[1.65] mb-10"
             style={{ fontSize: "16px", color: "rgba(13,27,53,0.65)" }}
           >
             El resultado: absorción directa al torrente sanguíneo, sin pasar por el sistema

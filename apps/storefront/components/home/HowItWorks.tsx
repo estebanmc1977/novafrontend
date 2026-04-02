@@ -78,7 +78,7 @@ export default function HowItWorks() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
           <p
-            className="text-[12px] font-bold uppercase tracking-[0.12em] mb-2.5"
+            className="text-[11px] font-bold uppercase tracking-[0.12em] mb-2.5"
             style={{ color: "#3CBFAB" }}
           >
             Uso diario
