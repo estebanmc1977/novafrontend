@@ -1,11 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Permite que Next.js transpile paquetes de Clerk correctamente
-  // en lugar de tratarlos como externos en el bundle del servidor.
-  // Esto resuelve el error "__webpack_modules__[moduleId] is not a function"
-  // que ocurre cuando el RSC runtime trata de cargar módulos de Clerk
-  // con IDs que no coinciden entre server y client bundles.
-  transpilePackages: ["@clerk/nextjs", "@clerk/localizations"],
+  // Clerk v6 ships with proper ESM — transpilePackages is NOT needed and
+  // causes Edge Runtime errors because webpack bundles Node.js-only modules
+  // (crypto, safe-node-apis) into the middleware Edge Function.
+  //
+  // serverExternalPackages tells Next.js to keep @clerk/backend as a true
+  // Node.js external (require()) in server/API-route contexts so it can use
+  // Node built-ins, while the Edge middleware uses Clerk's own Edge-safe build.
+  serverExternalPackages: ["@clerk/backend"],
 
   images: {
     remotePatterns: [
