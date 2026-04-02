@@ -21,7 +21,7 @@ function Check({ ok }: { ok: boolean }) {
 
 export default function ComparisonTable() {
   return (
-    <section className="bg-[#F9FAFB]" style={{ padding: "72px 48px" }}>
+    <section className="bg-[#F9FAFB] py-[72px] px-5 md:px-12">
       <div className="max-w-[1100px] mx-auto">
         {/* Header text */}
         <motion.div
@@ -50,7 +50,8 @@ export default function ComparisonTable() {
           className="mt-14 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-14 items-start"
         >
           {/* Table */}
-          <div className="rounded-[20px] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.10)] bg-white">
+          <div className="overflow-x-auto -mx-1 px-1">
+          <div className="rounded-[20px] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.10)] bg-white min-w-[420px]">
             {/* Header */}
             <div className="grid border-b-2 border-[#E5E7EB]" style={{ gridTemplateColumns: "1.6fr 1fr 1fr 1fr", minHeight: "100px" }}>
               <div className="p-4 text-[14px] font-bold text-[#6B7280] flex items-center">Características</div>
@@ -122,6 +123,7 @@ export default function ComparisonTable() {
                 </div>
               </div>
             ))}
+          </div>
           </div>
 
           {/* Image + bubble */}
