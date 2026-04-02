@@ -1,0 +1,203 @@
+<style>
+  body { font-family: -apple-system, sans-serif; }
+  .layouts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: 24px; }
+  .layout-card { border: 2px solid #e5e7eb; border-radius: 16px; overflow: hidden; cursor: pointer; transition: all 0.2s; }
+  .layout-card:hover { border-color: #005088; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+  .layout-card.selected { border-color: #E8503A; box-shadow: 0 0 0 4px rgba(232,80,58,0.15); }
+  .layout-label { background: #f8fafc; padding: 12px 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; }
+  .rec-badge { background: #E8503A; color: white; font-size: 9px; padding: 2px 6px; border-radius: 20px; }
+  .mockup-wrap { padding: 16px; background: #f1f5f9; }
+
+  /* Mockup A: Slide-over drawer */
+  .drawer-scene { position: relative; height: 280px; background: #e8edee; border-radius: 8px; overflow: hidden; }
+  .drawer-bg { position: absolute; inset: 0; background: linear-gradient(135deg, #FAF7F2 0%, #f0ebe3 100%); opacity: 0.6; }
+  .drawer-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.35); }
+  .drawer-panel { position: absolute; top: 0; right: 0; bottom: 0; width: 62%; background: white; border-radius: 16px 0 0 16px; box-shadow: -8px 0 32px rgba(0,0,0,0.15); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .drawer-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid #f0f0f0; }
+  .drawer-title { font-size: 13px; font-weight: 800; color: #005088; }
+  .close-btn { width: 22px; height: 22px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #6b7280; }
+  .cart-item { display: flex; gap: 8px; align-items: center; }
+  .item-img { width: 36px; height: 36px; border-radius: 8px; background: #EBF4FB; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; color: #2B7CC1; }
+  .item-info { flex: 1; }
+  .item-name { font-size: 10px; font-weight: 700; color: #1D3461; }
+  .item-sub { font-size: 9px; color: #9ca3af; }
+  .item-price { font-size: 10px; font-weight: 800; color: #005088; }
+  .sub-badge { background: #FFF0ED; color: #E8503A; font-size: 8px; font-weight: 700; padding: 1px 5px; border-radius: 8px; }
+  .qty-ctrl { display: flex; align-items: center; gap: 4px; }
+  .qty-btn { width: 16px; height: 16px; border-radius: 4px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #374151; }
+  .qty-num { font-size: 10px; font-weight: 700; color: #374151; width: 12px; text-align: center; }
+  .drawer-footer { margin-top: auto; padding-top: 10px; border-top: 1px solid #f0f0f0; }
+  .total-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .total-label { font-size: 10px; color: #6b7280; }
+  .total-val { font-size: 10px; font-weight: 700; color: #1D3461; }
+  .savings-row { background: #f0fdf4; border-radius: 6px; padding: 4px 8px; display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .savings-label { font-size: 9px; color: #16a34a; font-weight: 600; }
+  .savings-val { font-size: 9px; color: #16a34a; font-weight: 700; }
+  .cta-btn { background: #E8503A; color: white; border-radius: 20px; padding: 7px 12px; font-size: 10px; font-weight: 700; text-align: center; width: 100%; }
+
+  /* Mockup B: Page full */
+  .page-scene { height: 280px; background: #FAF7F2; border-radius: 8px; overflow: hidden; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .page-header { display: flex; justify-content: space-between; align-items: center; }
+  .page-title { font-size: 13px; font-weight: 800; color: #005088; }
+  .back-btn { font-size: 9px; color: #6b7280; display: flex; align-items: center; gap: 3px; }
+  .page-body { flex: 1; background: white; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+  .page-item { display: flex; gap: 8px; align-items: center; padding-bottom: 8px; border-bottom: 1px solid #f3f4f6; }
+  .page-footer { background: white; border-radius: 12px; padding: 10px; }
+
+  /* Mockup C: Page with sidebar */
+  .sidebar-scene { height: 280px; background: #FAF7F2; border-radius: 8px; overflow: hidden; display: grid; grid-template-columns: 1fr 38%; }
+  .sidebar-main { padding: 12px; display: flex; flex-direction: column; gap: 8px; border-right: 1px solid #e5e7eb; }
+  .sidebar-panel { padding: 12px; background: white; display: flex; flex-direction: column; gap: 8px; }
+  .sidebar-title { font-size: 10px; font-weight: 800; color: #005088; text-transform: uppercase; letter-spacing: 0.08em; }
+  .line-item { display: flex; justify-content: space-between; }
+  .line-label { font-size: 9px; color: #6b7280; }
+  .line-val { font-size: 9px; font-weight: 600; color: #374151; }
+  .sidebar-total { font-size: 11px; font-weight: 800; color: #005088; border-top: 1px solid #f0f0f0; padding-top: 6px; margin-top: 2px; display: flex; justify-content: space-between; }
+  .mini-cta { background: #E8503A; color: white; border-radius: 20px; padding: 6px 10px; font-size: 9px; font-weight: 700; text-align: center; }
+  .trust-row { display: flex; gap: 4px; flex-wrap: wrap; }
+  .trust-badge { background: #f3f4f6; border-radius: 4px; padding: 2px 5px; font-size: 8px; color: #6b7280; }
+</style>
+
+<h2>¿Cómo debe funcionar el carrito?</h2>
+<p class="subtitle">Elige el patrón de UX que prefieras — desktop y mobile se adaptan diferente en cada opción</p>
+
+<div class="layouts">
+
+  <!-- A: Slide-over drawer -->
+  <div class="layout-card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="layout-label">
+      Opción A — Slide-over drawer
+      <span class="rec-badge">Recomendado</span>
+    </div>
+    <div class="mockup-wrap">
+      <div class="drawer-scene">
+        <div class="drawer-bg"></div>
+        <div class="drawer-overlay"></div>
+        <div class="drawer-panel">
+          <div class="drawer-header">
+            <span class="drawer-title">Tu carrito (2)</span>
+            <div class="close-btn">✕</div>
+          </div>
+          <div class="cart-item">
+            <div class="item-img">EN</div>
+            <div class="item-info">
+              <div class="item-name">Energy <span class="sub-badge">SUB</span></div>
+              <div class="item-sub">Mensual · 20% OFF</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+              <div class="item-price">$600</div>
+              <div class="qty-ctrl"><div class="qty-btn">−</div><div class="qty-num">1</div><div class="qty-btn">+</div></div>
+            </div>
+          </div>
+          <div class="cart-item">
+            <div class="item-img" style="background:#EBF7F5;color:#138A75">SL</div>
+            <div class="item-info">
+              <div class="item-name">Sleep</div>
+              <div class="item-sub">Compra única</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+              <div class="item-price">$750</div>
+              <div class="qty-ctrl"><div class="qty-btn">−</div><div class="qty-num">1</div><div class="qty-btn">+</div></div>
+            </div>
+          </div>
+          <div class="drawer-footer">
+            <div class="savings-row"><span class="savings-label">🎉 Ahorro con suscripción</span><span class="savings-val">−$150</span></div>
+            <div class="total-row"><span class="total-label">Total</span><span class="total-val">$1,350 MXN</span></div>
+            <div class="cta-btn">Ir a pagar →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:12px;font-size:11px;color:#6b7280;line-height:1.5">
+      Aparece desde la derecha sin cambiar de página. En mobile ocupa pantalla completa. El usuario puede seguir viendo el contexto.
+    </div>
+  </div>
+
+  <!-- B: Página dedicada -->
+  <div class="layout-card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="layout-label">Opción B — Página dedicada</div>
+    <div class="mockup-wrap">
+      <div class="page-scene">
+        <div class="page-header">
+          <div class="back-btn">← Seguir comprando</div>
+          <div class="page-title">Tu carrito</div>
+          <div style="width:60px"></div>
+        </div>
+        <div class="page-body">
+          <div class="page-item">
+            <div class="item-img">EN</div>
+            <div class="item-info">
+              <div class="item-name">Energy <span class="sub-badge">SUB 20%</span></div>
+              <div class="item-sub">Mensual · $600 MXN</div>
+            </div>
+            <div class="qty-ctrl"><div class="qty-btn">−</div><div class="qty-num">1</div><div class="qty-btn">+</div></div>
+          </div>
+          <div class="page-item">
+            <div class="item-img" style="background:#EBF7F5;color:#138A75">SL</div>
+            <div class="item-info">
+              <div class="item-name">Sleep</div>
+              <div class="item-sub">Compra única · $750 MXN</div>
+            </div>
+            <div class="qty-ctrl"><div class="qty-btn">−</div><div class="qty-num">1</div><div class="qty-btn">+</div></div>
+          </div>
+          <div style="margin-top:auto">
+            <div class="savings-row"><span class="savings-label">🎉 Ahorro con suscripción</span><span class="savings-val">−$150</span></div>
+          </div>
+        </div>
+        <div class="page-footer">
+          <div class="total-row"><span class="total-label" style="font-size:11px;font-weight:700;color:#1D3461">Total: $1,350 MXN</span></div>
+          <div class="cta-btn" style="margin-top:6px">Ir a pagar →</div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:12px;font-size:11px;color:#6b7280;line-height:1.5">
+      Ruta `/checkout/cart` propia. Misma UX en mobile y desktop. Más espacio para mostrar detalles. Requiere navegar fuera de la tienda.
+    </div>
+  </div>
+
+  <!-- C: Hybrid (drawer desktop, page mobile) -->
+  <div class="layout-card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="layout-label">Opción C — Página con resumen lateral</div>
+    <div class="mockup-wrap">
+      <div class="sidebar-scene">
+        <div class="sidebar-main">
+          <div class="page-title" style="font-size:11px">Tu carrito (2)</div>
+          <div class="cart-item" style="padding-bottom:6px;border-bottom:1px solid #f3f4f6">
+            <div class="item-img" style="width:28px;height:28px;font-size:8px">EN</div>
+            <div class="item-info">
+              <div class="item-name" style="font-size:9px">Energy <span class="sub-badge">SUB</span></div>
+              <div class="item-sub" style="font-size:8px">Mensual</div>
+            </div>
+            <div class="item-price" style="font-size:9px">$600</div>
+          </div>
+          <div class="cart-item">
+            <div class="item-img" style="width:28px;height:28px;font-size:8px;background:#EBF7F5;color:#138A75">SL</div>
+            <div class="item-info">
+              <div class="item-name" style="font-size:9px">Sleep</div>
+              <div class="item-sub" style="font-size:8px">Única vez</div>
+            </div>
+            <div class="item-price" style="font-size:9px">$750</div>
+          </div>
+          <div style="margin-top:auto;font-size:9px;color:#9ca3af">← Seguir comprando</div>
+        </div>
+        <div class="sidebar-panel">
+          <div class="sidebar-title">Resumen</div>
+          <div class="line-item"><span class="line-label">Subtotal</span><span class="line-val">$1,500</span></div>
+          <div class="line-item"><span class="line-label" style="color:#16a34a">Descuento sub</span><span class="line-val" style="color:#16a34a">−$150</span></div>
+          <div class="line-item"><span class="line-label">Envío</span><span class="line-val">Gratis</span></div>
+          <div class="sidebar-total"><span>Total</span><span>$1,350</span></div>
+          <div class="mini-cta">Ir a pagar →</div>
+          <div class="trust-row">
+            <span class="trust-badge">🔒 Seguro</span>
+            <span class="trust-badge">OXXO</span>
+            <span class="trust-badge">SPEI</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:12px;font-size:11px;color:#6b7280;line-height:1.5">
+      Página con lista a la izquierda y resumen sticky a la derecha. Estilo checkout clásico de e-commerce. En mobile se apila verticalmente.
+    </div>
+  </div>
+
+</div>
