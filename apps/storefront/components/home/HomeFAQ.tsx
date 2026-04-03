@@ -62,8 +62,8 @@ function FAQItem({
       >
         <div className="overflow-hidden">
           <p
-            className="leading-[1.75] text-[#6B7280]"
-            style={{ fontSize: "15px", paddingBottom: isOpen ? "20px" : "0px", paddingRight: "48px", transition: "padding-bottom 0.35s" }}
+            className="leading-[1.65] text-[#6B7280]"
+            style={{ fontSize: "16px", paddingBottom: isOpen ? "20px" : "0px", paddingRight: "48px", transition: "padding-bottom 0.35s" }}
           >
             {faq.a}
           </p>
@@ -86,7 +86,7 @@ export default function HomeFAQ() {
           transition={{ duration: 0.6 }}
         >
           <p
-            className="text-[12px] font-bold uppercase tracking-[0.12em] mb-2.5"
+            className="text-[11px] font-bold uppercase tracking-[0.12em] mb-2.5"
             style={{ color: "#3CBFAB" }}
           >
             Resolvemos tus dudas

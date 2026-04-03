@@ -32,6 +32,17 @@ body {
   color: #111827;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+}
+
+/* Typographic rhythm */
+h1, h2, h3, h4 {
+  text-wrap: balance;
+  font-feature-settings: "kern" 1;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 /* Scrollbar */
