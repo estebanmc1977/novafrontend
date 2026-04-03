@@ -10,6 +10,12 @@ import {
   type CartItem,
 } from "@/lib/cart";
 
+export type AppliedCoupon = {
+  code: string;
+  discountPct: number;
+  label: string;
+};
+
 type CartContextType = {
   items: CartItem[];
   isOpen: boolean;
@@ -18,6 +24,9 @@ type CartContextType = {
   addToCart: (item: Omit<CartItem, "quantity"> & { quantity?: number }) => void;
   updateQty: (slug: string, mode: "once" | "sub", freq: 30 | 60 | 90, delta: number) => void;
   removeItem: (slug: string, mode: "once" | "sub", freq: 30 | 60 | 90) => void;
+  coupon: AppliedCoupon | null;
+  applyCoupon: (coupon: AppliedCoupon) => void;
+  removeCoupon: () => void;
 };
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -25,6 +34,7 @@ const CartContext = createContext<CartContextType | null>(null);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [coupon, setCoupon] = useState<AppliedCoupon | null>(null);
 
   const sync = useCallback(() => setItems(getCart()), []);
 
@@ -62,6 +72,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         removeItem: (slug, mode, freq) => {
           cartRemove(slug, mode, freq);
         },
+        coupon,
+        applyCoupon: (c) => setCoupon(c),
+        removeCoupon: () => setCoupon(null),
       }}
     >
       {children}

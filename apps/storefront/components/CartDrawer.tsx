@@ -4,19 +4,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { X, ShoppingBag, Trash2, Tag, Loader2, CheckCircle2 } from "lucide-react";
-import { useCart } from "@/contexts/CartContext";
+import { useCart, type AppliedCoupon } from "@/contexts/CartContext";
 import { cartTotals, itemDisplayPrice, FREQ_LABELS, type CartItem } from "@/lib/cart";
 import { useState, useCallback } from "react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type CouponStatus = "idle" | "loading" | "applied";
-
-interface AppliedCoupon {
-  code: string;
-  discountPct: number;
-  label: string;
-}
 
 interface ToastState {
   message: string;
@@ -265,15 +259,16 @@ async function applyDiscountCode(code: string): Promise<AppliedCoupon> {
 // ─── Drawer principal ─────────────────────────────────────────────────────────
 
 export default function CartDrawer() {
-  const { items, isOpen, closeCart } = useCart();
+  const { items, isOpen, closeCart, coupon: appliedCoupon, applyCoupon, removeCoupon } = useCart();
   const { savings, total } = cartTotals(items);
   const count = items.reduce((s, i) => s + i.quantity, 0);
   const hasSubs = items.some((i) => i.mode === "sub");
 
-  // Coupon state
-  const [couponStatus, setCouponStatus] = useState<CouponStatus>("idle");
-  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
+  // Coupon UI state (loading flag — applied/idle derived from context)
+  const [couponLoading, setCouponLoading] = useState(false);
   const [toast, setToast] = useState<ToastState>({ message: "", visible: false });
+
+  const couponStatus: CouponStatus = couponLoading ? "loading" : appliedCoupon ? "applied" : "idle";
 
   const showToast = useCallback((message: string) => {
     setToast({ message, visible: true });
@@ -281,21 +276,20 @@ export default function CartDrawer() {
   }, []);
 
   const handleApply = useCallback(async (code: string) => {
-    setCouponStatus("loading");
+    setCouponLoading(true);
     try {
       const coupon = await applyDiscountCode(code);
-      setAppliedCoupon(coupon);
-      setCouponStatus("applied");
+      applyCoupon(coupon);
     } catch (err) {
-      setCouponStatus("idle");
       showToast(err instanceof Error ? err.message : "Error al aplicar el cupón");
+    } finally {
+      setCouponLoading(false);
     }
-  }, [showToast]);
+  }, [applyCoupon, showToast]);
 
   const handleRemove = useCallback(() => {
-    setAppliedCoupon(null);
-    setCouponStatus("idle");
-  }, []);
+    removeCoupon();
+  }, [removeCoupon]);
 
   // Totales con descuento
   const discountAmount = appliedCoupon

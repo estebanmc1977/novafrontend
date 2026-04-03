@@ -374,7 +374,7 @@ function PaymentMethodCard({ pm }: { pm: MedusaPaymentMethod }) {
       </div>
       <div className="flex-1">
         <p className="text-[13px] font-bold text-[#005088]">
-          •••• {pm.last4}
+          •••• {pm.last4.slice(-4)}
         </p>
         <p className="text-[11px] text-[#6B7280]">
           Vence {pm.exp_month.toString().padStart(2, "0")}/{pm.exp_year}
