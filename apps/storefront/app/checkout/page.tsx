@@ -305,7 +305,7 @@ function SuccessScreen() {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function CheckoutPage() {
-  const { items, openCart } = useCart();
+  const { items, openCart, coupon } = useCart();
   const { user, isLoaded } = useUser();
   const { openSignIn } = useClerk();
   const { getToken } = useAuth();
@@ -318,6 +318,8 @@ export default function CheckoutPage() {
   const needsAuth = hasSubscriptions && !isSignedIn;
 
   const totals = cartTotals(items);
+  const couponDiscount = coupon ? Math.round(totals.total * (coupon.discountPct / 100)) : 0;
+  const finalTotal = totals.total - couponDiscount;
 
   // ── form state ──────────────────────────────────────────────
   const [contact, setContact] = useState({ name: "", email: "", phone: "" });
@@ -1018,7 +1020,7 @@ export default function CheckoutPage() {
                     ) : (
                       <>
                         <Lock size={16} />
-                        Pagar {fmt(totals.total + 85)}
+                        Pagar {fmt(finalTotal + 85)}
                       </>
                     )}
                   </button>
@@ -1083,6 +1085,23 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
+                {coupon && couponDiscount > 0 && (
+                  <div className="flex justify-between text-[13px]">
+                    <span className="flex items-center gap-1.5">
+                      <span
+                        className="text-[10px] font-black px-2 py-0.5 rounded-full text-white"
+                        style={{ background: "#16A34A" }}
+                      >
+                        CUPÓN
+                      </span>
+                      {coupon.code}
+                    </span>
+                    <span className="font-bold text-[#16A34A]">
+                      −{fmt(couponDiscount)}
+                    </span>
+                  </div>
+                )}
+
                 <div className="flex justify-between text-[13px] text-[#6B7280]">
                   <span>Envío</span>
                   <span className="font-semibold text-[#005088]">{fmt(85)}</span>
@@ -1091,8 +1110,8 @@ export default function CheckoutPage() {
                 <div className="pt-2.5 border-t border-[#E5E7EB] flex justify-between">
                   <span className="text-[15px] font-black text-[#005088]">Total</span>
                   <div className="text-right">
-                    <p className="text-[18px] font-black text-[#005088]">{fmt(totals.total + 85)}</p>
-                    {totals.savings > 0 && (
+                    <p className="text-[18px] font-black text-[#005088]">{fmt(finalTotal + 85)}</p>
+                    {(totals.savings > 0 || couponDiscount > 0) && (
                       <p className="text-[11px] text-[#6B7280]">
                         antes {fmt(totals.subtotal + 85)}
                       </p>
