@@ -550,7 +550,7 @@ export default function CheckoutPage() {
         await medusa.checkout.createPaymentSession(cart_id);
 
         // ── Paso 4: Completar el carrito → crea la orden ──────────────────────
-        await medusa.checkout.completeCart(cart_id, openpay_token_id);
+        await medusa.checkout.completeCart(cart_id, openpay_token_id, contact.email);
       } catch (err) {
         // Backend no disponible → flujo de demo
         if (process.env.NODE_ENV === "development") {
