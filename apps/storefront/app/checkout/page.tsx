@@ -14,6 +14,7 @@ import { useGooglePlaces } from "@/hooks/useGooglePlaces";
 import {
   CartItem,
   FREQ_LABELS,
+  FREQ_DISCOUNTS,
   itemDisplayPrice,
   cartTotals,
   clearCart,
@@ -499,19 +500,43 @@ export default function CheckoutPage() {
 
         cart_id = await medusa.cart.ensure(REGION_ID, medusa_customer_id);
 
+        // Obtener variant IDs de Medusa por handle/slug + plan
+        // Mapa: "energy-once" | "energy-30" | "energy-60" | "energy-90" → variantId
+        const variantIdMap: Record<string, string> = {};
+        try {
+          const catalogProducts = await medusa.catalog.getProducts({ region_id: REGION_ID });
+          for (const p of catalogProducts) {
+            for (const v of p.variants ?? []) {
+              const t = v.title.toLowerCase();
+              if (t.includes("once"))       variantIdMap[`${p.handle}-once`]  = v.id;
+              else if (t.includes("monthly"))    variantIdMap[`${p.handle}-30`]    = v.id;
+              else if (t.includes("bimonthly"))  variantIdMap[`${p.handle}-60`]    = v.id;
+              else if (t.includes("quarterly"))  variantIdMap[`${p.handle}-90`]    = v.id;
+            }
+          }
+        } catch {
+          // Si falla, se usará item.variantId si está disponible
+        }
+
         // Sincronizar ítems locales al carrito de Medusa
         for (const item of items) {
-          if (!item.variantId) continue; // sin backend todavía
+          const mapKey = item.mode === "sub" ? `${item.slug}-${item.freq}` : `${item.slug}-once`;
+          const variantId = item.variantId ?? variantIdMap[mapKey];
+          if (!variantId) {
+            console.warn("[Checkout] No variantId para:", item.slug, item.mode, item.freq);
+            continue;
+          }
           if (item.mode === "sub") {
+            const discountPct = Math.round((FREQ_DISCOUNTS[item.freq] ?? 0) * 100);
             await medusa.cart.addSubscriptionItem(
               cart_id,
-              item.variantId,
+              variantId,
               item.freq,
-              item.mode === "sub" ? Math.round((1 - item.price / item.price) * 100) : 0,
+              discountPct,
               item.quantity
             );
           } else {
-            await medusa.cart.addOnceItem(cart_id, item.variantId, item.quantity);
+            await medusa.cart.addOnceItem(cart_id, variantId, item.quantity);
           }
         }
 
