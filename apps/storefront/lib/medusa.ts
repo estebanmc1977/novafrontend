@@ -107,6 +107,7 @@ async function medusaFetch<T>(
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     Accept: "application/json",
+    "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY ?? "",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 
