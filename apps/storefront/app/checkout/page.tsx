@@ -543,8 +543,26 @@ export default function CheckoutPage() {
           }
         }
 
-        // ── Paso 2b: Actualizar email en el carrito para Openpay ─────────────
-        await medusa.cart.updateEmail(cart_id, contact.email);
+        // ── Paso 2b: Actualizar email + dirección de envío ────────────────────
+        const resolvedCity =
+          copomex.status === "success" ? copomex.data.municipio || address.city : address.city;
+        const resolvedState =
+          copomex.status === "success" ? copomex.data.estado || address.state : address.state;
+
+        await medusa.cart.update(cart_id, {
+          email: contact.email,
+          shipping_address: {
+            first_name: contact.name.split(" ")[0],
+            last_name: contact.name.split(" ").slice(1).join(" ") || "",
+            address_1: address.street,
+            address_2: address.colonia,
+            city: resolvedCity,
+            province: resolvedState,
+            postal_code: address.zip,
+            country_code: "mx",
+            phone: contact.phone,
+          },
+        });
 
         // ── Paso 3: Crear sesión de pago con Openpay ──────────────────────────
         await medusa.checkout.createPaymentSession(cart_id);

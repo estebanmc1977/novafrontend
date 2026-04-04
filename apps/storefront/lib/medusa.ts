@@ -243,12 +243,28 @@ const cart = {
   },
 
   /**
-   * POST /store/carts/:id — Actualizar email del carrito
+   * POST /store/carts/:id — Actualizar email y dirección de envío
    */
-  async updateEmail(cart_id: string, email: string): Promise<MedusaCart> {
+  async update(
+    cart_id: string,
+    fields: {
+      email?: string;
+      shipping_address?: {
+        first_name?: string;
+        last_name?: string;
+        address_1?: string;
+        address_2?: string;
+        city?: string;
+        province?: string;
+        postal_code?: string;
+        country_code?: string;
+        phone?: string;
+      };
+    }
+  ): Promise<MedusaCart> {
     const data = await medusaFetch<{ cart: MedusaCart }>(
       `/store/carts/${cart_id}`,
-      { method: "POST", body: JSON.stringify({ email }) }
+      { method: "POST", body: JSON.stringify(fields) }
     );
     return data.cart;
   },
