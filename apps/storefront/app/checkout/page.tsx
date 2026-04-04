@@ -543,6 +543,9 @@ export default function CheckoutPage() {
           }
         }
 
+        // ── Paso 2b: Actualizar email en el carrito para Openpay ─────────────
+        await medusa.cart.updateEmail(cart_id, contact.email);
+
         // ── Paso 3: Crear sesión de pago con Openpay ──────────────────────────
         await medusa.checkout.createPaymentSession(cart_id);
 

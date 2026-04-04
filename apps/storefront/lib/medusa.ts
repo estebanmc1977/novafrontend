@@ -243,6 +243,17 @@ const cart = {
   },
 
   /**
+   * POST /store/carts/:id — Actualizar email del carrito
+   */
+  async updateEmail(cart_id: string, email: string): Promise<MedusaCart> {
+    const data = await medusaFetch<{ cart: MedusaCart }>(
+      `/store/carts/${cart_id}`,
+      { method: "POST", body: JSON.stringify({ email }) }
+    );
+    return data.cart;
+  },
+
+  /**
    * POST /store/carts/:id/line-items/:line_id
    * Actualiza la cantidad de un ítem existente.
    */
