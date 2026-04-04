@@ -33,6 +33,11 @@ import {
   Loader2,
   ChevronDown,
 } from "lucide-react";
+import {
+  ShieldCheckIcon,
+  TruckIcon,
+  XCircleIcon,
+} from "@heroicons/react/24/outline";
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -76,7 +81,7 @@ function OrderItem({ item }: { item: CartItem }) {
       {/* info */}
       <div className="flex-1 min-w-0">
         <p className="text-[14px] font-bold text-[#005088] leading-tight truncate">
-          NovaPatch {item.title}
+          {item.title}
         </p>
         {isSub ? (
           <span
@@ -137,7 +142,7 @@ function AuthGate() {
         <button
           onClick={() =>
             openSignIn({
-              redirectUrl: "/checkout",
+              forceRedirectUrl: "/checkout",
               appearance: {
                 variables: { colorPrimary: "#E8503A" },
               },
@@ -160,16 +165,16 @@ function AuthGate() {
       {/* perks */}
       <div className="mt-7 grid grid-cols-3 gap-3 text-center">
         {[
-          { icon: "🔒", label: "Datos seguros" },
-          { icon: "📦", label: "Envíos gestionados" },
-          { icon: "💳", label: "Cancela cuando quieras" },
+          { icon: <ShieldCheckIcon className="w-6 h-6 mx-auto text-[#005088]" />, label: "Datos seguros" },
+          { icon: <TruckIcon className="w-6 h-6 mx-auto text-[#005088]" />, label: "Envíos gestionados" },
+          { icon: <XCircleIcon className="w-6 h-6 mx-auto text-[#005088]" />, label: "Cancela cuando quieras" },
         ].map((p) => (
           <div
             key={p.label}
             className="rounded-xl p-3"
             style={{ background: "#F9FAFB" }}
           >
-            <p className="text-[20px] mb-1">{p.icon}</p>
+            <div className="mb-1">{p.icon}</div>
             <p className="text-[10px] font-semibold text-[#6B7280] leading-tight">
               {p.label}
             </p>
@@ -478,7 +483,21 @@ export default function CheckoutPage() {
       // ── Paso 2: Asegurar carrito en Medusa ────────────────────────────────────
       let cart_id: string | null = null;
       try {
-        cart_id = await medusa.cart.ensure(REGION_ID);
+        // Si el usuario está logueado, sincronizar con Medusa para obtener customer_id
+        let medusa_customer_id: string | undefined;
+        if (isSignedIn) {
+          try {
+            const token = await getToken();
+            if (token) {
+              const mc = await medusa.customer.sync(token);
+              medusa_customer_id = mc.id;
+            }
+          } catch {
+            // No bloquear el checkout si el sync falla
+          }
+        }
+
+        cart_id = await medusa.cart.ensure(REGION_ID, medusa_customer_id);
 
         // Sincronizar ítems locales al carrito de Medusa
         for (const item of items) {
@@ -667,7 +686,7 @@ export default function CheckoutPage() {
                       Comprando como invitado.{" "}
                       <button
                         type="button"
-                        onClick={() => openSignIn({ redirectUrl: "/checkout" })}
+                        onClick={() => openSignIn({ forceRedirectUrl: "/checkout" })}
                         className="font-semibold text-[#005088] hover:underline"
                       >
                         Iniciar sesión

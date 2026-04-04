@@ -161,12 +161,13 @@ const cart = {
   /**
    * POST /store/carts
    * Inicia un nuevo carrito vacío con region_id.
+   * Si se pasa customer_id (usuario logueado), el carrito queda vinculado al cliente.
    * Guarda el cart_id en localStorage para persistencia.
    */
-  async create(region_id: string): Promise<MedusaCart> {
+  async create(region_id: string, customer_id?: string): Promise<MedusaCart> {
     const data = await medusaFetch<{ cart: MedusaCart }>("/store/carts", {
       method: "POST",
-      body: JSON.stringify({ region_id }),
+      body: JSON.stringify({ region_id, ...(customer_id ? { customer_id } : {}) }),
     });
     if (typeof window !== "undefined") {
       localStorage.setItem("novapatch_medusa_cart_id", data.cart.id);
@@ -184,11 +185,12 @@ const cart = {
 
   /**
    * Garantiza que existe un carrito en Medusa, creándolo si hace falta.
+   * Pasa customer_id cuando el usuario está logueado (obligatorio para suscripciones).
    */
-  async ensure(region_id: string): Promise<string> {
+  async ensure(region_id: string, customer_id?: string): Promise<string> {
     const existing = cart.getStoredId();
     if (existing) return existing;
-    const newCart = await cart.create(region_id);
+    const newCart = await cart.create(region_id, customer_id);
     return newCart.id;
   },
 
@@ -299,7 +301,33 @@ const checkout = {
   },
 };
 
-// ─── 4. Portal de Suscripciones (requiere Clerk JWT) ─────────────────────────
+// ─── 4. Cliente — Sync Clerk → Medusa (requiere Clerk JWT) ──────────────────
+
+export type MedusaCustomer = {
+  id: string;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+};
+
+const customer = {
+  /**
+   * GET /store/me/customer
+   * Busca o crea el cliente Medusa usando el email del JWT de Clerk.
+   * Llamar después del login cuando el carrito tiene suscripciones.
+   * Devuelve el customer_id para pasarlo a cart.ensure().
+   */
+  async sync(token: string): Promise<MedusaCustomer> {
+    const data = await medusaFetch<{ customer: MedusaCustomer }>(
+      "/store/me/customer",
+      {},
+      token
+    );
+    return data.customer;
+  },
+};
+
+// ─── 5. Portal de Suscripciones (requiere Clerk JWT) ─────────────────────────
 
 const subscriptions = {
   /**
@@ -415,6 +443,7 @@ export const medusa = {
   catalog,
   cart,
   checkout,
+  customer,
   subscriptions,
   paymentMethods,
 };
