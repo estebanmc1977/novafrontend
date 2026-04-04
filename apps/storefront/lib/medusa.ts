@@ -296,13 +296,14 @@ const checkout = {
   async completeCart(
     cart_id: string,
     openpay_token_id: string,
-    email?: string
+    email?: string,
+    device_session_id?: string
   ): Promise<MedusaOrder> {
     const data = await medusaFetch<{ type: string; data: MedusaOrder }>(
       `/store/carts/${cart_id}/complete`,
       {
         method: "POST",
-        body: JSON.stringify({ openpay_token_id, email }),
+        body: JSON.stringify({ openpay_token_id, email, device_session_id }),
       }
     );
     // Limpiar cart_id del storage al completar
