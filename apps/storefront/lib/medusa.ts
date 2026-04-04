@@ -207,7 +207,7 @@ const cart = {
       `/store/carts/${cart_id}/line-items`,
       {
         method: "POST",
-        body: JSON.stringify({ variant_id, quantity }),
+        body: JSON.stringify({ variant_id, quantity, requires_shipping: false }),
       }
     );
     return data.cart;
@@ -231,6 +231,7 @@ const cart = {
         body: JSON.stringify({
           variant_id,
           quantity,
+          requires_shipping: false,
           metadata: {
             is_subscription: true,
             interval_days,
