@@ -498,7 +498,10 @@ export default function CheckoutPage() {
           }
         }
 
-        cart_id = await medusa.cart.ensure(REGION_ID, medusa_customer_id);
+        // Siempre crear un carrito nuevo para evitar reutilizar carritos con
+        // payment collections stale de intentos previos fallidos.
+        const freshCart = await medusa.cart.create(REGION_ID, medusa_customer_id);
+        cart_id = freshCart.id;
 
         // Obtener variant IDs de Medusa por handle/slug + plan
         // Mapa: "energy-once" | "energy-30" | "energy-60" | "energy-90" → variantId
