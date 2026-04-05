@@ -273,7 +273,6 @@ function ProductCard({
               {
                 "--btn-accent": p.color,
                 borderColor: p.color,
-                color: p.color,
               } as React.CSSProperties
             }
           >

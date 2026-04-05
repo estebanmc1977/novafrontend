@@ -85,8 +85,9 @@ p {
 /* Product card button — dynamic accent via CSS custom property */
 .product-card-btn {
   background: transparent;
+  color: var(--btn-accent);
 }
 .product-card-btn:hover {
   background: var(--btn-accent);
-  color: #fff;
+  color: #fff !important;
 }

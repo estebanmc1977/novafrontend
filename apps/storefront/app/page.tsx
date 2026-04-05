@@ -24,10 +24,10 @@ export default function HomePage() {
         <ComparisonTable />
         {/* 6. Cards de Producto — product grid */}
         <ProductGrid />
-        {/* 7. Social Proof — testimonials */}
-        <Testimonials />
-        {/* 8. Suscripciones — subscription plans */}
+        {/* 7. Suscripciones — subscription plans */}
         <CTABanner />
+        {/* 8. Social Proof — testimonials */}
+        <Testimonials />
         {/* 9. FAQ */}
         <HomeFAQ />
       </main>
