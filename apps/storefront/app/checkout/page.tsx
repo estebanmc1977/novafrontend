@@ -361,6 +361,7 @@ export default function CheckoutPage() {
   const [variantIdMap, setVariantIdMap] = useState<Record<string, string>>({});
   const [preloadedCustomerId, setPreloadedCustomerId] = useState<string | undefined>();
   const preloadStarted = useRef(false);
+  const itemsPreloaded = useRef(false);
 
   // ── COPOMEX (CP → colonias/estado/ciudad) ──────────────────
   const { state: copomex, lookup: lookupCp, reset: resetCopomex } = useCopomex();
@@ -457,10 +458,25 @@ export default function CheckoutPage() {
       setVariantIdMap(vMap);
       setPreloadedCustomerId(customerId);
 
-      // 3. Crear carrito (necesita customer_id si aplica)
+      // 3. Crear carrito + agregar items (secuencial por locking de Medusa)
       try {
         const cart = await medusa.cart.create(REGION_ID, customerId);
-        setPreloadedCartId(cart.id);
+        const cartId = cart.id;
+        setPreloadedCartId(cartId);
+
+        // 4. Pre-agregar items al carrito mientras el usuario llena el formulario
+        for (const item of items) {
+          const mapKey = item.mode === "sub" ? `${item.slug}-${item.freq}` : `${item.slug}-once`;
+          const variantId = item.variantId ?? vMap[mapKey];
+          if (!variantId) continue;
+          if (item.mode === "sub") {
+            const discountPct = Math.round((FREQ_DISCOUNTS[item.freq] ?? 0) * 100);
+            await medusa.cart.addSubscriptionItem(cartId, variantId, item.freq, discountPct, item.quantity);
+          } else {
+            await medusa.cart.addOnceItem(cartId, variantId, item.quantity);
+          }
+        }
+        itemsPreloaded.current = true;
       } catch { /* se creará en handleSubmit como fallback */ }
 
       console.timeEnd("[Checkout] preload");
@@ -550,19 +566,21 @@ export default function CheckoutPage() {
           cart_id = freshCart.id;
         }
 
-        // ── Paso 3: Agregar items + dirección (secuencial — Medusa lockea el carrito) ─
-        for (const item of items) {
-          const mapKey = item.mode === "sub" ? `${item.slug}-${item.freq}` : `${item.slug}-once`;
-          const variantId = item.variantId ?? variantIdMap[mapKey];
-          if (!variantId) {
-            console.warn("[Checkout] No variantId para:", item.slug, item.mode, item.freq);
-            continue;
-          }
-          if (item.mode === "sub") {
-            const discountPct = Math.round((FREQ_DISCOUNTS[item.freq] ?? 0) * 100);
-            await medusa.cart.addSubscriptionItem(cart_id!, variantId, item.freq, discountPct, item.quantity);
-          } else {
-            await medusa.cart.addOnceItem(cart_id!, variantId, item.quantity);
+        // ── Paso 3: Agregar items (skip si ya se pre-cargaron) ──────────────
+        if (!itemsPreloaded.current) {
+          for (const item of items) {
+            const mapKey = item.mode === "sub" ? `${item.slug}-${item.freq}` : `${item.slug}-once`;
+            const variantId = item.variantId ?? variantIdMap[mapKey];
+            if (!variantId) {
+              console.warn("[Checkout] No variantId para:", item.slug, item.mode, item.freq);
+              continue;
+            }
+            if (item.mode === "sub") {
+              const discountPct = Math.round((FREQ_DISCOUNTS[item.freq] ?? 0) * 100);
+              await medusa.cart.addSubscriptionItem(cart_id!, variantId, item.freq, discountPct, item.quantity);
+            } else {
+              await medusa.cart.addOnceItem(cart_id!, variantId, item.quantity);
+            }
           }
         }
 
@@ -599,6 +617,7 @@ export default function CheckoutPage() {
           // Invalidar carrito pre-cargado para que el siguiente intento cree uno nuevo
           setPreloadedCartId(null);
           preloadStarted.current = false;
+          itemsPreloaded.current = false;
           return;
         }
       }
