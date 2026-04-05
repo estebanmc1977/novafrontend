@@ -356,6 +356,12 @@ export default function CheckoutPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
+  // ── Pre-carga: carrito + catálogo + customer sync al montar ───
+  const [preloadedCartId, setPreloadedCartId] = useState<string | null>(null);
+  const [variantIdMap, setVariantIdMap] = useState<Record<string, string>>({});
+  const [preloadedCustomerId, setPreloadedCustomerId] = useState<string | undefined>();
+  const preloadStarted = useRef(false);
+
   // ── COPOMEX (CP → colonias/estado/ciudad) ──────────────────
   const { state: copomex, lookup: lookupCp, reset: resetCopomex } = useCopomex();
 
@@ -407,6 +413,62 @@ export default function CheckoutPage() {
     }
   }, [isLoaded, items.length, success, router]);
 
+  // ── Pre-carga: ejecutar en paralelo al montar la página ──────
+  useEffect(() => {
+    if (!isLoaded || items.length === 0 || preloadStarted.current) return;
+    preloadStarted.current = true;
+
+    const preload = async () => {
+      console.time("[Checkout] preload");
+
+      // 1. Customer sync (si logueado) — en paralelo con catálogo
+      const customerPromise = (async () => {
+        if (!user) return undefined;
+        try {
+          const token = await getToken();
+          if (token) {
+            const mc = await medusa.customer.sync(token);
+            return mc.id;
+          }
+        } catch { /* no bloquear */ }
+        return undefined;
+      })();
+
+      // 2. Catálogo de productos → variant ID map — en paralelo
+      const catalogPromise = (async () => {
+        try {
+          const products = await medusa.catalog.getProducts({ region_id: REGION_ID });
+          const map: Record<string, string> = {};
+          for (const p of products) {
+            for (const v of p.variants ?? []) {
+              const t = v.title.toLowerCase();
+              if (t.includes("once"))           map[`${p.handle}-once`] = v.id;
+              else if (t.includes("monthly"))   map[`${p.handle}-30`]  = v.id;
+              else if (t.includes("bimonthly")) map[`${p.handle}-60`]  = v.id;
+              else if (t.includes("quarterly")) map[`${p.handle}-90`]  = v.id;
+            }
+          }
+          return map;
+        } catch { return {}; }
+      })();
+
+      // Esperar customer + catálogo en paralelo, luego crear carrito con customer_id
+      const [customerId, vMap] = await Promise.all([customerPromise, catalogPromise]);
+      setVariantIdMap(vMap);
+      setPreloadedCustomerId(customerId);
+
+      // 3. Crear carrito (necesita customer_id si aplica)
+      try {
+        const cart = await medusa.cart.create(REGION_ID, customerId);
+        setPreloadedCartId(cart.id);
+      } catch { /* se creará en handleSubmit como fallback */ }
+
+      console.timeEnd("[Checkout] preload");
+    };
+
+    preload();
+  }, [isLoaded, items.length, user]);
+
   if (!isLoaded) {
     return (
       <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
@@ -457,10 +519,11 @@ export default function CheckoutPage() {
     setSubmitting(true);
 
     try {
-      // ── Paso 1: Generar deviceSessionId anti-fraude ───────────────────────────
+      console.time("[Checkout] total");
+
+      // ── Paso 1: Device session (sync) + Tokenizar tarjeta (async) ─────────
       const device_session_id = getDeviceSessionId("checkout-form") ?? "dev_session";
 
-      // ── Paso 2: Tokenizar tarjeta con Openpay (nunca pasan datos al servidor) ──
       let openpay_token_id: string;
       try {
         openpay_token_id = await tokenizeCard(
@@ -478,78 +541,41 @@ export default function CheckoutPage() {
         }
       }
 
-      console.debug("[Checkout] device_session_id:", device_session_id);
-      console.debug("[Checkout] openpay_token_id:", openpay_token_id);
-
-      // ── Paso 2: Asegurar carrito en Medusa ────────────────────────────────────
+      // ── Paso 2: Usar carrito pre-cargado o crear uno nuevo (fallback) ─────
       let cart_id: string | null = null;
       try {
-        // Si el usuario está logueado, sincronizar con Medusa para obtener customer_id
-        let medusa_customer_id: string | undefined;
-        if (isSignedIn) {
-          try {
-            const token = await getToken();
-            if (token) {
-              const mc = await medusa.customer.sync(token);
-              medusa_customer_id = mc.id;
-            }
-          } catch {
-            // No bloquear el checkout si el sync falla
-          }
+        cart_id = preloadedCartId;
+        if (!cart_id) {
+          const freshCart = await medusa.cart.create(REGION_ID, preloadedCustomerId);
+          cart_id = freshCart.id;
         }
 
-        // Siempre crear un carrito nuevo para evitar reutilizar carritos con
-        // payment collections stale de intentos previos fallidos.
-        const freshCart = await medusa.cart.create(REGION_ID, medusa_customer_id);
-        cart_id = freshCart.id;
-
-        // Obtener variant IDs de Medusa por handle/slug + plan
-        // Mapa: "energy-once" | "energy-30" | "energy-60" | "energy-90" → variantId
-        const variantIdMap: Record<string, string> = {};
-        try {
-          const catalogProducts = await medusa.catalog.getProducts({ region_id: REGION_ID });
-          for (const p of catalogProducts) {
-            for (const v of p.variants ?? []) {
-              const t = v.title.toLowerCase();
-              if (t.includes("once"))       variantIdMap[`${p.handle}-once`]  = v.id;
-              else if (t.includes("monthly"))    variantIdMap[`${p.handle}-30`]    = v.id;
-              else if (t.includes("bimonthly"))  variantIdMap[`${p.handle}-60`]    = v.id;
-              else if (t.includes("quarterly"))  variantIdMap[`${p.handle}-90`]    = v.id;
-            }
-          }
-        } catch {
-          // Si falla, se usará item.variantId si está disponible
-        }
-
-        // Sincronizar ítems locales al carrito de Medusa
-        for (const item of items) {
-          const mapKey = item.mode === "sub" ? `${item.slug}-${item.freq}` : `${item.slug}-once`;
-          const variantId = item.variantId ?? variantIdMap[mapKey];
-          if (!variantId) {
-            console.warn("[Checkout] No variantId para:", item.slug, item.mode, item.freq);
-            continue;
-          }
-          if (item.mode === "sub") {
-            const discountPct = Math.round((FREQ_DISCOUNTS[item.freq] ?? 0) * 100);
-            await medusa.cart.addSubscriptionItem(
-              cart_id,
-              variantId,
-              item.freq,
-              discountPct,
-              item.quantity
-            );
-          } else {
-            await medusa.cart.addOnceItem(cart_id, variantId, item.quantity);
-          }
-        }
-
-        // ── Paso 2b: Actualizar email + dirección de envío ────────────────────
+        // ── Paso 3: Agregar items + actualizar dirección EN PARALELO ──────────
+        // Los items se agregan secuencialmente (Medusa no soporta batch),
+        // pero la dirección se envía en paralelo con el último item.
         const resolvedCity =
           copomex.status === "success" ? copomex.data.municipio || address.city : address.city;
         const resolvedState =
           copomex.status === "success" ? copomex.data.estado || address.state : address.state;
 
-        await medusa.cart.update(cart_id, {
+        const addItemsPromise = (async () => {
+          for (const item of items) {
+            const mapKey = item.mode === "sub" ? `${item.slug}-${item.freq}` : `${item.slug}-once`;
+            const variantId = item.variantId ?? variantIdMap[mapKey];
+            if (!variantId) {
+              console.warn("[Checkout] No variantId para:", item.slug, item.mode, item.freq);
+              continue;
+            }
+            if (item.mode === "sub") {
+              const discountPct = Math.round((FREQ_DISCOUNTS[item.freq] ?? 0) * 100);
+              await medusa.cart.addSubscriptionItem(cart_id!, variantId, item.freq, discountPct, item.quantity);
+            } else {
+              await medusa.cart.addOnceItem(cart_id!, variantId, item.quantity);
+            }
+          }
+        })();
+
+        const updateAddressPromise = medusa.cart.update(cart_id, {
           email: contact.email,
           shipping_address: {
             first_name: contact.name.split(" ")[0],
@@ -564,22 +590,26 @@ export default function CheckoutPage() {
           },
         });
 
-        // ── Paso 3: Crear sesión de pago con Openpay ──────────────────────────
-        await medusa.checkout.createPaymentSession(cart_id);
+        await Promise.all([addItemsPromise, updateAddressPromise]);
 
-        // ── Paso 4: Completar el carrito → crea la orden ──────────────────────
+        // ── Paso 4: Payment session → Complete (secuencial, depende de items) ──
+        await medusa.checkout.createPaymentSession(cart_id);
         await medusa.checkout.completeCart(cart_id, openpay_token_id, contact.email, device_session_id);
       } catch (err) {
-        // Backend no disponible → flujo de demo
         if (process.env.NODE_ENV === "development") {
           console.warn("[Checkout] Backend Medusa no disponible, completando en modo demo");
         } else {
           const msg = err instanceof Error ? err.message : "Error al procesar el pago";
           setSubmitError(msg);
           setSubmitting(false);
+          // Invalidar carrito pre-cargado para que el siguiente intento cree uno nuevo
+          setPreloadedCartId(null);
+          preloadStarted.current = false;
           return;
         }
       }
+
+      console.timeEnd("[Checkout] total");
 
       // ── Éxito ─────────────────────────────────────────────────────────────────
       clearCart();
