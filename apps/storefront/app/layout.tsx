@@ -19,6 +19,17 @@ export const metadata: Metadata = {
   description:
     "La forma más limpia y práctica de tomar vitaminas. Parches inteligentes de alta absorción transdérmica, sin pastillas ni rellenos.",
   keywords: "parches vitamínicos, suplementos, bienestar, vitaminas transdérmicas, novapatch, México",
+  icons: {
+    icon: [
+      { url: "/favicon/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon/favicon.ico" },
+    ],
+    apple: { url: "/favicon/apple-touch-icon.png" },
+    other: [
+      { rel: "manifest", url: "/favicon/site.webmanifest" },
+    ],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
