@@ -355,6 +355,7 @@ export default function CheckoutPage() {
     });
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [paymentStep, setPaymentStep] = useState<number>(0); // 0=idle, 1-4=processing
 
   // ── Pre-carga: carrito + catálogo + customer sync al montar ───
   const [preloadedCartId, setPreloadedCartId] = useState<string | null>(null);
@@ -537,7 +538,8 @@ export default function CheckoutPage() {
     try {
       console.time("[Checkout] total");
 
-      // ── Paso 1: Device session (sync) + Tokenizar tarjeta (async) ─────────
+      // ── Paso 1: Verificando tarjeta ──────────────────────────────────────
+      setPaymentStep(1);
       const device_session_id = getDeviceSessionId("checkout-form") ?? "dev_session";
 
       let openpay_token_id: string;
@@ -584,6 +586,8 @@ export default function CheckoutPage() {
           }
         }
 
+        // ── Paso 2: Guardando dirección de envío ────────────────────────────
+        setPaymentStep(2);
         const resolvedCity =
           copomex.status === "success" ? copomex.data.municipio || address.city : address.city;
         const resolvedState =
@@ -604,8 +608,12 @@ export default function CheckoutPage() {
           },
         });
 
-        // ── Paso 4: Payment session → Complete (secuencial, depende de items) ──
+        // ── Paso 3: Preparando pago ─────────────────────────────────────────
+        setPaymentStep(3);
         await medusa.checkout.createPaymentSession(cart_id);
+
+        // ── Paso 4: Procesando cobro ────────────────────────────────────────
+        setPaymentStep(4);
         await medusa.checkout.completeCart(cart_id, openpay_token_id, contact.email, device_session_id);
       } catch (err) {
         if (process.env.NODE_ENV === "development") {
@@ -614,6 +622,7 @@ export default function CheckoutPage() {
           const msg = err instanceof Error ? err.message : "Error al procesar el pago";
           setSubmitError(msg);
           setSubmitting(false);
+          setPaymentStep(0);
           // Invalidar carrito pre-cargado para que el siguiente intento cree uno nuevo
           setPreloadedCartId(null);
           preloadStarted.current = false;
@@ -1116,25 +1125,57 @@ export default function CheckoutPage() {
                     )}
                   </AnimatePresence>
 
-                  {/* Submit */}
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="mt-6 w-full py-4 rounded-xl text-[16px] font-black text-white transition-all duration-200 active:scale-[0.97] hover:brightness-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                    style={{ background: "#E8503A" }}
-                  >
-                    {submitting ? (
-                      <>
-                        <span className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        Procesando...
-                      </>
-                    ) : (
-                      <>
-                        <Lock size={16} />
-                        Pagar {fmt(finalTotal + 85)}
-                      </>
-                    )}
-                  </button>
+                  {/* Submit + Progress Stepper */}
+                  {submitting && paymentStep > 0 ? (
+                    <div className="mt-6 space-y-3">
+                      {[
+                        { step: 1, label: "Verificando tarjeta" },
+                        { step: 2, label: "Guardando dirección" },
+                        { step: 3, label: "Preparando pago" },
+                        { step: 4, label: "Procesando cobro" },
+                      ].map(({ step, label }) => (
+                        <div key={step} className="flex items-center gap-3">
+                          <div className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-[12px] font-bold transition-all duration-300 ${
+                            paymentStep > step
+                              ? "bg-green-500 text-white"
+                              : paymentStep === step
+                              ? "bg-[#005088] text-white"
+                              : "bg-[#E5E7EB] text-[#9CA3AF]"
+                          }`}>
+                            {paymentStep > step ? (
+                              <CheckCircle2 size={16} />
+                            ) : paymentStep === step ? (
+                              <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            ) : (
+                              step
+                            )}
+                          </div>
+                          <span className={`text-[14px] font-medium transition-colors duration-300 ${
+                            paymentStep > step
+                              ? "text-green-600"
+                              : paymentStep === step
+                              ? "text-[#005088] font-bold"
+                              : "text-[#9CA3AF]"
+                          }`}>
+                            {label}
+                          </span>
+                        </div>
+                      ))}
+                      <p className="text-center text-[12px] text-[#9CA3AF] pt-2">
+                        No cierres esta página...
+                      </p>
+                    </div>
+                  ) : (
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="mt-6 w-full py-4 rounded-xl text-[16px] font-black text-white transition-all duration-200 active:scale-[0.97] hover:brightness-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      style={{ background: "#E8503A" }}
+                    >
+                      <Lock size={16} />
+                      Pagar {fmt(finalTotal + 85)}
+                    </button>
+                  )}
                 </motion.div>
               )}
 
