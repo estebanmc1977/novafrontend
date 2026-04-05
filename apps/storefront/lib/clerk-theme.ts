@@ -2,6 +2,9 @@
  * lib/clerk-theme.ts
  * Tema visual y localización en español (México) para todos los componentes de Clerk.
  * Se usa tanto en <ClerkProvider> (modales) como en las páginas /sign-in y /sign-up.
+ *
+ * Filosofía: "embedded" — el formulario forma parte de la página,
+ * sin card chrome (sin borde, sin sombra, sin fondo propio).
  */
 
 import { esMX } from "@clerk/localizations";
@@ -10,176 +13,266 @@ import { esMX } from "@clerk/localizations";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const novapatchAppearance: Record<string, any> = {
+  // ── Layout ─────────────────────────────────────────────────────────────────
+  layout: {
+    privacyPageUrl: "https://novapatch.mx/privacidad",
+    termsPageUrl:   "https://novapatch.mx/terminos",
+    helpPageUrl:    "https://novapatch.mx/faq",
+    showOptionalFields: false,
+  },
+
+  // ── Variables globales ─────────────────────────────────────────────────────
   variables: {
-    colorPrimary: "#E8503A",
-    colorBackground: "#FFFFFF",
-    colorText: "#005088",
-    colorTextSecondary: "#6B7280",
-    colorTextOnPrimaryBackground: "#FFFFFF",
-    colorInputBackground: "#FFFFFF",
-    colorInputText: "#005088",
-    colorDanger: "#E8503A",
-    colorSuccess: "#059669",
-    colorWarning: "#D97706",
-    borderRadius: "0.75rem",
-    fontFamily: "inherit",
-    fontSize: "14px",
+    colorPrimary:                  "#E8503A",   // coral
+    colorBackground:               "#FAF7F2",   // cream — iguala el fondo de página
+    colorNeutral:                  "#0D1B35",   // navy — tinta todos los neutrales
+    colorText:                     "#0D1B35",
+    colorTextSecondary:            "#5F7080",
+    colorTextOnPrimaryBackground:  "#FAF7F2",
+    colorInputBackground:          "#FFFFFF",
+    colorInputText:                "#0D1B35",
+    colorDanger:                   "#E8503A",
+    colorSuccess:                  "#059669",
+    colorWarning:                  "#D97706",
+    borderRadius:                  "0.75rem",
+    fontFamily:                    "inherit",
+    fontSize:                      "14px",
     fontWeight: {
-      normal: 500,
+      normal: 400,
       medium: 600,
-      bold: 800,
+      bold:   800,
     },
     spacingUnit: "1rem",
   },
+
+  // ── Elementos ──────────────────────────────────────────────────────────────
   elements: {
-    // ── Card ─────────────────────────────────────────────────────────────────
+
+    // Card — sin chrome: se integra al fondo cream de la página
     card: {
-      boxShadow: "0 8px 40px rgba(0,80,136,0.10)",
-      border: "1px solid rgba(0,80,136,0.08)",
-      borderRadius: "1.25rem",
-      padding: "2rem",
-      backgroundColor: "#FFFFFF",
+      boxShadow:       "none",
+      border:          "none",
+      borderRadius:    "0",
+      padding:         "0",
+      backgroundColor: "transparent",
+      width:           "100%",
+      maxWidth:        "400px",
     },
     cardBox: {
       boxShadow: "none",
+      border:    "none",
+      width:     "100%",
+      maxWidth:  "400px",
+    },
+    scrollBox: {
+      backgroundColor: "transparent",
+      padding: "0",
     },
 
-    // ── Header ────────────────────────────────────────────────────────────────
+    // Header
     headerTitle: {
-      color: "#005088",
-      fontSize: "22px",
-      fontWeight: "900",
-      letterSpacing: "-0.02em",
+      color:          "#0D1B35",
+      fontSize:       "clamp(20px, 3vw, 24px)",
+      fontWeight:     "900",
+      letterSpacing:  "-0.025em",
+      lineHeight:     "1.15",
     },
     headerSubtitle: {
-      color: "#6B7280",
-      fontSize: "14px",
+      color:      "#5F7080",
+      fontSize:   "14px",
+      marginTop:  "0.35rem",
+      lineHeight: "1.5",
+    },
+    header: {
+      marginBottom: "1.75rem",
     },
 
-    // ── Social buttons ────────────────────────────────────────────────────────
+    // Botones sociales (Google, Apple, etc.)
     socialButtonsBlockButton: {
-      border: "1.5px solid #E5E7EB",
-      borderRadius: "0.75rem",
-      fontWeight: "600",
-      color: "#005088",
+      border:          "1.5px solid #E2E5EA",
+      borderRadius:    "0.75rem",
+      fontWeight:      "600",
+      color:           "#0D1B35",
       backgroundColor: "#FFFFFF",
-      transition: "all 0.15s ease",
+      padding:         "0.7rem 1rem",
+      fontSize:        "14px",
+      transition:      "border-color 0.15s ease, box-shadow 0.15s ease",
+      boxShadow:       "none",
     },
     socialButtonsBlockButtonText: {
-      color: "#005088",
+      color:      "#0D1B35",
       fontWeight: "600",
+      fontSize:   "14px",
+    },
+    socialButtonsBlockButtonArrow: {
+      display: "none",
+    },
+    socialButtonsProviderIcon: {
+      width:  "18px",
+      height: "18px",
     },
 
-    // ── Divider ───────────────────────────────────────────────────────────────
+    // Divisor "o continúa con"
+    dividerRow: {
+      margin: "0.25rem 0",
+    },
     dividerLine: {
-      backgroundColor: "#E5E7EB",
+      backgroundColor: "#E2E5EA",
     },
     dividerText: {
-      color: "#9CA3AF",
-      fontSize: "12px",
+      color:          "#9CA3AF",
+      fontSize:       "12px",
+      textTransform:  "uppercase",
+      letterSpacing:  "0.06em",
+      fontWeight:     "600",
     },
 
-    // ── Form fields ───────────────────────────────────────────────────────────
+    // Labels
     formFieldLabel: {
-      color: "#005088",
-      fontWeight: "700",
-      fontSize: "11px",
-      textTransform: "uppercase",
-      letterSpacing: "0.06em",
+      color:          "#0D1B35",
+      fontWeight:     "700",
+      fontSize:       "11px",
+      textTransform:  "uppercase",
+      letterSpacing:  "0.08em",
+      marginBottom:   "0.4rem",
     },
+    formFieldLabelRow: {
+      marginBottom: "0.35rem",
+    },
+
+    // Inputs
     formFieldInput: {
-      border: "1.5px solid #E5E7EB",
-      borderRadius: "0.75rem",
-      color: "#005088",
-      fontSize: "14px",
-      padding: "0.75rem 1rem",
-      transition: "border-color 0.15s ease, box-shadow 0.15s ease",
+      border:          "1.5px solid #E2E5EA",
+      borderRadius:    "0.75rem",
+      color:           "#0D1B35",
+      fontSize:        "15px",
+      padding:         "0.75rem 1rem",
+      backgroundColor: "#FFFFFF",
+      transition:      "border-color 0.15s ease, box-shadow 0.15s ease",
+      outline:         "none",
     },
     formFieldInputShowPasswordButton: {
       color: "#9CA3AF",
     },
     formFieldHintText: {
-      color: "#9CA3AF",
-      fontSize: "11px",
+      color:    "#9CA3AF",
+      fontSize: "12px",
     },
     formFieldErrorText: {
-      color: "#E8503A",
-      fontSize: "11px",
+      color:      "#E8503A",
+      fontSize:   "12px",
+      fontWeight: "500",
     },
     formFieldSuccessText: {
-      color: "#059669",
-      fontSize: "11px",
+      color:    "#059669",
+      fontSize: "12px",
+    },
+    formFieldRow: {
+      marginBottom: "0.25rem",
     },
 
-    // ── Primary button ────────────────────────────────────────────────────────
+    // Botón primario (Continuar / Crear cuenta)
     formButtonPrimary: {
       backgroundColor: "#E8503A",
-      borderRadius: "0.75rem",
-      fontWeight: "700",
-      fontSize: "15px",
-      padding: "0.875rem",
-      transition: "all 0.2s ease",
-      boxShadow: "0 4px 12px rgba(232,80,58,0.25)",
+      borderRadius:    "0.75rem",
+      fontWeight:      "700",
+      fontSize:        "15px",
+      padding:         "0.9rem 1.5rem",
+      transition:      "transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
+      boxShadow:       "0 4px 16px rgba(232,80,58,0.28)",
+      letterSpacing:   "-0.01em",
+      color:           "#FAF7F2",
+      width:           "100%",
     },
 
-    // ── Footer ────────────────────────────────────────────────────────────────
+    // Botón secundario / ghost
+    formButtonReset: {
+      color:      "#E8503A",
+      fontWeight: "600",
+      fontSize:   "13px",
+    },
+
+    // Footer — link de "¿Ya tienes cuenta? Inicia sesión"
     footerActionText: {
-      color: "#6B7280",
-      fontSize: "13px",
+      color:    "#6B7280",
+      fontSize: "14px",
     },
     footerActionLink: {
-      color: "#E8503A",
-      fontWeight: "600",
-      fontSize: "13px",
+      color:      "#E8503A",
+      fontWeight: "700",
+      fontSize:   "14px",
     },
     footerPages: {
       backgroundColor: "transparent",
+      marginTop:       "1.5rem",
+    },
+    footer: {
+      backgroundColor: "transparent",
     },
 
-    // ── Alternative methods ───────────────────────────────────────────────────
+    // Métodos alternativos
     alternativeMethodsBlockButton: {
-      border: "1.5px solid #E5E7EB",
-      borderRadius: "0.75rem",
-      color: "#005088",
-      fontWeight: "600",
+      border:          "1.5px solid #E2E5EA",
+      borderRadius:    "0.75rem",
+      color:           "#0D1B35",
+      fontWeight:      "600",
+      backgroundColor: "#FFFFFF",
+      fontSize:        "14px",
     },
 
-    // ── OTP / Code input ──────────────────────────────────────────────────────
+    // OTP / código de verificación
     otpCodeFieldInput: {
-      border: "1.5px solid #E5E7EB",
-      borderRadius: "0.75rem",
-      color: "#005088",
-      fontWeight: "800",
-      fontSize: "20px",
+      border:          "1.5px solid #E2E5EA",
+      borderRadius:    "0.75rem",
+      color:           "#0D1B35",
+      fontWeight:      "800",
+      fontSize:        "22px",
+      backgroundColor: "#FFFFFF",
     },
 
-    // ── Identifiers ───────────────────────────────────────────────────────────
+    // Vista previa de identidad (email ya ingresado)
     identityPreviewText: {
-      color: "#005088",
+      color:      "#0D1B35",
       fontWeight: "600",
+      fontSize:   "14px",
     },
     identityPreviewEditButton: {
+      color:      "#E8503A",
+      fontWeight: "600",
+    },
+    identityPreviewEditButtonIcon: {
       color: "#E8503A",
     },
 
-    // ── Badges / Tags ─────────────────────────────────────────────────────────
+    // Badge
     badge: {
       backgroundColor: "#EBF4FB",
-      color: "#005088",
+      color:           "#0D1B35",
+      fontSize:        "11px",
     },
 
-    // ── Internal links ────────────────────────────────────────────────────────
+    // Reenviar código
     formResendCodeLink: {
-      color: "#E8503A",
+      color:      "#E8503A",
       fontWeight: "600",
+      fontSize:   "13px",
+    },
+
+    // Checkbox (recordarme)
+    formFieldCheckboxInput: {
+      accentColor: "#E8503A",
+    },
+
+    // Internal link (¿Olvidaste tu contraseña?)
+    formFieldAction: {
+      color:      "#E8503A",
+      fontWeight: "600",
+      fontSize:   "12px",
     },
   },
 };
 
 // ─── Localización en español (México) ─────────────────────────────────────────
-// Base: esMX oficial de @clerk/localizations (todas las traducciones).
-// Override: solo los textos específicos de la marca Novapatch.
-// Deep merge manual por sección para no pisar las keys de esMX.
 
 type DeepPartial<T> = T extends object
   ? { [P in keyof T]?: DeepPartial<T[P]> }
@@ -201,7 +294,6 @@ function deepMerge<T extends Record<string, any>>(base: T, overrides: DeepPartia
   return result;
 }
 
-// Solo los overrides específicos de Novapatch (el resto viene de esMX)
 const novapatchOverrides = {
   signIn: {
     start: {
@@ -218,11 +310,10 @@ const novapatchOverrides = {
       subtitle: "Regístrate para gestionar tus pedidos y suscripciones",
     },
   },
-  // Placeholders con formato mexicano
   formFieldInputPlaceholder__emailAddress: "tu@correo.com",
-  formFieldInputPlaceholder__phoneNumber: "+52 55 0000 0000",
-  formFieldInputPlaceholder__firstName: "María",
-  formFieldInputPlaceholder__lastName: "García",
+  formFieldInputPlaceholder__phoneNumber:  "+52 55 0000 0000",
+  formFieldInputPlaceholder__firstName:    "María",
+  formFieldInputPlaceholder__lastName:     "García",
 };
 
 export const esLocalization = deepMerge(
