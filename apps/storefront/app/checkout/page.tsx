@@ -550,32 +550,28 @@ export default function CheckoutPage() {
           cart_id = freshCart.id;
         }
 
-        // ── Paso 3: Agregar items + actualizar dirección EN PARALELO ──────────
-        // Los items se agregan secuencialmente (Medusa no soporta batch),
-        // pero la dirección se envía en paralelo con el último item.
+        // ── Paso 3: Agregar items + dirección (secuencial — Medusa lockea el carrito) ─
+        for (const item of items) {
+          const mapKey = item.mode === "sub" ? `${item.slug}-${item.freq}` : `${item.slug}-once`;
+          const variantId = item.variantId ?? variantIdMap[mapKey];
+          if (!variantId) {
+            console.warn("[Checkout] No variantId para:", item.slug, item.mode, item.freq);
+            continue;
+          }
+          if (item.mode === "sub") {
+            const discountPct = Math.round((FREQ_DISCOUNTS[item.freq] ?? 0) * 100);
+            await medusa.cart.addSubscriptionItem(cart_id!, variantId, item.freq, discountPct, item.quantity);
+          } else {
+            await medusa.cart.addOnceItem(cart_id!, variantId, item.quantity);
+          }
+        }
+
         const resolvedCity =
           copomex.status === "success" ? copomex.data.municipio || address.city : address.city;
         const resolvedState =
           copomex.status === "success" ? copomex.data.estado || address.state : address.state;
 
-        const addItemsPromise = (async () => {
-          for (const item of items) {
-            const mapKey = item.mode === "sub" ? `${item.slug}-${item.freq}` : `${item.slug}-once`;
-            const variantId = item.variantId ?? variantIdMap[mapKey];
-            if (!variantId) {
-              console.warn("[Checkout] No variantId para:", item.slug, item.mode, item.freq);
-              continue;
-            }
-            if (item.mode === "sub") {
-              const discountPct = Math.round((FREQ_DISCOUNTS[item.freq] ?? 0) * 100);
-              await medusa.cart.addSubscriptionItem(cart_id!, variantId, item.freq, discountPct, item.quantity);
-            } else {
-              await medusa.cart.addOnceItem(cart_id!, variantId, item.quantity);
-            }
-          }
-        })();
-
-        const updateAddressPromise = medusa.cart.update(cart_id, {
+        await medusa.cart.update(cart_id, {
           email: contact.email,
           shipping_address: {
             first_name: contact.name.split(" ")[0],
@@ -589,8 +585,6 @@ export default function CheckoutPage() {
             phone: contact.phone,
           },
         });
-
-        await Promise.all([addItemsPromise, updateAddressPromise]);
 
         // ── Paso 4: Payment session → Complete (secuencial, depende de items) ──
         await medusa.checkout.createPaymentSession(cart_id);
