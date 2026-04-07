@@ -32,9 +32,16 @@ export const novapatchAppearance: Record<string, any> = {
     spacingUnit: "1rem",
   },
   elements: {
+    // ── Modal backdrop ────────────────────────────────────────────────────────
+    modalBackdrop: {
+      backgroundColor: "rgba(13,27,53,0.65)",
+      backdropFilter: "blur(6px)",
+      WebkitBackdropFilter: "blur(6px)",
+    },
+
     // ── Card ─────────────────────────────────────────────────────────────────
     card: {
-      boxShadow: "0 8px 40px rgba(0,80,136,0.10)",
+      boxShadow: "0 24px 64px rgba(0,80,136,0.18)",
       border: "1px solid rgba(0,80,136,0.08)",
       borderRadius: "1.25rem",
       padding: "2rem",
