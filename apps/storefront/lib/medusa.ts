@@ -126,6 +126,7 @@ async function medusaFetch<T>(
       const body = await res.json();
       message = body?.message ?? body?.error ?? message;
     } catch { /* empty */ }
+    console.error(`[medusa] ${options.method ?? "GET"} ${path} → ${res.status}: ${message}`);
     throw new MedusaError(message, res.status);
   }
 
@@ -443,7 +444,7 @@ const orders = {
    */
   async list(token: string): Promise<MedusaOrder[]> {
     const data = await medusaFetch<{ orders: MedusaOrder[] }>(
-      "/store/orders",
+      "/store/me/orders",
       {},
       token
     );
