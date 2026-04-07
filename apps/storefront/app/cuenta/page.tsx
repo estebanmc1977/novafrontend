@@ -700,7 +700,10 @@ function MiCuentaContent() {
   const { user, isLoaded } = useUser();
   const { getToken } = useAuth();
 
-  const activeTab = (searchParams.get("tab") as TabId) ?? "suscripciones";
+  const rawTab = searchParams.get("tab");
+  const activeTab: TabId = (["suscripciones", "pedidos", "pago"] as const).includes(rawTab as TabId)
+    ? (rawTab as TabId)
+    : "suscripciones";
 
   const [token, setToken] = useState<string>("");
   const [subscriptions, setSubscriptions] = useState<MedusaSubscription[]>([]);
@@ -710,29 +713,44 @@ function MiCuentaContent() {
   const [loading, setLoading] = useState({ subs: true, orders: true, pms: true });
   const [errors, setErrors]   = useState({ subs: false, orders: false, pms: false });
 
-  const loadData = useCallback(async () => {
-    const tok = await getToken();
-    if (!tok) return;
-    setToken(tok);
-
-    setLoading({ subs: true, orders: true, pms: true });
-    setErrors({ subs: false, orders: false, pms: false });
-
+  const loadSubs = useCallback(async (tok: string) => {
+    setLoading((l) => ({ ...l, subs: true }));
+    setErrors((e) => ({ ...e, subs: false }));
     medusa.subscriptions.list(tok)
       .then(setSubscriptions)
       .catch(() => setErrors((e) => ({ ...e, subs: true })))
       .finally(() => setLoading((l) => ({ ...l, subs: false })));
+  }, []);
 
+  const loadOrders = useCallback(async (tok: string) => {
+    setLoading((l) => ({ ...l, orders: true }));
+    setErrors((e) => ({ ...e, orders: false }));
     medusa.orders.list(tok)
       .then(setOrders)
       .catch(() => setErrors((e) => ({ ...e, orders: true })))
       .finally(() => setLoading((l) => ({ ...l, orders: false })));
+  }, []);
 
+  const loadPms = useCallback(async (tok: string) => {
+    setLoading((l) => ({ ...l, pms: true }));
+    setErrors((e) => ({ ...e, pms: false }));
     medusa.paymentMethods.list(tok)
       .then(setPaymentMethods)
       .catch(() => setErrors((e) => ({ ...e, pms: true })))
       .finally(() => setLoading((l) => ({ ...l, pms: false })));
-  }, [getToken]);
+  }, []);
+
+  const loadData = useCallback(async () => {
+    const tok = await getToken();
+    if (!tok) {
+      setLoading({ subs: false, orders: false, pms: false });
+      return;
+    }
+    setToken(tok);
+    loadSubs(tok);
+    loadOrders(tok);
+    loadPms(tok);
+  }, [getToken, loadSubs, loadOrders, loadPms]);
 
   useEffect(() => {
     if (isLoaded && user) loadData();
@@ -754,6 +772,11 @@ function MiCuentaContent() {
         <Loader2 size={28} className="animate-spin text-[#005088]" />
       </div>
     );
+  }
+
+  if (!user) {
+    router.replace("/sign-in");
+    return null;
   }
 
   return (
@@ -806,7 +829,7 @@ function MiCuentaContent() {
                 error={errors.subs}
                 token={token}
                 onUpdate={updateSub}
-                onRetry={() => loadData()}
+                onRetry={() => { getToken().then((tok) => tok && loadSubs(tok)); }}
               />
             )}
             {activeTab === "pedidos" && (
@@ -814,7 +837,7 @@ function MiCuentaContent() {
                 orders={orders}
                 loading={loading.orders}
                 error={errors.orders}
-                onRetry={() => loadData()}
+                onRetry={() => { getToken().then((tok) => tok && loadOrders(tok)); }}
               />
             )}
             {activeTab === "pago" && (
@@ -822,7 +845,7 @@ function MiCuentaContent() {
                 paymentMethods={paymentMethods}
                 loading={loading.pms}
                 error={errors.pms}
-                onRetry={() => loadData()}
+                onRetry={() => { getToken().then((tok) => tok && loadPms(tok)); }}
               />
             )}
           </motion.div>
