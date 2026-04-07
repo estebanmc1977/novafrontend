@@ -4,7 +4,7 @@ import { Montserrat } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { CartProvider } from "@/contexts/CartContext";
 import CartDrawer from "@/components/CartDrawer";
-import { novapatchAppearance, esLocalization } from "@/lib/clerk-theme";
+import { esLocalization } from "@/lib/clerk-theme";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -35,7 +35,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider
-      appearance={novapatchAppearance}
       localization={esLocalization}
       signInUrl="/sign-in"
       signUpUrl="/sign-up"

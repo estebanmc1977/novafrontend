@@ -1,14 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingBag, Menu, X } from "lucide-react";
-import { UserButton, SignInButton, useUser } from "@clerk/nextjs";
+import { ShoppingBag, Menu, X, ChevronDown, Settings, Repeat, LogOut } from "lucide-react";
+import { SignInButton, useClerk, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
 import { CART_UPDATED_EVENT, getCartItemCount } from "@/lib/cart";
 import { useCart } from "@/contexts/CartContext";
-import { novapatchAppearance } from "@/lib/clerk-theme";
 
 const navLinks = [
   { label: "Tienda", href: "/tienda" },
@@ -19,9 +18,12 @@ const navLinks = [
 export default function Navbar({ lightBg = false }: { lightBg?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const { openCart } = useCart();
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
+  const { signOut } = useClerk();
+  const accountMenuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -41,6 +43,40 @@ export default function Navbar({ lightBg = false }: { lightBg?: boolean }) {
       window.removeEventListener("storage", syncCartCount);
     };
   }, []);
+
+  useEffect(() => {
+    if (!accountOpen) return;
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!accountMenuRef.current?.contains(event.target as Node)) {
+        setAccountOpen(false);
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setAccountOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [accountOpen]);
+
+  const closeMenus = () => {
+    setMenuOpen(false);
+    setAccountOpen(false);
+  };
+
+  const handleSignOut = async () => {
+    closeMenus();
+    await signOut({ redirectUrl: "/" });
+  };
 
   return (
     <motion.header
@@ -110,29 +146,103 @@ export default function Navbar({ lightBg = false }: { lightBg?: boolean }) {
           {/* Cuenta — UserButton si logueado, link a /sign-in si no */}
           <div className="hidden md:flex items-center">
             {isSignedIn ? (
-              <div className="pl-1">
-                <UserButton
-                  afterSignOutUrl="/"
-                  appearance={{
-                    ...novapatchAppearance,
-                    elements: {
-                      ...novapatchAppearance.elements,
-                      avatarBox: "h-8 w-8 ring-2 ring-offset-1 ring-[#E8503A]/60",
-                    },
-                  }}
+              <div className="relative pl-1" ref={accountMenuRef}>
+                <button
+                  type="button"
+                  onClick={() => setAccountOpen((open) => !open)}
+                  aria-haspopup="menu"
+                  aria-expanded={accountOpen}
+                  className="flex items-center gap-2 rounded-full p-1 transition-all duration-200"
                 >
-                  <UserButton.MenuItems>
-                    <UserButton.Link
-                      label="Mis suscripciones"
-                      labelIcon={
-                        <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      }
-                      href="/cuenta/suscripciones"
-                    />
-                  </UserButton.MenuItems>
-                </UserButton>
+                  <span className="relative h-10 w-10 overflow-hidden rounded-full ring-2 ring-[#E8503A]/60 ring-offset-2 ring-offset-transparent">
+                    {user?.imageUrl ? (
+                      <Image
+                        src={user.imageUrl}
+                        alt={user.fullName ?? "Mi cuenta"}
+                        fill
+                        sizes="40px"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <span className="flex h-full w-full items-center justify-center bg-white text-[14px] font-bold text-[#005088]">
+                        {user?.firstName?.[0] ?? "N"}
+                      </span>
+                    )}
+                  </span>
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform duration-200 ${
+                      scrolled || lightBg ? "text-[#005088]" : "text-white"
+                    } ${accountOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+
+                <AnimatePresence>
+                  {accountOpen ? (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                      transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                      className="absolute right-0 top-[calc(100%+12px)] w-[320px] overflow-hidden rounded-[28px] border border-[#0D1B35]/10 bg-[#FFFDF9] shadow-[0_24px_80px_rgba(13,27,53,0.22)]"
+                    >
+                      <div className="border-b border-[#0D1B35]/8 px-5 py-4">
+                        <div className="flex items-center gap-4">
+                          <span className="relative h-14 w-14 overflow-hidden rounded-full bg-white">
+                            {user?.imageUrl ? (
+                              <Image
+                                src={user.imageUrl}
+                                alt={user.fullName ?? "Mi cuenta"}
+                                fill
+                                sizes="56px"
+                                className="object-cover"
+                              />
+                            ) : (
+                              <span className="flex h-full w-full items-center justify-center text-[18px] font-bold text-[#005088]">
+                                {user?.firstName?.[0] ?? "N"}
+                              </span>
+                            )}
+                          </span>
+                          <div className="min-w-0">
+                            <p className="truncate text-[18px] font-bold text-[#0D1B35]">
+                              {user?.fullName ?? "Mi cuenta"}
+                            </p>
+                            <p className="truncate text-[15px] text-[#667085]">
+                              {user?.primaryEmailAddress?.emailAddress ?? ""}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="px-3 py-3">
+                        <Link
+                          href="/cuenta"
+                          onClick={closeMenus}
+                          className="flex w-full items-center gap-4 rounded-[20px] px-4 py-4 text-left text-[15px] font-semibold text-[#667085] transition-colors duration-150 hover:bg-[#F7F2EB] hover:text-[#0D1B35]"
+                        >
+                          <Settings size={18} />
+                          <span>Administrar cuenta</span>
+                        </Link>
+                        <Link
+                          href="/cuenta/suscripciones"
+                          onClick={closeMenus}
+                          className="flex w-full items-center gap-4 rounded-[20px] px-4 py-4 text-left text-[15px] font-semibold text-[#667085] transition-colors duration-150 hover:bg-[#F7F2EB] hover:text-[#0D1B35]"
+                        >
+                          <Repeat size={18} />
+                          <span>Mis suscripciones</span>
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={handleSignOut}
+                          className="mt-2 flex w-full items-center gap-4 rounded-[20px] border border-[#0D1B35]/8 px-4 py-4 text-left text-[15px] font-semibold text-[#667085] transition-colors duration-150 hover:bg-[#F7F2EB] hover:text-[#0D1B35]"
+                        >
+                          <LogOut size={18} />
+                          <span>Cerrar sesión</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
               </div>
             ) : (
               <SignInButton mode="modal">
@@ -192,30 +302,57 @@ export default function Navbar({ lightBg = false }: { lightBg?: boolean }) {
               {/* Cuenta mobile */}
               <div className="pt-2 border-t border-[#005088]/10">
                 {isSignedIn ? (
-                  <div className="flex items-center gap-3">
-                    <UserButton
-                      afterSignOutUrl="/"
-                      appearance={{
-                        ...novapatchAppearance,
-                        elements: {
-                          ...novapatchAppearance.elements,
-                          avatarBox: "h-8 w-8 ring-2 ring-offset-1 ring-[#E8503A]/60",
-                        },
-                      }}
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-3">
+                      <span className="relative h-10 w-10 overflow-hidden rounded-full bg-white ring-2 ring-[#E8503A]/60">
+                        {user?.imageUrl ? (
+                          <Image
+                            src={user.imageUrl}
+                            alt={user.fullName ?? "Mi cuenta"}
+                            fill
+                            sizes="40px"
+                            className="object-cover"
+                          />
+                        ) : (
+                          <span className="flex h-full w-full items-center justify-center text-[14px] font-bold text-[#005088]">
+                            {user?.firstName?.[0] ?? "N"}
+                          </span>
+                        )}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="truncate text-[15px] font-semibold text-[#005088]">
+                          {user?.fullName ?? "Mi cuenta"}
+                        </p>
+                        <p className="truncate text-[13px] text-[#667085]">
+                          {user?.primaryEmailAddress?.emailAddress ?? ""}
+                        </p>
+                      </div>
+                    </div>
+
+                    <Link
+                      href="/cuenta"
+                      onClick={closeMenus}
+                      className="flex items-center gap-3 text-[15px] font-semibold text-[#005088] transition-colors hover:text-[#003d6b]"
                     >
-                      <UserButton.MenuItems>
-                        <UserButton.Link
-                          label="Mis suscripciones"
-                          labelIcon={
-                            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                              <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          }
-                          href="/cuenta/suscripciones"
-                        />
-                      </UserButton.MenuItems>
-                    </UserButton>
-                    <span className="text-[14px] font-semibold text-[#005088]">Mi cuenta</span>
+                      <Settings size={16} />
+                      <span>Administrar cuenta</span>
+                    </Link>
+                    <Link
+                      href="/cuenta/suscripciones"
+                      onClick={closeMenus}
+                      className="flex items-center gap-3 text-[15px] font-semibold text-[#005088] transition-colors hover:text-[#003d6b]"
+                    >
+                      <Repeat size={16} />
+                      <span>Mis suscripciones</span>
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={handleSignOut}
+                      className="flex items-center gap-3 text-[15px] font-semibold text-[#E8503A] transition-colors hover:text-[#C43B28]"
+                    >
+                      <LogOut size={16} />
+                      <span>Cerrar sesión</span>
+                    </button>
                   </div>
                 ) : (
                   <SignInButton mode="modal">
