@@ -374,32 +374,26 @@ function OrderRow({ order }: { order: MedusaOrder }) {
         </span>
       </div>
 
-      <div className="flex items-center gap-2">
-        <div className="flex -space-x-2">
-          {visibleItems.map((item) => (
-            <div
-              key={item.id}
-              className="w-9 h-9 rounded-lg border-2 border-white bg-[#F3F4F6] overflow-hidden flex-shrink-0 relative"
-            >
-              {item.thumbnail ? (
-                <Image src={item.thumbnail} alt={item.title} fill className="object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <Package size={14} className="text-[#D1D5DB]" />
-                </div>
-              )}
-            </div>
-          ))}
-          {extraCount > 0 && (
-            <div className="w-9 h-9 rounded-lg border-2 border-white bg-[#E5E7EB] flex items-center justify-center flex-shrink-0">
-              <span className="text-[10px] font-bold text-[#6B7280]">+{extraCount}</span>
-            </div>
-          )}
-        </div>
-
-        <p className="ml-auto text-[14px] font-black text-[#0D1B35]">
-          {fmt(order.total / 100)}
-        </p>
+      <div className="flex -space-x-2">
+        {visibleItems.map((item) => (
+          <div
+            key={item.id}
+            className="w-9 h-9 rounded-lg border-2 border-white bg-[#F3F4F6] overflow-hidden flex-shrink-0 relative"
+          >
+            {item.thumbnail ? (
+              <Image src={item.thumbnail} alt={item.title} fill className="object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <Package size={14} className="text-[#D1D5DB]" />
+              </div>
+            )}
+          </div>
+        ))}
+        {extraCount > 0 && (
+          <div className="w-9 h-9 rounded-lg border-2 border-white bg-[#E5E7EB] flex items-center justify-center flex-shrink-0">
+            <span className="text-[10px] font-bold text-[#6B7280]">+{extraCount}</span>
+          </div>
+        )}
       </div>
     </div>
   );
