@@ -63,10 +63,32 @@ const contactItems = [
 export default function ContactoPage() {
   const [form, setForm] = useState({ nombre: "", email: "", asunto: "", mensaje: "" });
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSent(true);
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error ?? "Error al enviar el mensaje.");
+      }
+
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al enviar el mensaje.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -133,9 +155,12 @@ export default function ContactoPage() {
                       <textarea required rows={5} value={form.mensaje} onChange={(e) => setForm({ ...form, mensaje: e.target.value })} placeholder="Cuéntanos en qué podemos ayudarte..."
                         className="w-full px-4 py-3 rounded-xl border border-[#005088]/10 text-sm text-[#005088] placeholder-[#0D1B35]/30 focus:outline-none focus:border-[#3CBFAB]/60 focus:ring-2 focus:ring-[#3CBFAB]/10 transition-all duration-200 bg-[#FAF7F2] resize-none" />
                     </div>
-                    <button type="submit"
-                      className="w-full py-4 bg-[#3CBFAB] text-white font-semibold rounded-xl hover:bg-[#2da898] active:scale-[0.98] transition-all duration-200 shadow-[0_4px_16px_rgba(60,191,171,0.3)]">
-                      Enviar mensaje
+                    {error && (
+                      <p className="text-sm text-[#E8503A] font-medium text-center">{error}</p>
+                    )}
+                    <button type="submit" disabled={loading}
+                      className="w-full py-4 bg-[#3CBFAB] text-white font-semibold rounded-xl hover:bg-[#2da898] active:scale-[0.98] transition-all duration-200 shadow-[0_4px_16px_rgba(60,191,171,0.3)] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100">
+                      {loading ? "Enviando..." : "Enviar mensaje"}
                     </button>
                   </form>
                 </div>
