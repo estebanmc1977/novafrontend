@@ -320,10 +320,35 @@ export const novapatchAppearance: Record<string, any> = {
       height: "16px",
     },
     userButtonPopoverFooter: {
-      borderTop:  "1px solid rgba(13,27,53,0.07)",
-      marginTop:  "0.5rem",
-      paddingTop: "0.75rem",
-      opacity:    "0.5",
+      borderTop:      "1px solid rgba(13,27,53,0.07)",
+      marginTop:      "0.5rem",
+      paddingTop:     "0.75rem",
+      paddingBottom:  "0.25rem",
+      display:        "flex",
+      flexDirection:  "column",
+      alignItems:     "center",
+      gap:            "0.5rem",
+    },
+    userButtonPopoverFooterPages: {
+      display:        "flex",
+      flexDirection:  "row",
+      gap:            "1rem",
+      justifyContent: "center",
+    },
+    userButtonPopoverFooterPagesLink__privacy: {
+      color:      "#5F7080",
+      fontSize:   "12px",
+      fontWeight: "500",
+    },
+    userButtonPopoverFooterPagesLink__terms: {
+      color:      "#5F7080",
+      fontSize:   "12px",
+      fontWeight: "500",
+    },
+    userButtonPopoverFooterPagesLink__help: {
+      color:      "#5F7080",
+      fontSize:   "12px",
+      fontWeight: "500",
     },
     // Preview del usuario (nombre + email arriba del menú)
     userPreviewMainIdentifier: {
