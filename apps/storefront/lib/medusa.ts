@@ -1,12 +1,14 @@
 /**
  * lib/medusa.ts — Cliente REST completo para Medusa V2
  *
- * Cubre las 5 secciones del mapa de integración:
+ * Cubre las 7 secciones del mapa de integración:
  *   1. Catálogo y Visualización (público)
  *   2. Gestión del Carrito (público / autenticado)
  *   3. Flujo de Checkout y Pagos
- *   4. Portal de Suscripciones (protegido por Clerk JWT)
- *   5. Gestión de Tarjetas (protegido por Clerk JWT)
+ *   4. Cliente — Sync Clerk → Medusa (protegido por Clerk JWT)
+ *   5. Portal de Suscripciones (protegido por Clerk JWT)
+ *   6. Historial de Órdenes (protegido por Clerk JWT)
+ *   7. Gestión de Tarjetas (protegido por Clerk JWT)
  *
  * Uso:
  *   import { medusa } from "@/lib/medusa";
