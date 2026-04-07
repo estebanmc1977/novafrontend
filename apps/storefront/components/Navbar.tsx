@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingBag, Menu, X, ChevronDown, Settings, Repeat, LogOut } from "lucide-react";
+import { ShoppingBag, Menu, X, ChevronDown, User, LogOut } from "lucide-react";
 import { SignInButton, useClerk, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
@@ -220,16 +220,8 @@ export default function Navbar({ lightBg = false }: { lightBg?: boolean }) {
                           onClick={closeMenus}
                           className="flex w-full items-center gap-4 rounded-[20px] px-4 py-4 text-left text-[15px] font-semibold text-[#667085] transition-colors duration-150 hover:bg-[#F7F2EB] hover:text-[#0D1B35]"
                         >
-                          <Settings size={18} />
-                          <span>Administrar cuenta</span>
-                        </Link>
-                        <Link
-                          href="/cuenta/suscripciones"
-                          onClick={closeMenus}
-                          className="flex w-full items-center gap-4 rounded-[20px] px-4 py-4 text-left text-[15px] font-semibold text-[#667085] transition-colors duration-150 hover:bg-[#F7F2EB] hover:text-[#0D1B35]"
-                        >
-                          <Repeat size={18} />
-                          <span>Mis suscripciones</span>
+                          <User size={18} />
+                          <span>Mi cuenta</span>
                         </Link>
                         <button
                           type="button"
@@ -334,16 +326,8 @@ export default function Navbar({ lightBg = false }: { lightBg?: boolean }) {
                       onClick={closeMenus}
                       className="flex items-center gap-3 text-[15px] font-semibold text-[#005088] transition-colors hover:text-[#003d6b]"
                     >
-                      <Settings size={16} />
-                      <span>Administrar cuenta</span>
-                    </Link>
-                    <Link
-                      href="/cuenta/suscripciones"
-                      onClick={closeMenus}
-                      className="flex items-center gap-3 text-[15px] font-semibold text-[#005088] transition-colors hover:text-[#003d6b]"
-                    >
-                      <Repeat size={16} />
-                      <span>Mis suscripciones</span>
+                      <User size={16} />
+                      <span>Mi cuenta</span>
                     </Link>
                     <button
                       type="button"
