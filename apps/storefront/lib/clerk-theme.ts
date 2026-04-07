@@ -54,25 +54,37 @@ export const novapatchAppearance: Record<string, any> = {
       WebkitBackdropFilter: "blur(6px)",
     },
 
-    // Card — sin chrome: se integra al fondo cream de la página
+    // Card — fondo cream para funcionar tanto en página embebida como en modales
     card: {
-      boxShadow:       "none",
-      border:          "none",
-      borderRadius:    "0",
-      padding:         "0",
-      backgroundColor: "transparent",
+      boxShadow:       "0 8px 48px rgba(13,27,53,0.12)",
+      border:          "1px solid rgba(13,27,53,0.07)",
+      borderRadius:    "1.25rem",
+      padding:         "2rem",
+      backgroundColor: "#FAF7F2",
       width:           "100%",
       maxWidth:        "400px",
     },
     cardBox: {
-      boxShadow: "none",
-      border:    "none",
-      width:     "100%",
-      maxWidth:  "400px",
+      boxShadow:    "none",
+      border:       "none",
+      width:        "100%",
+      maxWidth:     "860px",
+      borderRadius: "1.25rem",
+      overflow:     "hidden",
     },
     scrollBox: {
-      backgroundColor: "transparent",
-      padding: "0",
+      backgroundColor: "#FAF7F2",
+      padding:         "0",
+    },
+    // Panel de contenido del UserProfile (lado derecho)
+    pageScrollBox: {
+      backgroundColor: "#FAF7F2",
+      padding:         "2rem",
+    },
+    navbar: {
+      backgroundColor: "#FFFFFF",
+      borderRight:     "1px solid rgba(13,27,53,0.07)",
+      padding:         "1.5rem 1rem",
     },
 
     // Header
