@@ -784,31 +784,31 @@ function MiCuentaContent() {
     <div className="min-h-screen bg-[#FAF7F2]">
       <Navbar lightBg={true} />
 
-      {/* Account hero — navy brand header */}
+      {/* Account hero — sky brand header */}
       <div className="pt-[76px]">
-        <div className="relative overflow-hidden bg-[#0D1B35]">
+        <div className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #EAF5FB 0%, #D6ECFA 100%)" }}>
           {/* Decorative radials */}
           <div
-            className="pointer-events-none absolute -top-24 -right-24 w-80 h-80 rounded-full"
-            style={{ background: "radial-gradient(circle, rgba(91,168,213,0.13) 0%, transparent 70%)" }}
+            className="pointer-events-none absolute -top-16 -right-16 w-72 h-72 rounded-full"
+            style={{ background: "radial-gradient(circle, rgba(91,168,213,0.25) 0%, transparent 70%)" }}
           />
           <div
-            className="pointer-events-none absolute -bottom-16 -left-16 w-64 h-64 rounded-full"
-            style={{ background: "radial-gradient(circle, rgba(232,80,58,0.10) 0%, transparent 70%)" }}
+            className="pointer-events-none absolute -bottom-12 -left-12 w-56 h-56 rounded-full"
+            style={{ background: "radial-gradient(circle, rgba(232,80,58,0.08) 0%, transparent 70%)" }}
           />
-          {/* Coral + sky accent line */}
+          {/* Coral accent line at top */}
           <div
-            className="absolute top-0 left-0 right-0 h-[2px]"
-            style={{ background: "linear-gradient(to right, transparent, #E8503A 25%, #5BA8D5 75%, transparent)" }}
+            className="absolute top-0 left-0 right-0 h-[3px]"
+            style={{ background: "linear-gradient(to right, transparent, #E8503A 30%, #5BA8D5 70%, transparent)" }}
           />
 
           <div className="relative z-10 max-w-2xl mx-auto px-6 py-7 flex items-center gap-5">
             {/* Avatar */}
-            <div className="relative h-[60px] w-[60px] flex-shrink-0 overflow-hidden rounded-2xl ring-2 ring-[#E8503A]/50 ring-offset-2 ring-offset-[#0D1B35]">
+            <div className="relative h-[60px] w-[60px] flex-shrink-0 overflow-hidden rounded-2xl ring-2 ring-[#5BA8D5]/60 ring-offset-2 ring-offset-white/50">
               {user.imageUrl ? (
                 <Image src={user.imageUrl} alt={user.fullName ?? "Avatar"} fill sizes="60px" className="object-cover" />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-[#1D3461] text-[20px] font-black text-white">
+                <div className="flex h-full w-full items-center justify-center bg-[#5BA8D5] text-[20px] font-black text-white">
                   {user.firstName?.[0] ?? "N"}
                 </div>
               )}
@@ -817,11 +817,11 @@ function MiCuentaContent() {
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8503A] mb-0.5">
                 Mi cuenta
               </p>
-              <h1 className="text-[22px] font-black text-white leading-tight tracking-[-0.02em] truncate">
+              <h1 className="text-[22px] font-black text-[#0D1B35] leading-tight tracking-[-0.02em] truncate">
                 {user.fullName ?? user.primaryEmailAddress?.emailAddress}
               </h1>
               {user.fullName && (
-                <p className="text-[12px] text-white/45 mt-0.5 truncate">
+                <p className="text-[12px] text-[#5BA8D5] font-medium mt-0.5 truncate">
                   {user.primaryEmailAddress?.emailAddress}
                 </p>
               )}
@@ -897,8 +897,8 @@ function MiCuentaContent() {
 export default function MiCuentaPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#0D1B35] flex items-center justify-center">
-        <Loader2 size={28} className="animate-spin text-[#E8503A]" />
+      <div className="min-h-screen bg-[#EAF5FB] flex items-center justify-center">
+        <Loader2 size={28} className="animate-spin text-[#5BA8D5]" />
       </div>
     }>
       <MiCuentaContent />
