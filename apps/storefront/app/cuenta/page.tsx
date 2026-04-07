@@ -374,26 +374,18 @@ function OrderRow({ order }: { order: MedusaOrder }) {
         </span>
       </div>
 
-      <div className="flex -space-x-2">
-        {visibleItems.map((item) => (
-          <div
-            key={item.id}
-            className="w-9 h-9 rounded-lg border-2 border-white bg-[#F3F4F6] overflow-hidden flex-shrink-0 relative"
-          >
-            {item.thumbnail ? (
-              <Image src={item.thumbnail} alt={item.title} fill className="object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Package size={14} className="text-[#D1D5DB]" />
-              </div>
-            )}
+      <div className="flex flex-col gap-1.5 mt-1">
+        {order.items.map((item) => (
+          <div key={item.id} className="flex items-center gap-2">
+            <Package size={13} className="text-[#9CA3AF] flex-shrink-0" />
+            <span className="text-[13px] text-[#374151]">
+              {item.title}
+              {item.quantity > 1 && (
+                <span className="ml-1.5 text-[11px] font-bold text-[#9CA3AF]">×{item.quantity}</span>
+              )}
+            </span>
           </div>
         ))}
-        {extraCount > 0 && (
-          <div className="w-9 h-9 rounded-lg border-2 border-white bg-[#E5E7EB] flex items-center justify-center flex-shrink-0">
-            <span className="text-[10px] font-bold text-[#6B7280]">+{extraCount}</span>
-          </div>
-        )}
       </div>
     </div>
   );
