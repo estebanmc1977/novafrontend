@@ -1,0 +1,1057 @@
+# Mi Cuenta Dashboard — Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Consolidate the user account area into a single `/cuenta` page with three tabs (Suscripciones, Pedidos, Pago) connected to real Medusa endpoints.
+
+**Architecture:** New `/cuenta/page.tsx` becomes the main account hub. All sub-components (SubscriptionCard, OrderRow, PaymentMethodCard) live in that single file. `/cuenta/suscripciones` becomes a redirect. `lib/medusa.ts` gains one new method: `orders.list()`.
+
+**Tech Stack:** Next.js 15 App Router, React 19, Clerk (`useAuth`, `useUser`), Framer Motion, Lucide React, Medusa V2 REST API.
+
+---
+
+## File Map
+
+| Action | File | What changes |
+|--------|------|-------------|
+| Modify | `apps/storefront/lib/medusa.ts` | Add `orders.list()`, update `MedusaOrder` type, update `MedusaSubscription` status type |
+| Replace | `apps/storefront/app/cuenta/page.tsx` | Full tab dashboard (replaces the current redirect) |
+| Replace | `apps/storefront/app/cuenta/suscripciones/page.tsx` | Redirect to `/cuenta?tab=suscripciones` |
+
+---
+
+## Task 1: Update `lib/medusa.ts`
+
+**Files:**
+- Modify: `apps/storefront/lib/medusa.ts`
+
+- [ ] **Step 1: Update `MedusaOrder` type to include `created_at` and item thumbnails**
+
+In `lib/medusa.ts`, replace the `MedusaOrder` type (line 69-75) and `MedusaLineItem` type (line 60-67):
+
+```typescript
+export type MedusaLineItem = {
+  id: string;
+  variant_id: string;
+  title: string;
+  quantity: number;
+  unit_price: number;
+  thumbnail?: string | null;
+  metadata?: Record<string, unknown>;
+};
+
+export type MedusaOrder = {
+  id: string;
+  display_id: number;
+  status: string;
+  total: number;
+  created_at: string;
+  items: MedusaLineItem[];
+};
+```
+
+- [ ] **Step 2: Update `MedusaSubscription` status to include backend statuses**
+
+Replace the `status` field in `MedusaSubscription` (line 79):
+
+```typescript
+export type MedusaSubscription = {
+  id: string;
+  status: "active" | "paused" | "cancelled" | "past_due" | "delayed_out_of_stock";
+  interval_days: 30 | 60 | 90;
+  next_delivery_at: string;
+  product_title: string;
+  variant_id: string;
+  unit_price: number;
+  quantity: number;
+  created_at: string;
+};
+```
+
+- [ ] **Step 3: Add `orders` module with `list()` method**
+
+After the `subscriptions` module (after line 430), before the `paymentMethods` module, add:
+
+```typescript
+// ─── 6. Historial de Órdenes (requiere Clerk JWT) ─────────────────────────────
+
+const orders = {
+  /**
+   * GET /store/orders
+   * Lista las órdenes del cliente autenticado.
+   * Medusa V2 filtra automáticamente por el customer del JWT.
+   */
+  async list(token: string): Promise<MedusaOrder[]> {
+    const data = await medusaFetch<{ orders: MedusaOrder[] }>(
+      "/store/orders",
+      {},
+      token
+    );
+    return data.orders;
+  },
+};
+```
+
+- [ ] **Step 4: Export `orders` in the unified export**
+
+Replace the export at the bottom of `lib/medusa.ts`:
+
+```typescript
+export const medusa = {
+  catalog,
+  cart,
+  checkout,
+  customer,
+  subscriptions,
+  orders,
+  paymentMethods,
+};
+```
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add apps/storefront/lib/medusa.ts
+git commit -m "feat(medusa): add orders.list(), update MedusaOrder and MedusaSubscription types"
+```
+
+---
+
+## Task 2: Create `/cuenta/page.tsx`
+
+**Files:**
+- Replace: `apps/storefront/app/cuenta/page.tsx`
+
+This is the main task. The new file replaces the current redirect with the full dashboard. It reuses all UI components that exist in `suscripciones/page.tsx` and adds tab navigation + orders tab.
+
+> **Note:** The current `suscripciones/page.tsx` has a bug where `token=""` is hardcoded when passing to `SubscriptionCard`. This is fixed here by properly threading the token through state.
+
+- [ ] **Step 1: Write the complete `/cuenta/page.tsx`**
+
+Replace `apps/storefront/app/cuenta/page.tsx` entirely with:
+
+```tsx
+"use client";
+
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { useUser, useAuth } from "@clerk/nextjs";
+import {
+  medusa,
+  type MedusaSubscription,
+  type MedusaPaymentMethod,
+  type MedusaOrder,
+} from "@/lib/medusa";
+import { PRODUCT_META } from "@/lib/product-meta";
+import {
+  Repeat,
+  Pause,
+  Play,
+  X,
+  CreditCard,
+  ChevronRight,
+  AlertCircle,
+  CheckCircle2,
+  Clock,
+  Package,
+  ShieldCheck,
+  Plus,
+  Loader2,
+  RefreshCw,
+} from "lucide-react";
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function fmt(n: number) {
+  return new Intl.NumberFormat("es-MX", {
+    style: "currency",
+    currency: "MXN",
+    minimumFractionDigits: 0,
+  }).format(n);
+}
+
+function fmtDate(iso: string) {
+  return new Intl.DateTimeFormat("es-MX", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(iso));
+}
+
+const FREQ_LABELS: Record<number, string> = {
+  30: "Mensual",
+  60: "Bimestral",
+  90: "Trimestral",
+};
+
+const SUB_STATUS_CONFIG: Record<string, { label: string; bg: string; color: string; icon: React.ReactNode }> = {
+  active:                   { label: "Activa",          bg: "#ECFDF5", color: "#059669", icon: <CheckCircle2 size={13} /> },
+  paused:                   { label: "Pausada",         bg: "#FFF7ED", color: "#D97706", icon: <Pause size={13} /> },
+  cancelled:                { label: "Cancelada",       bg: "#FEF2F2", color: "#DC2626", icon: <X size={13} /> },
+  past_due:                 { label: "Pago pendiente",  bg: "#FFF7ED", color: "#DC2626", icon: <AlertCircle size={13} /> },
+  delayed_out_of_stock:     { label: "Sin stock",       bg: "#FFF7ED", color: "#D97706", icon: <AlertCircle size={13} /> },
+};
+
+const ORDER_STATUS_CONFIG: Record<string, { label: string; bg: string; color: string }> = {
+  pending:    { label: "Pendiente",  color: "#D97706", bg: "#FFF7ED" },
+  processing: { label: "Procesando", color: "#2563EB", bg: "#EFF6FF" },
+  shipped:    { label: "Enviado",    color: "#7C3AED", bg: "#F5F3FF" },
+  completed:  { label: "Entregado",  color: "#059669", bg: "#ECFDF5" },
+  cancelled:  { label: "Cancelado",  color: "#DC2626", bg: "#FEF2F2" },
+};
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function SubStatusBadge({ status }: { status: MedusaSubscription["status"] }) {
+  const cfg = SUB_STATUS_CONFIG[status] ?? SUB_STATUS_CONFIG.active;
+  return (
+    <span
+      className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full"
+      style={{ background: cfg.bg, color: cfg.color }}
+    >
+      {cfg.icon}
+      {cfg.label}
+    </span>
+  );
+}
+
+function FrequencySelector({
+  current,
+  sub_id,
+  token,
+  onUpdate,
+}: {
+  current: 30 | 60 | 90;
+  sub_id: string;
+  token: string;
+  onUpdate: (sub: MedusaSubscription) => void;
+}) {
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  async function change(days: 30 | 60 | 90) {
+    if (days === current) { setOpen(false); return; }
+    setLoading(true);
+    try {
+      const updated = await medusa.subscriptions.updateFrequency(sub_id, days, token);
+      onUpdate(updated);
+    } catch {
+      // revert silently — optimistic update not applied here (change never applied)
+    } finally {
+      setLoading(false);
+      setOpen(false);
+    }
+  }
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        disabled={loading}
+        className="flex items-center gap-1.5 text-[12px] font-bold text-[#005088] hover:text-[#003d6b] transition-colors disabled:opacity-50"
+      >
+        {loading ? <Loader2 size={12} className="animate-spin" /> : <Repeat size={12} />}
+        {FREQ_LABELS[current]}
+        <ChevronRight size={12} className={`transition-transform ${open ? "rotate-90" : ""}`} />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -6, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="absolute top-full left-0 mt-1 bg-white rounded-xl border border-[#E5E7EB] shadow-[0_8px_24px_rgba(0,0,0,0.1)] z-20 overflow-hidden min-w-[140px]"
+          >
+            {([30, 60, 90] as const).map((d) => (
+              <button
+                key={d}
+                onClick={() => change(d)}
+                className="w-full flex items-center justify-between px-4 py-2.5 text-[12px] font-semibold hover:bg-[#F3F4F6] transition-colors text-left"
+                style={{ color: d === current ? "#E8503A" : "#005088" }}
+              >
+                {FREQ_LABELS[d]}
+                {d === current && <CheckCircle2 size={12} className="text-[#E8503A]" />}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function SubscriptionCard({
+  sub,
+  token,
+  onUpdate,
+}: {
+  sub: MedusaSubscription;
+  token: string;
+  onUpdate: (updated: MedusaSubscription) => void;
+}) {
+  const [loading, setLoading] = useState<"pause" | "resume" | "cancel" | null>(null);
+  const [confirmCancel, setConfirmCancel] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const slug = sub.product_title.toLowerCase();
+  const meta = PRODUCT_META[slug];
+  const isCancelled = sub.status === "cancelled";
+  const isAttention = sub.status === "past_due" || sub.status === "delayed_out_of_stock";
+
+  async function action(type: "pause" | "resume" | "cancel") {
+    setLoading(type);
+    setError(null);
+    const prev = { ...sub };
+    // Optimistic update
+    const statusMap = { pause: "paused", resume: "active", cancel: "cancelled" } as const;
+    onUpdate({ ...sub, status: statusMap[type] });
+    try {
+      let updated: MedusaSubscription;
+      if (type === "pause")   updated = await medusa.subscriptions.pause(sub.id, token);
+      else if (type === "resume") updated = await medusa.subscriptions.resume(sub.id, token);
+      else                    updated = await medusa.subscriptions.cancel(sub.id, token);
+      onUpdate(updated);
+    } catch {
+      // Revert on error
+      onUpdate(prev);
+      setError(type === "cancel" ? "No se pudo cancelar. Intenta de nuevo." : "No se pudo actualizar. Intenta de nuevo.");
+    } finally {
+      setLoading(null);
+      setConfirmCancel(false);
+    }
+  }
+
+  return (
+    <motion.div
+      layout
+      className={`bg-white rounded-2xl border overflow-hidden transition-all duration-300 ${
+        isCancelled ? "opacity-60 border-[#F3F4F6]" : "border-[#005088]/8 shadow-[0_4px_20px_rgba(0,80,136,0.07)]"
+      }`}
+    >
+      <div className="p-5 flex gap-4">
+        <div
+          className="flex-shrink-0 w-16 h-16 rounded-xl flex items-center justify-center"
+          style={{ background: meta?.bg ?? "#F3F4F6" }}
+        >
+          {meta && (
+            <div className="relative w-12 h-12">
+              <Image src={meta.imgSrc} alt={sub.product_title} fill className="object-contain" />
+            </div>
+          )}
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2 mb-1.5">
+            <div>
+              <p className="text-[16px] font-black text-[#005088] leading-tight">
+                NovaPatch {sub.product_title}
+              </p>
+              <p className="text-[12px] text-[#6B7280] mt-0.5">
+                {fmt(sub.unit_price * sub.quantity)} / entrega
+              </p>
+            </div>
+            <SubStatusBadge status={sub.status} />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 mt-2">
+            {!isCancelled && !isAttention && (
+              <FrequencySelector
+                current={sub.interval_days}
+                sub_id={sub.id}
+                token={token}
+                onUpdate={onUpdate}
+              />
+            )}
+            {sub.status === "active" && (
+              <span className="flex items-center gap-1 text-[11px] text-[#6B7280]">
+                <Clock size={11} />
+                Próxima entrega: {fmtDate(sub.next_delivery_at)}
+              </span>
+            )}
+            {sub.status === "paused" && (
+              <span className="flex items-center gap-1 text-[11px] text-[#D97706]">
+                <Pause size={11} />
+                Envíos pausados
+              </span>
+            )}
+            {isAttention && (
+              <span className="flex items-center gap-1 text-[11px] text-[#DC2626]">
+                <AlertCircle size={11} />
+                Requiere atención — contacta a soporte
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {error && (
+        <div className="px-5 pb-2">
+          <p className="text-[11px] text-[#DC2626] font-medium">{error}</p>
+        </div>
+      )}
+
+      {!isCancelled && !isAttention && (
+        <div className="px-5 pb-4 flex items-center gap-2 flex-wrap">
+          {sub.status === "active" && (
+            <button
+              onClick={() => action("pause")}
+              disabled={loading !== null}
+              className="flex items-center gap-1.5 text-[12px] font-bold px-3 py-2 rounded-lg border border-[#E5E7EB] text-[#6B7280] hover:border-[#D97706] hover:text-[#D97706] transition-all disabled:opacity-50"
+            >
+              {loading === "pause" ? <Loader2 size={12} className="animate-spin" /> : <Pause size={12} />}
+              Pausar
+            </button>
+          )}
+          {sub.status === "paused" && (
+            <button
+              onClick={() => action("resume")}
+              disabled={loading !== null}
+              className="flex items-center gap-1.5 text-[12px] font-bold px-3 py-2 rounded-lg border border-[#E5E7EB] text-[#059669] hover:bg-[#ECFDF5] hover:border-[#059669] transition-all disabled:opacity-50"
+            >
+              {loading === "resume" ? <Loader2 size={12} className="animate-spin" /> : <Play size={12} />}
+              Reanudar
+            </button>
+          )}
+
+          {!confirmCancel ? (
+            <button
+              onClick={() => setConfirmCancel(true)}
+              className="flex items-center gap-1.5 text-[12px] font-semibold text-[#9CA3AF] hover:text-[#DC2626] transition-colors ml-auto"
+            >
+              <X size={12} />
+              Cancelar suscripción
+            </button>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, x: 8 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="ml-auto flex items-center gap-2"
+            >
+              <span className="text-[11px] text-[#DC2626] font-bold">¿Confirmar cancelación?</span>
+              <button
+                onClick={() => action("cancel")}
+                disabled={loading !== null}
+                className="text-[11px] font-black px-3 py-1.5 rounded-lg bg-[#DC2626] text-white hover:bg-[#B91C1C] transition-colors disabled:opacity-50"
+              >
+                {loading === "cancel" ? <Loader2 size={11} className="animate-spin" /> : "Sí, cancelar"}
+              </button>
+              <button
+                onClick={() => setConfirmCancel(false)}
+                className="text-[11px] font-semibold text-[#6B7280] hover:text-[#005088] transition-colors"
+              >
+                No
+              </button>
+            </motion.div>
+          )}
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
+function PaymentMethodCard({ pm }: { pm: MedusaPaymentMethod }) {
+  const brandColors: Record<string, string> = {
+    Visa: "#1A1F71",
+    Mastercard: "#EB001B",
+    "American Express": "#007BC1",
+  };
+  return (
+    <div className="flex items-center gap-4 p-4 bg-white rounded-xl border border-[#005088]/8 shadow-[0_2px_12px_rgba(0,80,136,0.05)]">
+      <div
+        className="flex h-10 w-14 items-center justify-center rounded-lg text-[13px] font-black text-white flex-shrink-0"
+        style={{ background: brandColors[pm.brand] ?? "#6B7280" }}
+      >
+        {pm.brand.slice(0, 4)}
+      </div>
+      <div className="flex-1">
+        <p className="text-[13px] font-bold text-[#005088]">•••• {pm.last4.slice(-4)}</p>
+        <p className="text-[11px] text-[#6B7280]">
+          Vence {pm.exp_month.toString().padStart(2, "0")}/{pm.exp_year}
+        </p>
+      </div>
+      {pm.is_default && (
+        <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-[#EBF4FB] text-[#005088]">
+          Principal
+        </span>
+      )}
+    </div>
+  );
+}
+
+function OrderRow({ order }: { order: MedusaOrder }) {
+  const cfg = ORDER_STATUS_CONFIG[order.status] ?? { label: order.status, color: "#6B7280", bg: "#F3F4F6" };
+  const visibleItems = order.items.slice(0, 3);
+  const extraCount = order.items.length - visibleItems.length;
+
+  return (
+    <div className="bg-white rounded-2xl border border-[#005088]/8 shadow-[0_4px_20px_rgba(0,80,136,0.05)] p-5">
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div>
+          <p className="text-[14px] font-black text-[#005088]">
+            Pedido #{order.display_id}
+          </p>
+          <p className="text-[11px] text-[#9CA3AF] mt-0.5">
+            {fmtDate(order.created_at)}
+          </p>
+        </div>
+        <span
+          className="text-[11px] font-bold px-2.5 py-1 rounded-full flex-shrink-0"
+          style={{ background: cfg.bg, color: cfg.color }}
+        >
+          {cfg.label}
+        </span>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <div className="flex -space-x-2">
+          {visibleItems.map((item) => (
+            <div
+              key={item.id}
+              className="w-9 h-9 rounded-lg border-2 border-white bg-[#F3F4F6] overflow-hidden flex-shrink-0 relative"
+            >
+              {item.thumbnail ? (
+                <Image src={item.thumbnail} alt={item.title} fill className="object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <Package size={14} className="text-[#D1D5DB]" />
+                </div>
+              )}
+            </div>
+          ))}
+          {extraCount > 0 && (
+            <div className="w-9 h-9 rounded-lg border-2 border-white bg-[#E5E7EB] flex items-center justify-center flex-shrink-0">
+              <span className="text-[10px] font-bold text-[#6B7280]">+{extraCount}</span>
+            </div>
+          )}
+        </div>
+
+        <p className="ml-auto text-[14px] font-black text-[#005088]">
+          {fmt(order.total / 100)}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function TabSkeleton() {
+  return (
+    <div className="space-y-3">
+      {[1, 2].map((i) => (
+        <div key={i} className="bg-white rounded-2xl border border-[#F3F4F6] p-5 animate-pulse">
+          <div className="flex gap-4">
+            <div className="w-16 h-16 rounded-xl bg-[#F3F4F6]" />
+            <div className="flex-1 space-y-2">
+              <div className="h-4 w-32 rounded bg-[#F3F4F6]" />
+              <div className="h-3 w-20 rounded bg-[#F3F4F6]" />
+              <div className="h-3 w-28 rounded bg-[#F3F4F6]" />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TabError({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div className="bg-white rounded-2xl border border-[#FEE2E2] p-8 text-center">
+      <AlertCircle size={24} className="mx-auto text-[#DC2626] mb-3" />
+      <p className="text-[14px] text-[#6B7280] mb-4">No se pudo cargar la información.</p>
+      <button
+        onClick={onRetry}
+        className="inline-flex items-center gap-2 text-[13px] font-bold text-[#005088] hover:underline"
+      >
+        <RefreshCw size={13} />
+        Reintentar
+      </button>
+    </div>
+  );
+}
+
+// ─── Tab contents ─────────────────────────────────────────────────────────────
+
+function TabSuscripciones({
+  subscriptions,
+  loading,
+  error,
+  token,
+  onUpdate,
+  onRetry,
+}: {
+  subscriptions: MedusaSubscription[];
+  loading: boolean;
+  error: boolean;
+  token: string;
+  onUpdate: (sub: MedusaSubscription) => void;
+  onRetry: () => void;
+}) {
+  if (loading) return <TabSkeleton />;
+  if (error) return <TabError onRetry={onRetry} />;
+
+  const active    = subscriptions.filter((s) => s.status === "active");
+  const paused    = subscriptions.filter((s) => s.status === "paused");
+  const attention = subscriptions.filter((s) => s.status === "past_due" || s.status === "delayed_out_of_stock");
+  const cancelled = subscriptions.filter((s) => s.status === "cancelled");
+
+  if (subscriptions.length === 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center py-16"
+      >
+        <Repeat size={36} className="mx-auto text-[#D1D5DB] mb-4" />
+        <h3 className="text-[17px] font-black text-[#005088] mb-2">
+          Aún no tienes suscripciones
+        </h3>
+        <p className="text-[14px] text-[#6B7280] mb-6 max-w-[280px] mx-auto">
+          Suscribite a tus parches favoritos y ahorra hasta 20% en cada entrega.
+        </p>
+        <Link
+          href="/tienda"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-[14px] text-white hover:brightness-95 active:scale-[0.97] transition-all"
+          style={{ background: "#E8503A" }}
+        >
+          Ver suscripciones disponibles
+          <ChevronRight size={14} />
+        </Link>
+      </motion.div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Requieren atención */}
+      {attention.length > 0 && (
+        <section>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#FFF7ED]">
+              <AlertCircle size={14} className="text-[#D97706]" />
+            </div>
+            <h2 className="text-[14px] font-black text-[#D97706]">
+              Requieren atención ({attention.length})
+            </h2>
+          </div>
+          <div className="space-y-3">
+            {attention.map((sub) => (
+              <SubscriptionCard key={sub.id} sub={sub} token={token} onUpdate={onUpdate} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Activas */}
+      <section>
+        <div className="flex items-center gap-2 mb-3">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ECFDF5]">
+            <CheckCircle2 size={14} className="text-[#059669]" />
+          </div>
+          <h2 className="text-[14px] font-black text-[#005088]">
+            Activas
+            <span className="ml-2 text-[12px] font-semibold text-[#6B7280]">({active.length})</span>
+          </h2>
+        </div>
+        {active.length === 0 ? (
+          <div className="bg-white rounded-2xl border border-dashed border-[#D1D5DB] p-6 text-center">
+            <p className="text-[13px] text-[#9CA3AF]">No tienes suscripciones activas.</p>
+            <Link href="/tienda" className="inline-flex items-center gap-1.5 mt-3 text-[13px] font-bold text-[#E8503A] hover:underline">
+              Explorar productos <ChevronRight size={13} />
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {active.map((sub) => (
+              <SubscriptionCard key={sub.id} sub={sub} token={token} onUpdate={onUpdate} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Pausadas */}
+      {paused.length > 0 && (
+        <section>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#FFF7ED]">
+              <Pause size={14} className="text-[#D97706]" />
+            </div>
+            <h2 className="text-[14px] font-black text-[#005088]">
+              Pausadas
+              <span className="ml-2 text-[12px] font-semibold text-[#6B7280]">({paused.length})</span>
+            </h2>
+          </div>
+          <div className="space-y-3">
+            {paused.map((sub) => (
+              <SubscriptionCard key={sub.id} sub={sub} token={token} onUpdate={onUpdate} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Canceladas (collapsible) */}
+      {cancelled.length > 0 && (
+        <section>
+          <details className="group">
+            <summary className="flex items-center gap-2 cursor-pointer list-none mb-3">
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#FEF2F2]">
+                <X size={14} className="text-[#DC2626]" />
+              </div>
+              <h2 className="text-[13px] font-bold text-[#9CA3AF]">
+                Canceladas ({cancelled.length})
+              </h2>
+              <ChevronRight size={13} className="text-[#9CA3AF] ml-auto group-open:rotate-90 transition-transform" />
+            </summary>
+            <div className="space-y-3">
+              {cancelled.map((sub) => (
+                <SubscriptionCard key={sub.id} sub={sub} token={token} onUpdate={onUpdate} />
+              ))}
+            </div>
+          </details>
+        </section>
+      )}
+    </div>
+  );
+}
+
+function TabPedidos({
+  orders,
+  loading,
+  error,
+  onRetry,
+}: {
+  orders: MedusaOrder[];
+  loading: boolean;
+  error: boolean;
+  onRetry: () => void;
+}) {
+  if (loading) return <TabSkeleton />;
+  if (error) return <TabError onRetry={onRetry} />;
+
+  if (orders.length === 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center py-16"
+      >
+        <Package size={36} className="mx-auto text-[#D1D5DB] mb-4" />
+        <h3 className="text-[17px] font-black text-[#005088] mb-2">
+          Aún no tienes pedidos
+        </h3>
+        <p className="text-[14px] text-[#6B7280] mb-6 max-w-[260px] mx-auto">
+          Tus compras aparecerán aquí una vez que realices tu primer pedido.
+        </p>
+        <Link
+          href="/tienda"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-[14px] text-white hover:brightness-95 active:scale-[0.97] transition-all"
+          style={{ background: "#E8503A" }}
+        >
+          Ir a la tienda
+          <ChevronRight size={14} />
+        </Link>
+      </motion.div>
+    );
+  }
+
+  const sorted = [...orders].sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
+
+  return (
+    <div className="space-y-3">
+      {sorted.map((order) => (
+        <OrderRow key={order.id} order={order} />
+      ))}
+    </div>
+  );
+}
+
+function TabPago({
+  paymentMethods,
+  loading,
+  error,
+  onRetry,
+}: {
+  paymentMethods: MedusaPaymentMethod[];
+  loading: boolean;
+  error: boolean;
+  onRetry: () => void;
+}) {
+  if (loading) return <TabSkeleton />;
+  if (error) return <TabError onRetry={onRetry} />;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-[14px] font-black text-[#005088]">Tarjetas guardadas</h2>
+        <button className="flex items-center gap-1 text-[12px] font-bold text-[#E8503A] hover:underline">
+          <Plus size={12} />
+          Agregar
+        </button>
+      </div>
+
+      {paymentMethods.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-dashed border-[#D1D5DB] p-6 text-center">
+          <CreditCard size={24} className="mx-auto text-[#D1D5DB] mb-3" />
+          <p className="text-[13px] text-[#9CA3AF]">No tienes tarjetas guardadas.</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {paymentMethods.map((pm) => (
+            <PaymentMethodCard key={pm.id} pm={pm} />
+          ))}
+        </div>
+      )}
+
+      <div className="flex items-center gap-2 p-3 rounded-xl bg-white border border-[#E5E7EB]">
+        <ShieldCheck size={14} className="text-[#3CBFAB] flex-shrink-0" />
+        <p className="text-[11px] text-[#6B7280]">
+          Tus datos de pago están encriptados y gestionados de forma segura por{" "}
+          <span className="font-bold text-[#005088]">Openpay</span>. Novapatch nunca almacena datos de tarjeta.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
+
+const TABS = [
+  { id: "suscripciones", label: "Suscripciones" },
+  { id: "pedidos",       label: "Pedidos" },
+  { id: "pago",          label: "Pago" },
+] as const;
+
+type TabId = typeof TABS[number]["id"];
+
+function MiCuentaContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const { user, isLoaded } = useUser();
+  const { getToken } = useAuth();
+
+  const activeTab = (searchParams.get("tab") as TabId) ?? "suscripciones";
+
+  const [token, setToken] = useState<string>("");
+  const [subscriptions, setSubscriptions] = useState<MedusaSubscription[]>([]);
+  const [orders, setOrders] = useState<MedusaOrder[]>([]);
+  const [paymentMethods, setPaymentMethods] = useState<MedusaPaymentMethod[]>([]);
+
+  const [loading, setLoading] = useState({ subs: true, orders: true, pms: true });
+  const [errors, setErrors]   = useState({ subs: false, orders: false, pms: false });
+
+  const loadData = useCallback(async () => {
+    const tok = await getToken();
+    if (!tok) return;
+    setToken(tok);
+
+    setLoading({ subs: true, orders: true, pms: true });
+    setErrors({ subs: false, orders: false, pms: false });
+
+    medusa.subscriptions.list(tok)
+      .then(setSubscriptions)
+      .catch(() => setErrors((e) => ({ ...e, subs: true })))
+      .finally(() => setLoading((l) => ({ ...l, subs: false })));
+
+    medusa.orders.list(tok)
+      .then(setOrders)
+      .catch(() => setErrors((e) => ({ ...e, orders: true })))
+      .finally(() => setLoading((l) => ({ ...l, orders: false })));
+
+    medusa.paymentMethods.list(tok)
+      .then(setPaymentMethods)
+      .catch(() => setErrors((e) => ({ ...e, pms: true })))
+      .finally(() => setLoading((l) => ({ ...l, pms: false })));
+  }, [getToken]);
+
+  useEffect(() => {
+    if (isLoaded && user) loadData();
+  }, [isLoaded, user, loadData]);
+
+  function updateSub(updated: MedusaSubscription) {
+    setSubscriptions((prev) =>
+      prev.map((s) => (s.id === updated.id ? { ...s, ...updated } : s))
+    );
+  }
+
+  function setTab(id: TabId) {
+    router.push(`/cuenta?tab=${id}`, { scroll: false });
+  }
+
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
+        <Loader2 size={28} className="animate-spin text-[#005088]" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#FAF7F2]">
+      {/* Header */}
+      <div className="border-b border-[#005088]/8 bg-white">
+        <div className="max-w-2xl mx-auto px-6 py-5">
+          <h1 className="text-[20px] font-black text-[#005088] tracking-[-0.01em] text-center">
+            Mi cuenta
+          </h1>
+          <p className="text-[12px] text-[#6B7280] text-center mt-0.5">
+            {user?.firstName ? `Hola, ${user.firstName}` : user?.primaryEmailAddress?.emailAddress}
+          </p>
+        </div>
+
+        {/* Tab nav */}
+        <div className="max-w-2xl mx-auto px-6">
+          <div className="flex border-b border-transparent -mb-px">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setTab(tab.id)}
+                className={`px-4 py-3 text-[13px] font-bold border-b-2 transition-colors ${
+                  activeTab === tab.id
+                    ? "border-[#E8503A] text-[#E8503A]"
+                    : "border-transparent text-[#6B7280] hover:text-[#005088]"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Tab content */}
+      <div className="max-w-2xl mx-auto px-6 py-8">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18 }}
+          >
+            {activeTab === "suscripciones" && (
+              <TabSuscripciones
+                subscriptions={subscriptions}
+                loading={loading.subs}
+                error={errors.subs}
+                token={token}
+                onUpdate={updateSub}
+                onRetry={() => loadData()}
+              />
+            )}
+            {activeTab === "pedidos" && (
+              <TabPedidos
+                orders={orders}
+                loading={loading.orders}
+                error={errors.orders}
+                onRetry={() => loadData()}
+              />
+            )}
+            {activeTab === "pago" && (
+              <TabPago
+                paymentMethods={paymentMethods}
+                loading={loading.pms}
+                error={errors.pms}
+                onRetry={() => loadData()}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
+export default function MiCuentaPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
+        <Loader2 size={28} className="animate-spin text-[#005088]" />
+      </div>
+    }>
+      <MiCuentaContent />
+    </Suspense>
+  );
+}
+```
+
+- [ ] **Step 2: Commit**
+
+```bash
+git add apps/storefront/app/cuenta/page.tsx
+git commit -m "feat(cuenta): add Mi Cuenta dashboard with tabs (Suscripciones, Pedidos, Pago)"
+```
+
+---
+
+## Task 3: Redirect `/cuenta/suscripciones`
+
+**Files:**
+- Replace: `apps/storefront/app/cuenta/suscripciones/page.tsx`
+
+- [ ] **Step 1: Replace with redirect**
+
+```tsx
+import { redirect } from "next/navigation";
+
+export default function SuscripcionesRedirect() {
+  redirect("/cuenta?tab=suscripciones");
+}
+```
+
+- [ ] **Step 2: Commit**
+
+```bash
+git add apps/storefront/app/cuenta/suscripciones/page.tsx
+git commit -m "feat(cuenta): redirect /cuenta/suscripciones to /cuenta?tab=suscripciones"
+```
+
+---
+
+## Task 4: Manual Verification
+
+- [ ] **Step 1: Start dev server**
+
+```bash
+cd apps/storefront && pnpm run dev
+```
+
+- [ ] **Step 2: Verify unauthenticated redirect**
+
+Go to `http://localhost:3000/cuenta` — should redirect to `/sign-in`.
+
+- [ ] **Step 3: Verify tab navigation**
+
+Log in, go to `/cuenta`. Verify:
+- Default tab is "Suscripciones"
+- Clicking "Pedidos" changes URL to `/cuenta?tab=pedidos`
+- Clicking "Pago" changes URL to `/cuenta?tab=pago`
+- Browser back/forward navigates between tabs
+
+- [ ] **Step 4: Verify `/cuenta/suscripciones` redirect**
+
+Go to `http://localhost:3000/cuenta/suscripciones` — should redirect to `/cuenta?tab=suscripciones`.
+
+- [ ] **Step 5: Verify data loading**
+
+- Tab "Suscripciones" shows skeleton → then real data (or error with retry)
+- Tab "Pedidos" shows skeleton → then real data (or empty state with CTA)
+- Tab "Pago" shows tarjetas o empty state
+
+- [ ] **Step 6: Verify subscription actions**
+
+On an active subscription:
+- Click "Pausar" → status changes to "Pausada" immediately (optimistic)
+- Click "Reanudar" → status changes back to "Activa"
+- Click "Cancelar suscripción" → inline confirmation appears
+- Click "No" → confirmation disappears
+- Click "Sí, cancelar" → sub moves to "Canceladas" section
+
+- [ ] **Step 7: Commit and push**
+
+```bash
+git push origin feat/cuenta-dashboard
+```
