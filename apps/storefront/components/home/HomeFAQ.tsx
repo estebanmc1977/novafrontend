@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 const faqs = [
   {
@@ -74,6 +75,7 @@ function FAQItem({
 }
 
 export default function HomeFAQ() {
+  const t = useTranslations("home.faq");
   const [open, setOpen] = useState<number | null>(0);
 
   return (
@@ -89,13 +91,13 @@ export default function HomeFAQ() {
             className="text-[11px] font-bold uppercase tracking-[0.12em] mb-2.5"
             style={{ color: "#3CBFAB" }}
           >
-            Resolvemos tus dudas
+            {t("badge")}
           </p>
           <h2
             className="font-black text-[#005088] tracking-[-0.02em]"
             style={{ fontSize: "clamp(26px,3vw,40px)" }}
           >
-            ¿Tienes dudas?
+            {t("title")}
           </h2>
         </motion.div>
       </div>

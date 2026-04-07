@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 const rows = [
   { feature: "Alta tasa de absorción", nova: true, caps: false, gummies: false },
@@ -20,6 +21,7 @@ function Check({ ok }: { ok: boolean }) {
 }
 
 export default function ComparisonTable() {
+  const t = useTranslations("home.comparison");
   return (
     <section className="bg-[#F9FAFB] py-[72px] px-5 md:px-12">
       <div className="max-w-[1100px] mx-auto">
@@ -34,11 +36,8 @@ export default function ComparisonTable() {
             className="font-extrabold text-[#005088] leading-[1.15] tracking-[-0.02em]"
             style={{ fontSize: "clamp(26px,3vw,40px)" }}
           >
-            ¿Pastillas, gomitas o parches?
+            {t("title")}
           </h2>
-          <p className="text-[16px] text-[#6B7280] mt-3 leading-[1.6] max-w-[520px]">
-            El formato importa tanto como lo que tomas. Así se comparan:
-          </p>
         </motion.div>
 
         {/* Two-column layout: table left, image right */}
@@ -67,7 +66,7 @@ export default function ComparisonTable() {
                   height={30}
                   className="h-7 w-auto object-contain brightness-0 invert"
                 />
-                <span className="text-[11px] opacity-85">Parche</span>
+                <span className="text-[11px] opacity-85">{t("colNovapatch")}</span>
               </div>
               {/* Capsules */}
               <div className="p-4 flex flex-col items-center justify-center gap-2">
@@ -79,7 +78,7 @@ export default function ComparisonTable() {
                     d="M44.59 3.38c4.29 4.39 4.36 11.36 0.2 15.86L20 44.05C8.85 53.7-5.92 38.94 3.73 27.78L28.52 2.98C33.15-1.27 40.2-1.11 44.59 3.38zm-1.34 14.14c7.24-8.62-3.65-20.09-12.64-13.32L18.58 16.15l13.03 13.03zm-25.79 25.63c.33-.23.62-.52.94-.75L29.92 31l-13.03-13.03-11.52 11.52c-7.38 8.05 3.06 20.17 12.09 13.79z"
                   />
                 </svg>
-                <span className="text-[12px] text-[#6B7280] font-bold text-center">Cápsulas comunes</span>
+                <span className="text-[12px] text-[#6B7280] font-bold text-center">{t("colTraditional")}</span>
               </div>
               {/* Gummies */}
               <div className="p-4 flex flex-col items-center justify-center gap-2">
