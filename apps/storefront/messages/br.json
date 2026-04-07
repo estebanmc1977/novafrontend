@@ -1,0 +1,132 @@
+{
+  "nav": {
+    "tienda": "Loja",
+    "suscripciones": "Assinaturas",
+    "nosotros": "Sobre nós",
+    "cuenta": "Minha Conta",
+    "signIn": "Entrar",
+    "signUp": "Cadastrar"
+  },
+  "footer": {
+    "sections": {
+      "comprar": "Comprar",
+      "ayuda": "Ajuda",
+      "nosotros": "Sobre nós",
+      "legal": "Legal"
+    },
+    "links": {
+      "tienda": "Loja",
+      "suscripciones": "Assinaturas",
+      "garantia": "Garantia",
+      "contacto": "Fale conosco",
+      "faq": "Perguntas frequentes",
+      "reembolso": "Solicitar reembolso",
+      "nosotros": "Sobre nós",
+      "porQue": "Por que adesivos?",
+      "suscribeteAhorra": "Assine e economize",
+      "privacidad": "Política de Privacidade",
+      "terminos": "Termos e Condições"
+    },
+    "newsletter": {
+      "label": "Novidades e ofertas",
+      "placeholder": "seu@email.com",
+      "button": "Assinar",
+      "success": "Obrigado por se inscrever!"
+    },
+    "social": {
+      "followUs": "Siga-nos"
+    },
+    "selectCountry": "País",
+    "markets": {
+      "mx": "México",
+      "br": "Brasil",
+      "ar": "Argentina",
+      "cl": "Chile",
+      "co": "Colômbia"
+    },
+    "copyright": "© {year} Novapatch. Todos os direitos reservados.",
+    "tagline": "Bem-estar que não interrompe o seu dia"
+  },
+  "home": {
+    "hero": {
+      "badge": "Tecnologia transdérmica",
+      "title": "Vitaminas que realmente se absorvem",
+      "subtitle": "Adesivos inteligentes de alta absorção transdérmica, sem comprimidos nem rellenos.",
+      "cta": "Ver produtos",
+      "ctaSecondary": "Como funciona?"
+    },
+    "howItWorks": {
+      "badge": "Simples assim",
+      "title": "Como funciona",
+      "step1Title": "Escolha seu adesivo",
+      "step1Desc": "Selecione a combinação que seu corpo precisa.",
+      "step2Title": "Aplique",
+      "step2Desc": "Cole o adesivo em qualquer área limpa e seca.",
+      "step3Title": "Pronto",
+      "step3Desc": "Absorção constante por 8 horas. Sem interrupções."
+    },
+    "absorption": {
+      "badge": "A ciência por trás",
+      "title": "Absorção direta na corrente sanguínea",
+      "subtitle": "Os comprimidos perdem até 85% dos nutrientes no processo digestivo. Os adesivos transdérmicos os entregam diretamente onde são necessários.",
+      "stat1Value": "85%",
+      "stat1Label": "Maior biodisponibilidade",
+      "stat2Value": "8h",
+      "stat2Label": "Liberação sustentada",
+      "stat3Value": "0",
+      "stat3Label": "Efeitos digestivos"
+    },
+    "comparison": {
+      "badge": "Comparativo",
+      "title": "Novapatch vs. suplementos tradicionais",
+      "colNovapatch": "Novapatch",
+      "colTraditional": "Comprimidos / Cápsulas"
+    },
+    "testimonials": {
+      "badge": "O que dizem",
+      "title": "Milhares já sentem"
+    },
+    "cta": {
+      "title": "Assine e economize até 20%",
+      "subtitle": "Escolha a frequência que melhor se adapta ao seu ritmo.",
+      "button": "Ver planos"
+    },
+    "faq": {
+      "badge": "Perguntas frequentes",
+      "title": "Tudo que você precisa saber"
+    }
+  },
+  "checkout": {
+    "paymentMethods": {
+      "title": "Forma de pagamento",
+      "description": "Pague com PIX, boleto ou cartão de crédito/débito"
+    }
+  },
+  "legal": {
+    "badge": "Legal",
+    "lastUpdated": "Última atualização: janeiro de 2025 · Lei aplicável: Brasil",
+    "contactTitle": "Tem alguma dúvida legal?",
+    "contactSubtitle": "Entre em contato a qualquer momento.",
+    "terms": {
+      "title": "Termos e Condições"
+    },
+    "privacy": {
+      "title": "Política de Privacidade"
+    },
+    "refund": {
+      "title": "Política de Reembolso"
+    },
+    "warranty": {
+      "title": "Garantia"
+    }
+  },
+  "meta": {
+    "currency": "BRL",
+    "currencySymbol": "R$",
+    "locale": "pt-BR",
+    "country": "Brasil",
+    "taxLabel": "ICMS",
+    "paymentProvider": "mercadopago",
+    "supportEmail": "suporte@novapatch.com.br"
+  }
+}

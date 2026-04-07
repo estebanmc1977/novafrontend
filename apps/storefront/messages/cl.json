@@ -1,0 +1,132 @@
+{
+  "nav": {
+    "tienda": "Tienda",
+    "suscripciones": "Suscripciones",
+    "nosotros": "Nosotros",
+    "cuenta": "Mi Cuenta",
+    "signIn": "Iniciar sesión",
+    "signUp": "Registrarse"
+  },
+  "footer": {
+    "sections": {
+      "comprar": "Comprar",
+      "ayuda": "Ayuda",
+      "nosotros": "Nosotros",
+      "legal": "Legal"
+    },
+    "links": {
+      "tienda": "Tienda",
+      "suscripciones": "Suscripciones",
+      "garantia": "Garantía",
+      "contacto": "Contáctanos",
+      "faq": "Preguntas frecuentes",
+      "reembolso": "Solicitar reembolso",
+      "nosotros": "Nosotros",
+      "porQue": "¿Por qué parches?",
+      "suscribeteAhorra": "Suscríbete y ahorra",
+      "privacidad": "Política de Privacidad",
+      "terminos": "Términos y Condiciones"
+    },
+    "newsletter": {
+      "label": "Novedades y ofertas",
+      "placeholder": "tu@correo.com",
+      "button": "Suscribirse",
+      "success": "¡Gracias por suscribirte!"
+    },
+    "social": {
+      "followUs": "Síguenos"
+    },
+    "selectCountry": "País",
+    "markets": {
+      "mx": "México",
+      "br": "Brasil",
+      "ar": "Argentina",
+      "cl": "Chile",
+      "co": "Colombia"
+    },
+    "copyright": "© {year} Novapatch. Todos los derechos reservados.",
+    "tagline": "Bienestar que no interrumpe tu día"
+  },
+  "home": {
+    "hero": {
+      "badge": "Tecnología transdérmica",
+      "title": "Vitaminas que se absorben de verdad",
+      "subtitle": "Parches inteligentes de alta absorción transdérmica, sin pastillas ni rellenos.",
+      "cta": "Ver productos",
+      "ctaSecondary": "¿Cómo funciona?"
+    },
+    "howItWorks": {
+      "badge": "Así de fácil",
+      "title": "Cómo funciona",
+      "step1Title": "Elige tu parche",
+      "step1Desc": "Selecciona la combinación que tu cuerpo necesita.",
+      "step2Title": "Aplícalo",
+      "step2Desc": "Pega el parche en cualquier zona limpia y seca.",
+      "step3Title": "Listo",
+      "step3Desc": "Absorción constante durante 8 horas. Sin interrupciones."
+    },
+    "absorption": {
+      "badge": "La ciencia detrás",
+      "title": "Absorción directa al torrente sanguíneo",
+      "subtitle": "Las pastillas pierden hasta el 85% de sus nutrientes en el proceso digestivo. Los parches transdérmicos los entregan directo donde se necesitan.",
+      "stat1Value": "85%",
+      "stat1Label": "Mayor biodisponibilidad",
+      "stat2Value": "8h",
+      "stat2Label": "Liberación sostenida",
+      "stat3Value": "0",
+      "stat3Label": "Efectos digestivos"
+    },
+    "comparison": {
+      "badge": "Comparativa",
+      "title": "Novapatch vs. suplementos tradicionales",
+      "colNovapatch": "Novapatch",
+      "colTraditional": "Pastillas / Cápsulas"
+    },
+    "testimonials": {
+      "badge": "Lo que dicen",
+      "title": "Miles ya lo sienten"
+    },
+    "cta": {
+      "title": "Suscríbete y ahorra hasta 20%",
+      "subtitle": "Elige la frecuencia que mejor se adapte a tu ritmo.",
+      "button": "Ver planes"
+    },
+    "faq": {
+      "badge": "Preguntas frecuentes",
+      "title": "Todo lo que necesitas saber"
+    }
+  },
+  "checkout": {
+    "paymentMethods": {
+      "title": "Método de pago",
+      "description": "Paga con tarjeta de crédito/débito o transferencia"
+    }
+  },
+  "legal": {
+    "badge": "Legal",
+    "lastUpdated": "Última actualización: enero de 2025 · Ley aplicable: Chile",
+    "contactTitle": "¿Tienes alguna duda legal?",
+    "contactSubtitle": "Contáctanos en cualquier momento.",
+    "terms": {
+      "title": "Términos y Condiciones"
+    },
+    "privacy": {
+      "title": "Política de Privacidad"
+    },
+    "refund": {
+      "title": "Política de Reembolso"
+    },
+    "warranty": {
+      "title": "Garantía"
+    }
+  },
+  "meta": {
+    "currency": "CLP",
+    "currencySymbol": "$",
+    "locale": "es-CL",
+    "country": "Chile",
+    "taxLabel": "IVA 19%",
+    "paymentProvider": "mercadopago",
+    "supportEmail": "soporte@novapatch.cl"
+  }
+}
