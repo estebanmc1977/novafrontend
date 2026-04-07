@@ -92,29 +92,50 @@ p {
   color: #fff !important;
 }
 
-/* ── Clerk UserButton popover footer — ocultar "Secured by Clerk" ── */
-/* Ocultar el bloque que contiene el logo de Clerk (primer hijo sin links) */
-.cl-userButtonPopoverFooter > div:first-child:not(:has(a)) {
+/* Clerk UserButton popover footer */
+.cl-userButtonPopoverFooter,
+[class*="cl-userButtonPopoverFooter"] {
+  background: #f6f0e8 !important;
+  border-top: 1px solid rgba(13, 27, 53, 0.08) !important;
+  border-radius: 0 0 18px 18px !important;
+  padding: 0.95rem 1rem 0.8rem !important;
+}
+
+.cl-userButtonPopoverFooter a[href*="clerk.com"],
+[class*="cl-userButtonPopoverFooter"] a[href*="clerk.com"] {
   display: none !important;
 }
-.cl-userButtonPopoverFooter {
-  justify-content: center !important;
-  flex-direction: column !important;
-  align-items: center !important;
+
+.cl-userButtonPopoverFooter img[src*="clerk"],
+.cl-userButtonPopoverFooter svg[class*="clerk"],
+[class*="cl-userButtonPopoverFooter"] img[src*="clerk"],
+[class*="cl-userButtonPopoverFooter"] svg[class*="clerk"] {
+  display: none !important;
 }
-.cl-userButtonPopoverFooterPages {
+
+.cl-userButtonPopoverFooterPages,
+[class*="cl-userButtonPopoverFooterPages"] {
   display: flex !important;
-  flex-direction: row !important;
-  gap: 1.25rem !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
   justify-content: center !important;
+  gap: 1.1rem !important;
   width: 100% !important;
+  margin: 0 !important;
 }
-.cl-userButtonPopoverFooterPages a {
-  color: #9CA3AF !important;
+
+.cl-userButtonPopoverFooterPages a,
+[class*="cl-userButtonPopoverFooterPages"] a,
+.cl-userButtonPopoverFooter [data-localization-key],
+[class*="cl-userButtonPopoverFooter"] [data-localization-key] {
+  color: #5f7080 !important;
   font-size: 12px !important;
-  font-weight: 500 !important;
+  font-weight: 700 !important;
   text-decoration: none !important;
+  opacity: 1 !important;
 }
-.cl-userButtonPopoverFooterPages a:hover {
-  color: #5F7080 !important;
+
+.cl-userButtonPopoverFooterPages a:hover,
+[class*="cl-userButtonPopoverFooterPages"] a:hover {
+  color: #0d1b35 !important;
 }
