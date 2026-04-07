@@ -14,7 +14,7 @@ const products = [
     slug: "energy",
     tagline: "Energía celular sostenida",
     taglineColor: "#1A5C9A",
-    quote: "Tu día no para. Tu energía tampoco.",
+    ingredients: ["Vitamina C", "L-Carnitina", "Extracto de Té Verde", "Extracto de Ginseng", "Vitamina B2", "Ácido Fólico", "Vitamina E"],
     tags: ["Energía sostenida", "Sin picos ni caídas"],
     color: "#2B7CC1",
     bg: "#EBF4FB",
@@ -26,7 +26,7 @@ const products = [
     slug: "sleep",
     tagline: "Sueño profundo y reparador",
     taglineColor: "#0F6B5C",
-    quote: "Porque descansar también es cuidarse.",
+    ingredients: ["Triptófano", "Magnesio", "Inositol", "Vitamina B6", "Glicina"],
     tags: ["Descanso nocturno", "Sin somníferos"],
     color: "#138A75",
     bg: "#EBF7F5",
@@ -38,7 +38,7 @@ const products = [
     slug: "glow",
     tagline: "Belleza y juventud para una piel visiblemente renovada",
     taglineColor: "#B83525",
-    quote: "La piel también refleja cómo te cuidas.",
+    ingredients: ["Vitamina C", "Ácido Hialurónico", "Colágeno Hidrolizado", "Biotina", "Vitamina B3", "Extracto de Centella Asiática", "Vitamina E"],
     tags: ["Bienestar desde adentro", "Constancia"],
     color: "#C94030",
     bg: "#FAF0EE",
@@ -50,7 +50,7 @@ const products = [
     slug: "shield",
     tagline: "Fortaleza inmune natural",
     taglineColor: "#8C6000",
-    quote: "Tu rutina de cuidado empieza hoy.",
+    ingredients: ["Vitamina C", "Zinc", "Vitamina D3", "Vitamina E", "Niacinamida"],
     tags: ["Cuidado preventivo", "Uso diario"],
     color: "#A07000",
     bg: "#FAF6E9",
@@ -62,7 +62,7 @@ const products = [
     slug: "zen",
     tagline: "Calma mental diaria",
     taglineColor: "#2A5490",
-    quote: "El equilibrio que no se ve, pero se siente.",
+    ingredients: ["Triptófano", "Magnesio", "Taurina", "Extracto de Manzanilla", "Vitamina B6"],
     tags: ["Calma funcional", "Días intensos"],
     color: "#3A6FA8",
     bg: "#EBF0F9",
@@ -74,7 +74,7 @@ const products = [
     slug: "woman",
     tagline: "Bienestar hormonal femenino",
     taglineColor: "#6B3080",
-    quote: "Escucharte también es una forma de cuidarte.",
+    ingredients: ["Extracto de Soya", "Vitamina B6", "Magnesio", "Ácido Fólico", "Hierro"],
     tags: ["Bienestar femenino", "Ritmos naturales"],
     color: "#8A3EBE",
     bg: "#F3EBF9",
@@ -136,9 +136,17 @@ function HeroProductCard({
           >
             {p.tagline}
           </p>
-          <p className="text-[15px] text-[#6B7280] italic leading-[1.6] mt-4">
-            &ldquo;{p.quote}&rdquo;
+          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#9CA3AF] mt-3">
+            Pack de 30 parches · Ingredientes
           </p>
+          <ul className="mt-1.5 space-y-0.5">
+            {p.ingredients.map((ing) => (
+              <li key={ing} className="text-[13px] text-[#4B5563] flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full flex-shrink-0 inline-block" style={{ background: p.color }} />
+                {ing}
+              </li>
+            ))}
+          </ul>
 
           <div className="flex flex-wrap gap-1.5 mt-5">
             {p.tags.map((tag) => (
@@ -236,9 +244,14 @@ function ProductCard({
             </p>
           </div>
 
-          <p className="text-[13px] text-[#6B7280] italic leading-[1.5]">
-            &ldquo;{p.quote}&rdquo;
-          </p>
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#9CA3AF] mb-1">
+              Pack de 30 parches
+            </p>
+            <p className="text-[12px] text-[#6B7280] leading-[1.5]">
+              {p.ingredients.join(" · ")}
+            </p>
+          </div>
 
           <div className="flex flex-wrap gap-1.5">
             {p.tags.map((tag) => (
