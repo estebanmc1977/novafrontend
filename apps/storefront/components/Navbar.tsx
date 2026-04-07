@@ -4,18 +4,20 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, Menu, X, ChevronDown, User, LogOut } from "lucide-react";
 import { SignInButton, useClerk, useUser } from "@clerk/nextjs";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/lib/i18n-navigation";
 import Image from "next/image";
 import { CART_UPDATED_EVENT, getCartItemCount } from "@/lib/cart";
 import { useCart } from "@/contexts/CartContext";
 
-const navLinks = [
-  { label: "Tienda", href: "/tienda" },
-  { label: "Suscripciones", href: "/suscripciones" },
-  { label: "Nosotros", href: "/nosotros" },
-];
-
 export default function Navbar({ lightBg = false }: { lightBg?: boolean }) {
+  const t = useTranslations('nav');
+
+  const navLinks = [
+    { label: t('tienda'), href: "/tienda" },
+    { label: t('suscripciones'), href: "/suscripciones" },
+    { label: t('nosotros'), href: "/nosotros" },
+  ];
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
@@ -221,7 +223,7 @@ export default function Navbar({ lightBg = false }: { lightBg?: boolean }) {
                           className="flex w-full items-center gap-4 rounded-[20px] px-4 py-4 text-left text-[15px] font-semibold text-[#667085] transition-colors duration-150 hover:bg-[#F7F2EB] hover:text-[#0D1B35]"
                         >
                           <User size={18} />
-                          <span>Mi cuenta</span>
+                          <span>{t('cuenta')}</span>
                         </Link>
                         <button
                           type="button"
@@ -327,7 +329,7 @@ export default function Navbar({ lightBg = false }: { lightBg?: boolean }) {
                       className="flex items-center gap-3 text-[15px] font-semibold text-[#005088] transition-colors hover:text-[#003d6b]"
                     >
                       <User size={16} />
-                      <span>Mi cuenta</span>
+                      <span>{t('cuenta')}</span>
                     </Link>
                     <button
                       type="button"
@@ -344,7 +346,7 @@ export default function Navbar({ lightBg = false }: { lightBg?: boolean }) {
                       onClick={() => setMenuOpen(false)}
                       className="text-[16px] font-semibold text-[#E8503A] hover:text-[#C43B28] transition-colors"
                     >
-                      Iniciar sesión
+                      {t('signIn')}
                     </button>
                   </SignInButton>
                 )}
