@@ -322,33 +322,40 @@ export const novapatchAppearance: Record<string, any> = {
     userButtonPopoverFooter: {
       borderTop:      "1px solid rgba(13,27,53,0.07)",
       marginTop:      "0.5rem",
-      paddingTop:     "0.75rem",
-      paddingBottom:  "0.25rem",
+      padding:        "0.75rem 0.875rem 0.5rem",
       display:        "flex",
       flexDirection:  "column",
       alignItems:     "center",
       gap:            "0.5rem",
     },
+    // Ocultar el branding "Secured by Clerk"
+    userButtonPopoverFooterAction: {
+      display: "none",
+    },
     userButtonPopoverFooterPages: {
       display:        "flex",
       flexDirection:  "row",
-      gap:            "1rem",
+      gap:            "1.25rem",
       justifyContent: "center",
+      width:          "100%",
     },
     userButtonPopoverFooterPagesLink__privacy: {
-      color:      "#5F7080",
+      color:      "#9CA3AF",
       fontSize:   "12px",
       fontWeight: "500",
+      transition: "color 0.15s ease",
     },
     userButtonPopoverFooterPagesLink__terms: {
-      color:      "#5F7080",
+      color:      "#9CA3AF",
       fontSize:   "12px",
       fontWeight: "500",
+      transition: "color 0.15s ease",
     },
     userButtonPopoverFooterPagesLink__help: {
-      color:      "#5F7080",
+      color:      "#9CA3AF",
       fontSize:   "12px",
       fontWeight: "500",
+      transition: "color 0.15s ease",
     },
     // Preview del usuario (nombre + email arriba del menú)
     userPreviewMainIdentifier: {
