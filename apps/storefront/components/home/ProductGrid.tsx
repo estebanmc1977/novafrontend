@@ -137,7 +137,7 @@ function HeroProductCard({
             {p.tagline}
           </p>
           <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#9CA3AF] mt-3">
-            Pack de 30 parches · Ingredientes
+            Pack de 30 parches
           </p>
           <ul className="mt-1.5 space-y-0.5">
             {p.ingredients.map((ing) => (
