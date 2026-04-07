@@ -829,7 +829,7 @@ function MiCuentaContent() {
                 error={errors.subs}
                 token={token}
                 onUpdate={updateSub}
-                onRetry={() => { getToken().then((tok) => tok && loadSubs(tok)); }}
+                onRetry={() => { getToken().then((tok) => { if (tok) loadSubs(tok); }); }}
               />
             )}
             {activeTab === "pedidos" && (
@@ -837,7 +837,7 @@ function MiCuentaContent() {
                 orders={orders}
                 loading={loading.orders}
                 error={errors.orders}
-                onRetry={() => { getToken().then((tok) => tok && loadOrders(tok)); }}
+                onRetry={() => { getToken().then((tok) => { if (tok) loadOrders(tok); }); }}
               />
             )}
             {activeTab === "pago" && (
@@ -845,7 +845,7 @@ function MiCuentaContent() {
                 paymentMethods={paymentMethods}
                 loading={loading.pms}
                 error={errors.pms}
-                onRetry={() => { getToken().then((tok) => tok && loadPms(tok)); }}
+                onRetry={() => { getToken().then((tok) => { if (tok) loadPms(tok); }); }}
               />
             )}
           </motion.div>
