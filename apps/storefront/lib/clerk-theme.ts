@@ -287,6 +287,57 @@ export const novapatchAppearance: Record<string, any> = {
       fontWeight: "600",
       fontSize:   "12px",
     },
+
+    // ── UserButton popover ─────────────────────────────────────────────────────
+    userButtonPopoverCard: {
+      backgroundColor: "#FAF7F2",
+      border:          "1px solid rgba(13,27,53,0.08)",
+      borderRadius:    "1rem",
+      boxShadow:       "0 12px 40px rgba(13,27,53,0.14)",
+      padding:         "0.5rem",
+      minWidth:        "240px",
+    },
+    userButtonPopoverActions: {
+      padding: "0.25rem 0",
+    },
+    userButtonPopoverActionButton: {
+      borderRadius:    "0.625rem",
+      padding:         "0.65rem 0.875rem",
+      display:         "flex",
+      alignItems:      "center",
+      gap:             "0.75rem",
+      width:           "100%",
+      transition:      "background-color 0.15s ease",
+    },
+    userButtonPopoverActionButtonText: {
+      color:      "#0D1B35",
+      fontWeight: "600",
+      fontSize:   "14px",
+    },
+    userButtonPopoverActionButtonIcon: {
+      color:  "#5F7080",
+      width:  "16px",
+      height: "16px",
+    },
+    userButtonPopoverFooter: {
+      borderTop:  "1px solid rgba(13,27,53,0.07)",
+      marginTop:  "0.5rem",
+      paddingTop: "0.75rem",
+      opacity:    "0.5",
+    },
+    // Preview del usuario (nombre + email arriba del menú)
+    userPreviewMainIdentifier: {
+      color:      "#0D1B35",
+      fontWeight: "700",
+      fontSize:   "15px",
+    },
+    userPreviewSecondaryIdentifier: {
+      color:    "#5F7080",
+      fontSize: "13px",
+    },
+    userPreview: {
+      padding: "0.5rem 0.875rem 0.75rem",
+    },
   },
 };
 
