@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useUser, useAuth } from "@clerk/nextjs";
+import Navbar from "@/components/Navbar";
 import {
   medusa,
   type MedusaSubscription,
@@ -118,7 +119,7 @@ function FrequencySelector({
       <button
         onClick={() => setOpen((o) => !o)}
         disabled={loading}
-        className="flex items-center gap-1.5 text-[12px] font-bold text-[#005088] hover:text-[#003d6b] transition-colors disabled:opacity-50"
+        className="flex items-center gap-1.5 text-[12px] font-bold text-[#0D1B35] hover:text-[#1D3461] transition-colors disabled:opacity-50"
       >
         {loading ? <Loader2 size={12} className="animate-spin" /> : <Repeat size={12} />}
         {FREQ_LABELS[current]}
@@ -138,7 +139,7 @@ function FrequencySelector({
                 key={d}
                 onClick={() => change(d)}
                 className="w-full flex items-center justify-between px-4 py-2.5 text-[12px] font-semibold hover:bg-[#F3F4F6] transition-colors text-left"
-                style={{ color: d === current ? "#E8503A" : "#005088" }}
+                style={{ color: d === current ? "#E8503A" : "#0D1B35" }}
               >
                 {FREQ_LABELS[d]}
                 {d === current && <CheckCircle2 size={12} className="text-[#E8503A]" />}
@@ -196,7 +197,7 @@ function SubscriptionCard({
     <motion.div
       layout
       className={`bg-white rounded-2xl border overflow-hidden transition-all duration-300 ${
-        isCancelled ? "opacity-60 border-[#F3F4F6]" : "border-[#005088]/8 shadow-[0_4px_20px_rgba(0,80,136,0.07)]"
+        isCancelled ? "opacity-60 border-[#F3F4F6]" : "border-[#0D1B35]/8 shadow-[0_4px_20px_rgba(0,80,136,0.07)]"
       }`}
     >
       <div className="p-5 flex gap-4">
@@ -214,7 +215,7 @@ function SubscriptionCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2 mb-1.5">
             <div>
-              <p className="text-[16px] font-black text-[#005088] leading-tight">
+              <p className="text-[16px] font-black text-[#0D1B35] leading-tight">
                 NovaPatch {sub.product_title}
               </p>
               <p className="text-[12px] text-[#6B7280] mt-0.5">
@@ -308,7 +309,7 @@ function SubscriptionCard({
               </button>
               <button
                 onClick={() => setConfirmCancel(false)}
-                className="text-[11px] font-semibold text-[#6B7280] hover:text-[#005088] transition-colors"
+                className="text-[11px] font-semibold text-[#6B7280] hover:text-[#0D1B35] transition-colors"
               >
                 No
               </button>
@@ -327,7 +328,7 @@ function PaymentMethodCard({ pm }: { pm: MedusaPaymentMethod }) {
     "American Express": "#007BC1",
   };
   return (
-    <div className="flex items-center gap-4 p-4 bg-white rounded-xl border border-[#005088]/8 shadow-[0_2px_12px_rgba(0,80,136,0.05)]">
+    <div className="flex items-center gap-4 p-4 bg-white rounded-xl border border-[#0D1B35]/8 shadow-[0_2px_12px_rgba(0,80,136,0.05)]">
       <div
         className="flex h-10 w-14 items-center justify-center rounded-lg text-[13px] font-black text-white flex-shrink-0"
         style={{ background: brandColors[pm.brand] ?? "#6B7280" }}
@@ -335,13 +336,13 @@ function PaymentMethodCard({ pm }: { pm: MedusaPaymentMethod }) {
         {pm.brand.slice(0, 4)}
       </div>
       <div className="flex-1">
-        <p className="text-[13px] font-bold text-[#005088]">•••• {pm.last4.slice(-4)}</p>
+        <p className="text-[13px] font-bold text-[#0D1B35]">•••• {pm.last4.slice(-4)}</p>
         <p className="text-[11px] text-[#6B7280]">
           Vence {pm.exp_month.toString().padStart(2, "0")}/{pm.exp_year}
         </p>
       </div>
       {pm.is_default && (
-        <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-[#EBF4FB] text-[#005088]">
+        <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-[#EAF5FB] text-[#0D1B35]">
           Principal
         </span>
       )}
@@ -355,10 +356,10 @@ function OrderRow({ order }: { order: MedusaOrder }) {
   const extraCount = order.items.length - visibleItems.length;
 
   return (
-    <div className="bg-white rounded-2xl border border-[#005088]/8 shadow-[0_4px_20px_rgba(0,80,136,0.05)] p-5">
+    <div className="bg-white rounded-2xl border border-[#0D1B35]/8 shadow-[0_4px_20px_rgba(0,80,136,0.05)] p-5">
       <div className="flex items-start justify-between gap-3 mb-3">
         <div>
-          <p className="text-[14px] font-black text-[#005088]">
+          <p className="text-[14px] font-black text-[#0D1B35]">
             Pedido #{order.display_id}
           </p>
           <p className="text-[11px] text-[#9CA3AF] mt-0.5">
@@ -396,7 +397,7 @@ function OrderRow({ order }: { order: MedusaOrder }) {
           )}
         </div>
 
-        <p className="ml-auto text-[14px] font-black text-[#005088]">
+        <p className="ml-auto text-[14px] font-black text-[#0D1B35]">
           {fmt(order.total / 100)}
         </p>
       </div>
@@ -430,7 +431,7 @@ function TabError({ onRetry }: { onRetry: () => void }) {
       <p className="text-[14px] text-[#6B7280] mb-4">No se pudo cargar la información.</p>
       <button
         onClick={onRetry}
-        className="inline-flex items-center gap-2 text-[13px] font-bold text-[#005088] hover:underline"
+        className="inline-flex items-center gap-2 text-[13px] font-bold text-[#0D1B35] hover:underline"
       >
         <RefreshCw size={13} />
         Reintentar
@@ -472,7 +473,7 @@ function TabSuscripciones({
         className="text-center py-16"
       >
         <Repeat size={36} className="mx-auto text-[#D1D5DB] mb-4" />
-        <h3 className="text-[17px] font-black text-[#005088] mb-2">
+        <h3 className="text-[17px] font-black text-[#0D1B35] mb-2">
           Aún no tienes suscripciones
         </h3>
         <p className="text-[14px] text-[#6B7280] mb-6 max-w-[280px] mx-auto">
@@ -517,7 +518,7 @@ function TabSuscripciones({
           <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ECFDF5]">
             <CheckCircle2 size={14} className="text-[#059669]" />
           </div>
-          <h2 className="text-[14px] font-black text-[#005088]">
+          <h2 className="text-[14px] font-black text-[#0D1B35]">
             Activas
             <span className="ml-2 text-[12px] font-semibold text-[#6B7280]">({active.length})</span>
           </h2>
@@ -545,7 +546,7 @@ function TabSuscripciones({
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#FFF7ED]">
               <Pause size={14} className="text-[#D97706]" />
             </div>
-            <h2 className="text-[14px] font-black text-[#005088]">
+            <h2 className="text-[14px] font-black text-[#0D1B35]">
               Pausadas
               <span className="ml-2 text-[12px] font-semibold text-[#6B7280]">({paused.length})</span>
             </h2>
@@ -605,7 +606,7 @@ function TabPedidos({
         className="text-center py-16"
       >
         <Package size={36} className="mx-auto text-[#D1D5DB] mb-4" />
-        <h3 className="text-[17px] font-black text-[#005088] mb-2">
+        <h3 className="text-[17px] font-black text-[#0D1B35] mb-2">
           Aún no tienes pedidos
         </h3>
         <p className="text-[14px] text-[#6B7280] mb-6 max-w-[260px] mx-auto">
@@ -653,7 +654,7 @@ function TabPago({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-[14px] font-black text-[#005088]">Tarjetas guardadas</h2>
+        <h2 className="text-[14px] font-black text-[#0D1B35]">Tarjetas guardadas</h2>
         <button className="flex items-center gap-1 text-[12px] font-bold text-[#E8503A] hover:underline">
           <Plus size={12} />
           Agregar
@@ -677,7 +678,7 @@ function TabPago({
         <ShieldCheck size={14} className="text-[#3CBFAB] flex-shrink-0" />
         <p className="text-[11px] text-[#6B7280]">
           Tus datos de pago están encriptados y gestionados de forma segura por{" "}
-          <span className="font-bold text-[#005088]">Openpay</span>. Novapatch nunca almacena datos de tarjeta.
+          <span className="font-bold text-[#0D1B35]">Openpay</span>. Novapatch nunca almacena datos de tarjeta.
         </p>
       </div>
     </div>
@@ -769,7 +770,7 @@ function MiCuentaContent() {
   if (!isLoaded) {
     return (
       <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
-        <Loader2 size={28} className="animate-spin text-[#005088]" />
+        <Loader2 size={28} className="animate-spin text-[#0D1B35]" />
       </div>
     );
   }
@@ -781,33 +782,71 @@ function MiCuentaContent() {
 
   return (
     <div className="min-h-screen bg-[#FAF7F2]">
-      {/* Header */}
-      <div className="border-b border-[#005088]/8 bg-white">
-        <div className="max-w-2xl mx-auto px-6 py-5">
-          <h1 className="text-[20px] font-black text-[#005088] tracking-[-0.01em] text-center">
-            Mi cuenta
-          </h1>
-          <p className="text-[12px] text-[#6B7280] text-center mt-0.5">
-            {user?.firstName ? `Hola, ${user.firstName}` : user?.primaryEmailAddress?.emailAddress}
-          </p>
+      <Navbar lightBg={true} />
+
+      {/* Account hero — navy brand header */}
+      <div className="pt-[76px]">
+        <div className="relative overflow-hidden bg-[#0D1B35]">
+          {/* Decorative radials */}
+          <div
+            className="pointer-events-none absolute -top-24 -right-24 w-80 h-80 rounded-full"
+            style={{ background: "radial-gradient(circle, rgba(91,168,213,0.13) 0%, transparent 70%)" }}
+          />
+          <div
+            className="pointer-events-none absolute -bottom-16 -left-16 w-64 h-64 rounded-full"
+            style={{ background: "radial-gradient(circle, rgba(232,80,58,0.10) 0%, transparent 70%)" }}
+          />
+          {/* Coral + sky accent line */}
+          <div
+            className="absolute top-0 left-0 right-0 h-[2px]"
+            style={{ background: "linear-gradient(to right, transparent, #E8503A 25%, #5BA8D5 75%, transparent)" }}
+          />
+
+          <div className="relative z-10 max-w-2xl mx-auto px-6 py-7 flex items-center gap-5">
+            {/* Avatar */}
+            <div className="relative h-[60px] w-[60px] flex-shrink-0 overflow-hidden rounded-2xl ring-2 ring-[#E8503A]/50 ring-offset-2 ring-offset-[#0D1B35]">
+              {user.imageUrl ? (
+                <Image src={user.imageUrl} alt={user.fullName ?? "Avatar"} fill sizes="60px" className="object-cover" />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-[#1D3461] text-[20px] font-black text-white">
+                  {user.firstName?.[0] ?? "N"}
+                </div>
+              )}
+            </div>
+            <div className="min-w-0">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#E8503A] mb-0.5">
+                Mi cuenta
+              </p>
+              <h1 className="text-[22px] font-black text-white leading-tight tracking-[-0.02em] truncate">
+                {user.fullName ?? user.primaryEmailAddress?.emailAddress}
+              </h1>
+              {user.fullName && (
+                <p className="text-[12px] text-white/45 mt-0.5 truncate">
+                  {user.primaryEmailAddress?.emailAddress}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
 
-        {/* Tab nav */}
-        <div className="max-w-2xl mx-auto px-6">
-          <div className="flex border-b border-transparent -mb-px">
-            {TABS.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setTab(tab.id)}
-                className={`px-4 py-3 text-[13px] font-bold border-b-2 transition-colors ${
-                  activeTab === tab.id
-                    ? "border-[#E8503A] text-[#E8503A]"
-                    : "border-transparent text-[#6B7280] hover:text-[#005088]"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+        {/* Sticky tab nav */}
+        <div className="sticky top-[76px] z-30 bg-white border-b border-[#0D1B35]/8 shadow-[0_1px_0_rgba(13,27,53,0.06)]">
+          <div className="max-w-2xl mx-auto px-6">
+            <div className="flex">
+              {TABS.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setTab(tab.id)}
+                  className={`px-5 py-4 text-[13px] font-bold border-b-2 transition-all duration-200 ${
+                    activeTab === tab.id
+                      ? "border-[#E8503A] text-[#E8503A]"
+                      : "border-transparent text-[#9CA3AF] hover:text-[#0D1B35]"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -858,8 +897,8 @@ function MiCuentaContent() {
 export default function MiCuentaPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#FAF7F2] flex items-center justify-center">
-        <Loader2 size={28} className="animate-spin text-[#005088]" />
+      <div className="min-h-screen bg-[#0D1B35] flex items-center justify-center">
+        <Loader2 size={28} className="animate-spin text-[#E8503A]" />
       </div>
     }>
       <MiCuentaContent />
