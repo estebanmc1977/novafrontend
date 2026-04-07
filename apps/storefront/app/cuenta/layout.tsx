@@ -1,21 +1,30 @@
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+"use client";
 
-// Protege todas las rutas bajo /cuenta a nivel de Server Component.
-export default async function CuentaLayout({
+import { useEffect } from "react";
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+
+export default function CuentaLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  try {
-    const { userId } = await auth();
-    if (!userId) redirect("/sign-in");
-  } catch (e) {
-    // Si auth() falla por config de Clerk, redirigir al sign-in
-    // en lugar de mostrar el error boundary
-    const isRedirect = e instanceof Error && e.message === "NEXT_REDIRECT";
-    if (isRedirect) throw e; // dejar que Next.js procese el redirect
-    redirect("/sign-in");
+  const { isLoaded, userId } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    if (!userId) {
+      router.replace("/sign-in");
+    }
+  }, [isLoaded, router, userId]);
+
+  if (!isLoaded) {
+    return null;
+  }
+
+  if (!userId) {
+    return null;
   }
 
   return <>{children}</>;
