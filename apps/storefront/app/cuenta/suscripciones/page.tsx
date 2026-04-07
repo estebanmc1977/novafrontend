@@ -401,10 +401,13 @@ export default function SuscripcionesPage() {
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
-    const token = await getToken();
-    if (!token) return;
-
     try {
+      const token = await getToken();
+      if (!token) {
+        setSubscriptions(MOCK_SUBSCRIPTIONS);
+        setPaymentMethods(MOCK_PAYMENT_METHODS);
+        return;
+      }
       const [subs, pms] = await Promise.all([
         medusa.subscriptions.list(token),
         medusa.paymentMethods.list(token),
