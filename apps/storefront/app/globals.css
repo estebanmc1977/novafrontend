@@ -91,3 +91,30 @@ p {
   background: var(--btn-accent);
   color: #fff !important;
 }
+
+/* ── Clerk UserButton popover footer — ocultar "Secured by Clerk" ── */
+/* Ocultar el bloque que contiene el logo de Clerk (primer hijo sin links) */
+.cl-userButtonPopoverFooter > div:first-child:not(:has(a)) {
+  display: none !important;
+}
+.cl-userButtonPopoverFooter {
+  justify-content: center !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+.cl-userButtonPopoverFooterPages {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 1.25rem !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
+.cl-userButtonPopoverFooterPages a {
+  color: #9CA3AF !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+}
+.cl-userButtonPopoverFooterPages a:hover {
+  color: #5F7080 !important;
+}
