@@ -63,6 +63,7 @@ export type MedusaLineItem = {
   title: string;
   quantity: number;
   unit_price: number;
+  thumbnail?: string | null;
   metadata?: Record<string, unknown>;
 };
 
@@ -71,12 +72,13 @@ export type MedusaOrder = {
   display_id: number;
   status: string;
   total: number;
+  created_at: string;
   items: MedusaLineItem[];
 };
 
 export type MedusaSubscription = {
   id: string;
-  status: "active" | "paused" | "cancelled";
+  status: "active" | "paused" | "cancelled" | "past_due" | "delayed_out_of_stock";
   interval_days: 30 | 60 | 90;
   next_delivery_at: string;
   product_title: string;
@@ -429,7 +431,25 @@ const subscriptions = {
   },
 };
 
-// ─── 5. Gestión de Tarjetas (requiere Clerk JWT) ──────────────────────────────
+// ─── 6. Historial de Órdenes (requiere Clerk JWT) ─────────────────────────────
+
+const orders = {
+  /**
+   * GET /store/orders
+   * Lista las órdenes del cliente autenticado.
+   * Medusa V2 filtra automáticamente por el customer del JWT.
+   */
+  async list(token: string): Promise<MedusaOrder[]> {
+    const data = await medusaFetch<{ orders: MedusaOrder[] }>(
+      "/store/orders",
+      {},
+      token
+    );
+    return data.orders;
+  },
+};
+
+// ─── 7. Gestión de Tarjetas (requiere Clerk JWT) ──────────────────────────────
 
 const paymentMethods = {
   /**
@@ -474,5 +494,6 @@ export const medusa = {
   checkout,
   customer,
   subscriptions,
+  orders,
   paymentMethods,
 };
