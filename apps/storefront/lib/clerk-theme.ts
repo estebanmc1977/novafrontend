@@ -47,6 +47,12 @@ export const novapatchAppearance: Record<string, any> = {
 
   // ── Elementos ──────────────────────────────────────────────────────────────
   elements: {
+    // ── Modal backdrop ────────────────────────────────────────────────────────
+    modalBackdrop: {
+      backgroundColor: "rgba(13,27,53,0.65)",
+      backdropFilter: "blur(6px)",
+      WebkitBackdropFilter: "blur(6px)",
+    },
 
     // Card — sin chrome: se integra al fondo cream de la página
     card: {
