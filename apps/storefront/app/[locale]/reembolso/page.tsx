@@ -1,67 +1,556 @@
-// apps/storefront/app/[locale]/reembolso/page.tsx
-import { readFile } from 'fs/promises'
-import path from 'path'
-import { notFound } from 'next/navigation'
-import { MDXRemote } from 'next-mdx-remote/rsc'
-import { getTranslations } from 'next-intl/server'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
-import { MARKETS } from '@/lib/markets'
-import type { Locale } from '@/i18n/routing'
+"use client";
 
-export default async function ReembolsoPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type FormData = {
+  producto: string;
+  email: string;
+  parches_usados: string;
+  uso_diario: string;
+  tiempo_uso: string;
+  motivo: string;
+  motivo_otro: string;
+  experiencia: string;
+  reaccion: string;
+  reaccion_detalle: string;
+  empaque: string;
+  rating: number;
+  menos_gusto: string[];
+  mejora: string;
+  volveria: string;
+  evidencia: string;
+  comentario_final: string;
+};
+
+const EMPTY: FormData = {
+  producto: "", email: "", parches_usados: "", uso_diario: "", tiempo_uso: "",
+  motivo: "", motivo_otro: "", experiencia: "", reaccion: "", reaccion_detalle: "",
+  empaque: "", rating: 0, menos_gusto: [], mejora: "", volveria: "", evidencia: "",
+  comentario_final: "",
+};
+
+// ─── Step config ──────────────────────────────────────────────────────────────
+
+const STEPS = [
+  { label: "Tu pedido" },
+  { label: "Tu experiencia" },
+  { label: "Motivo" },
+  { label: "Estado" },
+  { label: "Opinión" },
+];
+
+// ─── Shared field components ──────────────────────────────────────────────────
+
+function Radio({ name, value, label, checked, onChange }: {
+  name: string; value: string; label: string; checked: boolean; onChange: () => void;
 }) {
-  const { locale } = await params
-  const t = await getTranslations('legal')
-  const market = MARKETS[locale as Locale]
+  return (
+    <label className="flex items-start gap-3 cursor-pointer group">
+      <div
+        className="mt-0.5 w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all duration-150"
+        style={{
+          borderColor: checked ? "#3CBFAB" : "#D1D5DB",
+          background: checked ? "#3CBFAB" : "white",
+        }}
+        onClick={onChange}
+      >
+        {checked && <div className="w-2 h-2 rounded-full bg-white" />}
+      </div>
+      <input type="radio" name={name} value={value} checked={checked} onChange={onChange} className="sr-only" />
+      <span
+        className="text-[15px] leading-snug transition-colors duration-150"
+        style={{ color: checked ? "#3CBFAB" : "#374151" }}
+        onClick={onChange}
+      >
+        {label}
+      </span>
+    </label>
+  );
+}
 
-  let source: string
-  try {
-    const filePath = path.join(process.cwd(), 'content/legal', locale, 'reembolso.mdx')
-    source = await readFile(filePath, 'utf-8')
-  } catch {
-    notFound()
+function Checkbox({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
+  return (
+    <label className="flex items-start gap-3 cursor-pointer">
+      <div
+        className="mt-0.5 w-5 h-5 rounded flex-shrink-0 flex items-center justify-center transition-all duration-150 border-2"
+        style={{
+          borderColor: checked ? "#3CBFAB" : "#D1D5DB",
+          background: checked ? "#3CBFAB" : "white",
+        }}
+        onClick={onChange}
+      >
+        {checked && (
+          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+            <path d="M1 4l3 3 5-6" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </div>
+      <span className="text-[15px] leading-snug" style={{ color: checked ? "#3CBFAB" : "#374151" }} onClick={onChange}>
+        {label}
+      </span>
+    </label>
+  );
+}
+
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return <p className="text-[15px] font-semibold text-[#0D1B35] mb-3">{children}</p>;
+}
+
+function Optional() {
+  return <span className="text-[12px] font-normal text-[#9CA3AF] ml-1.5">opcional</span>;
+}
+
+// ─── Steps ────────────────────────────────────────────────────────────────────
+
+function Step1({ data, set }: { data: FormData; set: (k: keyof FormData, v: string) => void }) {
+  const productos = ["Energy — energía funcional", "Sleep — descanso nocturno", "Zen — calma y equilibrio mental",
+    "Shield — bienestar preventivo", "Glow — bienestar de la piel", "Woman — equilibrio femenino", "Compré varios productos"];
+  return (
+    <div className="flex flex-col gap-8">
+      <div>
+        <FieldLabel>¿Qué producto compraste?</FieldLabel>
+        <div className="flex flex-col gap-3">
+          {productos.map((p) => (
+            <Radio key={p} name="producto" value={p} label={p} checked={data.producto === p} onChange={() => set("producto", p)} />
+          ))}
+        </div>
+      </div>
+      <div>
+        <FieldLabel>¿Cuál es el email con el que hiciste la compra?</FieldLabel>
+        <input
+          type="email"
+          value={data.email}
+          onChange={(e) => set("email", e.target.value)}
+          placeholder="tu@correo.com"
+          className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] text-[15px] text-[#0D1B35] focus:outline-none focus:border-[#3CBFAB] focus:ring-2 focus:ring-[#3CBFAB]/10 transition-all"
+        />
+      </div>
+    </div>
+  );
+}
+
+function Step2({ data, set }: { data: FormData; set: (k: keyof FormData, v: string) => void }) {
+  const parches = ["Ninguno — no llegué a usar el producto", "1 a 3 parches", "4 a 7 parches", "Más de 7 parches"];
+  const uso = ["Sí, lo usé todos los días", "La mayoría de los días, pero hubo interrupciones",
+    "Solo algunos días, no fui constante", "No aplica — no llegué a usarlo"];
+  const tiempos = ["Menos de 1 semana", "1 a 2 semanas", "2 a 4 semanas", "Más de 1 mes", "No aplica — no lo usé"];
+
+  return (
+    <div className="flex flex-col gap-8">
+      <div>
+        <FieldLabel>¿Cuántos parches usaste antes de pedir el reembolso?</FieldLabel>
+        <div className="flex flex-col gap-3">
+          {parches.map((p) => (
+            <Radio key={p} name="parches_usados" value={p} label={p} checked={data.parches_usados === p} onChange={() => set("parches_usados", p)} />
+          ))}
+        </div>
+      </div>
+      <div>
+        <FieldLabel>¿Usaste el parche de forma diaria o constante?</FieldLabel>
+        <div className="flex flex-col gap-3">
+          {uso.map((u) => (
+            <Radio key={u} name="uso_diario" value={u} label={u} checked={data.uso_diario === u} onChange={() => set("uso_diario", u)} />
+          ))}
+        </div>
+      </div>
+      <div>
+        <FieldLabel>¿Cuánto tiempo usaste el producto antes de notar que no era para ti?</FieldLabel>
+        <div className="flex flex-col gap-3">
+          {tiempos.map((t) => (
+            <Radio key={t} name="tiempo_uso" value={t} label={t} checked={data.tiempo_uso === t} onChange={() => set("tiempo_uso", t)} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Step3({ data, set }: { data: FormData; set: (k: keyof FormData, v: string) => void }) {
+  const motivos = ["No noté ningún efecto o resultado", "Tuve una reacción en la piel",
+    "El producto llegó dañado o en mal estado", "El envío tardó demasiado",
+    "No era lo que esperaba según la descripción", "Simplemente cambié de opinión", "Otro motivo"];
+  return (
+    <div className="flex flex-col gap-8">
+      <div>
+        <FieldLabel>¿Cuál es el motivo principal de tu insatisfacción?</FieldLabel>
+        <div className="flex flex-col gap-3">
+          {motivos.map((m) => (
+            <Radio key={m} name="motivo" value={m} label={m} checked={data.motivo === m} onChange={() => set("motivo", m)} />
+          ))}
+        </div>
+        {data.motivo === "Otro motivo" && (
+          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mt-3">
+            <textarea
+              value={data.motivo_otro}
+              onChange={(e) => set("motivo_otro", e.target.value)}
+              placeholder="Cuéntanos más..."
+              rows={3}
+              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] text-[15px] text-[#0D1B35] resize-none focus:outline-none focus:border-[#3CBFAB] focus:ring-2 focus:ring-[#3CBFAB]/10 transition-all"
+            />
+          </motion.div>
+        )}
+      </div>
+      <div>
+        <FieldLabel>¿Qué resultado esperabas y qué fue lo que experimentaste? <Optional /></FieldLabel>
+        <textarea
+          value={data.experiencia}
+          onChange={(e) => set("experiencia", e.target.value)}
+          placeholder="Describe brevemente tu experiencia..."
+          rows={4}
+          className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] text-[15px] text-[#0D1B35] resize-none focus:outline-none focus:border-[#3CBFAB] focus:ring-2 focus:ring-[#3CBFAB]/10 transition-all"
+        />
+      </div>
+    </div>
+  );
+}
+
+function Step4({ data, set }: { data: FormData; set: (k: keyof FormData, v: string) => void }) {
+  const reacciones = ["No, ninguna", "Sí — irritación leve en la piel", "Sí — enrojecimiento o picazón",
+    "Sí — reacción más intensa", "No lo usé, no puedo saberlo"];
+  const empaques = ["Sí, llegó en perfecto estado", "El empaque tenía algún daño visible",
+    "El sobre del parche estaba abierto o roto", "Recibí un producto distinto al que pedí"];
+  return (
+    <div className="flex flex-col gap-8">
+      <div>
+        <FieldLabel>¿Tuviste alguna reacción física al usar el parche?</FieldLabel>
+        <div className="flex flex-col gap-3">
+          {reacciones.map((r) => (
+            <Radio key={r} name="reaccion" value={r} label={r} checked={data.reaccion === r} onChange={() => set("reaccion", r)} />
+          ))}
+        </div>
+        {data.reaccion === "Sí — reacción más intensa" && (
+          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mt-3">
+            <textarea
+              value={data.reaccion_detalle}
+              onChange={(e) => set("reaccion_detalle", e.target.value)}
+              placeholder="Describe la reacción con más detalle..."
+              rows={3}
+              className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] text-[15px] text-[#0D1B35] resize-none focus:outline-none focus:border-[#3CBFAB] focus:ring-2 focus:ring-[#3CBFAB]/10 transition-all"
+            />
+          </motion.div>
+        )}
+      </div>
+      <div>
+        <FieldLabel>¿El empaque llegó en buen estado?</FieldLabel>
+        <div className="flex flex-col gap-3">
+          {empaques.map((e) => (
+            <Radio key={e} name="empaque" value={e} label={e} checked={data.empaque === e} onChange={() => set("empaque", e)} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Step5({ data, set, toggle }: {
+  data: FormData;
+  set: (k: keyof FormData, v: string) => void;
+  toggle: (item: string) => void;
+}) {
+  const menosGusto = ["El precio", "Los resultados", "El tiempo de envío", "El empaque",
+    "La adhesividad del parche", "La comunicación de la marca", "La experiencia de compra", "El proceso de devolución"];
+  const volveria = ["Sí, definitivamente", "Tal vez, dependiendo de los cambios", "Probablemente no", "No"];
+  const evidencia = ["Sí, puedo enviarla si me indican a dónde", "No tengo evidencia", "No aplica para mi caso"];
+
+  return (
+    <div className="flex flex-col gap-8">
+      {/* Rating */}
+      <div>
+        <FieldLabel>¿Cómo calificarías tu experiencia general con Novapatch?</FieldLabel>
+        <div className="flex gap-3 mt-1">
+          {[1, 2, 3, 4, 5].map((n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => set("rating", String(n))}
+              className="w-12 h-12 rounded-xl text-[20px] font-bold transition-all duration-150 border-2"
+              style={{
+                borderColor: data.rating >= n ? "#3CBFAB" : "#E5E7EB",
+                background: data.rating >= n ? "#3CBFAB" : "white",
+                color: data.rating >= n ? "white" : "#9CA3AF",
+              }}
+            >
+              {n}
+            </button>
+          ))}
+        </div>
+        <div className="flex justify-between mt-1.5">
+          <span className="text-[11px] text-[#9CA3AF]">Muy mala</span>
+          <span className="text-[11px] text-[#9CA3AF]">Excelente</span>
+        </div>
+      </div>
+
+      {/* Menos gustó */}
+      <div>
+        <FieldLabel>¿Qué fue lo que menos te gustó? <span className="text-[12px] font-normal text-[#9CA3AF] ml-1">(puedes elegir más de uno)</span></FieldLabel>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {menosGusto.map((item) => (
+            <Checkbox key={item} label={item} checked={data.menos_gusto.includes(item)} onChange={() => toggle(item)} />
+          ))}
+        </div>
+      </div>
+
+      {/* Qué mejorar */}
+      <div>
+        <FieldLabel>¿Qué podríamos haber hecho diferente para que tu experiencia fuera mejor? <Optional /></FieldLabel>
+        <textarea
+          value={data.mejora}
+          onChange={(e) => set("mejora", e.target.value)}
+          placeholder="Tu opinión nos ayuda a mejorar..."
+          rows={3}
+          className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] text-[15px] text-[#0D1B35] resize-none focus:outline-none focus:border-[#3CBFAB] focus:ring-2 focus:ring-[#3CBFAB]/10 transition-all"
+        />
+      </div>
+
+      {/* Volvería */}
+      <div>
+        <FieldLabel>¿Volverías a considerar Novapatch en el futuro si mejoramos lo que mencionaste?</FieldLabel>
+        <div className="flex flex-col gap-3">
+          {volveria.map((v) => (
+            <Radio key={v} name="volveria" value={v} label={v} checked={data.volveria === v} onChange={() => set("volveria", v)} />
+          ))}
+        </div>
+      </div>
+
+      {/* Evidencia */}
+      <div>
+        <FieldLabel>¿Tienes evidencia del problema que tuviste?</FieldLabel>
+        <div className="flex flex-col gap-3">
+          {evidencia.map((e) => (
+            <Radio key={e} name="evidencia" value={e} label={e} checked={data.evidencia === e} onChange={() => set("evidencia", e)} />
+          ))}
+        </div>
+      </div>
+
+      {/* Comentario final */}
+      <div>
+        <FieldLabel>¿Hay algo más que quieras contarnos? <Optional /></FieldLabel>
+        <textarea
+          value={data.comentario_final}
+          onChange={(e) => set("comentario_final", e.target.value)}
+          placeholder="Número de orden, detalles adicionales, o cualquier cosa que quieras compartir..."
+          rows={4}
+          className="w-full px-4 py-3 rounded-xl border border-[#E5E7EB] text-[15px] text-[#0D1B35] resize-none focus:outline-none focus:border-[#3CBFAB] focus:ring-2 focus:ring-[#3CBFAB]/10 transition-all"
+        />
+      </div>
+    </div>
+  );
+}
+
+// ─── Validation per step ──────────────────────────────────────────────────────
+
+function canAdvance(step: number, data: FormData): boolean {
+  if (step === 0) return !!data.producto && !!data.email && data.email.includes("@");
+  if (step === 1) return !!data.parches_usados && !!data.uso_diario && !!data.tiempo_uso;
+  if (step === 2) return !!data.motivo;
+  if (step === 3) return !!data.reaccion && !!data.empaque;
+  if (step === 4) return data.rating > 0 && !!data.volveria && !!data.evidencia;
+  return false;
+}
+
+// ─── Main page ────────────────────────────────────────────────────────────────
+
+export default function ReembolsoPage() {
+  const [step, setStep] = useState(0);
+  const [dir, setDir] = useState(1);
+  const [data, setData] = useState<FormData>(EMPTY);
+  const [submitted, setSubmitted] = useState(false);
+
+  const set = (k: keyof FormData, v: string) =>
+    setData((prev) => ({ ...prev, [k]: k === "rating" ? Number(v) : v }));
+
+  const toggle = (item: string) =>
+    setData((prev) => ({
+      ...prev,
+      menos_gusto: prev.menos_gusto.includes(item)
+        ? prev.menos_gusto.filter((x) => x !== item)
+        : [...prev.menos_gusto, item],
+    }));
+
+  const next = () => { setDir(1); setStep((s) => s + 1); };
+  const prev = () => { setDir(-1); setStep((s) => s - 1); };
+
+  const submit = () => {
+    // TODO: POST data to /api/reembolso or Resend endpoint
+    setSubmitted(true);
+  };
+
+  if (submitted) {
+    return (
+      <>
+        <Navbar lightBg />
+        <main className="min-h-screen flex items-center justify-center px-6" style={{ background: "#FAF7F2" }}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
+            className="max-w-md w-full bg-white rounded-3xl p-10 text-center shadow-[0_8px_48px_rgba(0,0,0,0.08)]"
+          >
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6" style={{ background: "#E6F7F6" }}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <path d="M5 13l4 4L19 7" stroke="#3CBFAB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <h1 className="text-[24px] font-black text-[#0D1B35] mb-3">Solicitud recibida</h1>
+            <p className="text-[15px] text-[#0D1B35]/60 leading-[1.7] mb-8">
+              Gracias por tu tiempo. Nuestro equipo revisará tu caso y te contactará al correo indicado en un plazo de <strong className="text-[#0D1B35]">2 a 5 días hábiles</strong>.
+            </p>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-[15px] font-bold text-white transition-all duration-200 hover:-translate-y-0.5"
+              style={{ background: "#3CBFAB" }}
+            >
+              Volver al inicio
+            </Link>
+          </motion.div>
+        </main>
+        <Footer />
+      </>
+    );
   }
+
+  const progress = ((step) / STEPS.length) * 100;
 
   return (
     <>
       <Navbar lightBg />
-      <main>
-        <section className="pt-32 pb-16 px-6 text-center" style={{ background: '#FEF7ED' }}>
-          <div className="max-w-2xl mx-auto">
-            <p className="text-[#3CBFAB] font-semibold text-sm uppercase tracking-widest mb-4">
-              {t('badge')}
-            </p>
-            <h1 className="text-5xl lg:text-6xl font-bold text-[#005088] mb-4">
-              {t('refund.title')}
+      <main className="min-h-screen pt-28 pb-24 px-6" style={{ background: "#FAF7F2" }}>
+        <div className="max-w-[560px] mx-auto">
+
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-10"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[12px] font-bold uppercase tracking-[0.08em] mb-4"
+              style={{ background: "#E6F7F6", color: "#3CBFAB" }}>
+              Garantía 30 días
+            </div>
+            <h1 className="text-[28px] font-black text-[#0D1B35] tracking-[-0.02em] mb-2">
+              Solicitud de reembolso
             </h1>
-            <p className="text-[#6B7280] text-sm">{t('lastUpdated')}</p>
-          </div>
-        </section>
+            <p className="text-[15px] text-[#0D1B35]/60">
+              Completa el formulario y te contactamos en 2–5 días hábiles.
+            </p>
+          </motion.div>
 
-        <section className="py-16 px-6 bg-[#FAF7F2]">
-          <div className="max-w-3xl mx-auto">
-            <div className="prose prose-lg prose-headings:text-[#005088] prose-p:text-[#6B7280] prose-li:text-[#6B7280] max-w-none">
-              <MDXRemote source={source} />
+          {/* Progress */}
+          <div className="mb-8">
+            <div className="flex justify-between mb-2">
+              {STEPS.map((s, i) => (
+                <span
+                  key={s.label}
+                  className="text-[11px] font-semibold uppercase tracking-[0.06em] hidden sm:block"
+                  style={{ color: i === step ? "#3CBFAB" : i < step ? "#3CBFAB" : "#D1D5DB" }}
+                >
+                  {s.label}
+                </span>
+              ))}
+            </div>
+            <div className="h-1.5 rounded-full bg-[#E5E7EB] overflow-hidden">
+              <motion.div
+                className="h-full rounded-full"
+                style={{ background: "linear-gradient(90deg, #3CBFAB, #3CBFAB)" }}
+                animate={{ width: `${progress + 20}%` }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+              />
+            </div>
+            <p className="text-[12px] text-[#9CA3AF] mt-1.5">Paso {step + 1} de {STEPS.length}</p>
+          </div>
+
+          {/* Card */}
+          <div className="bg-white rounded-3xl shadow-[0_4px_24px_rgba(0,0,0,0.06)] overflow-hidden">
+            {/* Step header */}
+            <div className="px-8 pt-8 pb-6 border-b border-[#F3F4F6]">
+              <p className="text-[11px] font-bold uppercase tracking-[0.1em] mb-1" style={{ color: "#3CBFAB" }}>
+                {STEPS[step].label}
+              </p>
+              <h2 className="text-[18px] font-bold text-[#0D1B35]">
+                {["Tu pedido", "Tu experiencia de uso", "Motivo de devolución", "Estado del producto", "Tu opinión"][step]}
+              </h2>
             </div>
 
-            <div className="mt-12 bg-[#F8EDEB] rounded-3xl p-8 border border-[#005088]/15">
-              <h3 className="text-lg font-bold text-[#005088] mb-2">{t('contactTitle')}</h3>
-              <p className="text-[#6B7280] mb-4">{t('contactSubtitle')}</p>
-              <a
-                href={`mailto:${market.supportEmail}`}
-                className="text-[#3CBFAB] font-semibold hover:underline"
-              >
-                {market.supportEmail}
-              </a>
+            {/* Step content */}
+            <div className="px-8 py-8 overflow-hidden">
+              <AnimatePresence mode="wait" custom={dir}>
+                <motion.div
+                  key={step}
+                  custom={dir}
+                  initial={{ opacity: 0, x: dir * 32 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: dir * -32 }}
+                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] as const }}
+                >
+                  {step === 0 && <Step1 data={data} set={set} />}
+                  {step === 1 && <Step2 data={data} set={set} />}
+                  {step === 2 && <Step3 data={data} set={set} />}
+                  {step === 3 && <Step4 data={data} set={set} />}
+                  {step === 4 && <Step5 data={data} set={set} toggle={toggle} />}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {/* Nav */}
+            <div className="px-8 pb-8 flex items-center justify-between gap-4">
+              {step > 0 ? (
+                <button
+                  onClick={prev}
+                  className="flex items-center gap-2 text-[14px] font-semibold text-[#0D1B35]/60 hover:text-[#0D1B35] transition-colors duration-150"
+                >
+                  <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                  Atrás
+                </button>
+              ) : (
+                <span />
+              )}
+
+              {step < STEPS.length - 1 ? (
+                <button
+                  onClick={next}
+                  disabled={!canAdvance(step, data)}
+                  className="flex items-center gap-2 px-7 py-3 rounded-full text-[14px] font-bold text-white transition-all duration-200 hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
+                  style={{ background: "#3CBFAB" }}
+                >
+                  Siguiente
+                  <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </button>
+              ) : (
+                <button
+                  onClick={submit}
+                  disabled={!canAdvance(step, data)}
+                  className="flex items-center gap-2 px-7 py-3 rounded-full text-[14px] font-bold text-white transition-all duration-200 hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:translate-y-0"
+                  style={{ background: "#3CBFAB" }}
+                >
+                  Enviar solicitud
+                  <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </button>
+              )}
             </div>
           </div>
-        </section>
+
+          {/* Legal note */}
+          <p className="text-center text-[12px] text-[#9CA3AF] mt-6 leading-[1.6]">
+            Una vez enviado este formulario, nuestro equipo revisará tu caso y te contactará al email indicado.<br />
+            ¿Dudas? Escríbenos a{" "}
+            <a href="mailto:hola@novapatch.care" className="text-[#3CBFAB] hover:underline">hola@novapatch.care</a>
+          </p>
+        </div>
       </main>
       <Footer />
     </>
-  )
+  );
 }
