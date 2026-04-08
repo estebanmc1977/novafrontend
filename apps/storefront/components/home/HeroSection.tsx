@@ -3,6 +3,7 @@
 import { useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface Slide {
   src: string;
@@ -22,6 +23,7 @@ interface HeroSectionProps {
 const SWIPE_THRESHOLD = 50;
 
 export default function HeroSection({ slides, current, onNav, onDot, onPause, onResume }: HeroSectionProps) {
+  const t = useTranslations("home.hero");
   const pointerStartX = useRef<number | null>(null);
   const swiping = useRef(false);
 
@@ -131,7 +133,7 @@ export default function HeroSection({ slides, current, onNav, onDot, onPause, on
               }}
             >
               <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white flex-shrink-0" />
-              Parches de bienestar
+              {t("badge")}
             </div>
 
             {/* Headline
@@ -141,8 +143,7 @@ export default function HeroSection({ slides, current, onNav, onDot, onPause, on
               className="text-white font-black leading-[1.08] mb-3 sm:mb-4 tracking-[-0.02em] text-center sm:text-left"
               style={{ fontSize: "clamp(34px, 8vw, 62px)" }}
             >
-              Bienestar que no<br className="hidden sm:block" />{" "}
-              interrumpe tu día.
+              {t("title")}
             </h1>
 
             {/* Subtitle */}
@@ -150,9 +151,7 @@ export default function HeroSection({ slides, current, onNav, onDot, onPause, on
               className="text-white/85 font-normal mb-6 sm:mb-9 leading-[1.6] max-w-[400px] mx-auto sm:mx-0 text-center sm:text-left"
               style={{ fontSize: "clamp(14px, 3.5vw, 17px)" }}
             >
-              Sin cápsulas. Sin horarios. Sin agua.{" "}
-              <span className="hidden sm:inline">Un solo parche y listo — el resto del día es tuyo.</span>
-              <span className="sm:hidden">Un parche y listo.</span>
+              {t("subtitle")}
             </p>
 
             {/* CTAs
@@ -164,7 +163,7 @@ export default function HeroSection({ slides, current, onNav, onDot, onPause, on
                 className="inline-flex items-center justify-center gap-2 bg-white font-bold px-7 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(0,0,0,0.2)] shadow-[0_4px_20px_rgba(0,0,0,0.15)]"
                 style={{ color: "#005088", fontSize: "clamp(14px, 3.5vw, 15px)" }}
               >
-                Conoce los parches
+                {t("cta")}
                 <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
@@ -177,7 +176,7 @@ export default function HeroSection({ slides, current, onNav, onDot, onPause, on
                   fontSize: "clamp(14px, 3.5vw, 15px)",
                 }}
               >
-                ¿Cómo funciona?
+                {t("ctaSecondary")}
               </Link>
             </div>
 

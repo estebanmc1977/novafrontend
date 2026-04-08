@@ -1,34 +1,39 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
-
-const footerLinks = {
-  Comprar: [
-    { label: "Tienda", href: "/tienda" },
-    { label: "Suscripciones", href: "/suscripciones" },
-    { label: "Garantía", href: "/garantia" },
-  ],
-  Ayuda: [
-    { label: "Contáctanos", href: "/contacto" },
-    { label: "Preguntas frecuentes", href: "/faq" },
-    { label: "Solicitar reembolso", href: "/reembolso" },
-  ],
-  Nosotros: [
-    { label: "Nosotros", href: "/nosotros" },
-    { label: "¿Por qué parches?", href: "/nosotros#por-que" },
-    { label: "Suscríbete y ahorra", href: "/suscripciones" },
-  ],
-  Legal: [
-    { label: "Aviso de Privacidad", href: "/privacidad" },
-    { label: "Términos y Condiciones", href: "/terminos" },
-  ],
-};
+import { useTranslations, useLocale } from 'next-intl'
+import { Link } from '@/lib/i18n-navigation'
+import CountrySelector from '@/components/CountrySelector'
+import type { Locale } from '@/i18n/routing'
 
 export default function Footer() {
+  const t = useTranslations('footer')
+  const locale = useLocale() as Locale
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
+
+  const footerLinks = {
+    [t('sections.comprar')]: [
+      { label: t('links.tienda'), href: "/tienda" },
+      { label: t('links.suscripciones'), href: "/suscripciones" },
+      { label: t('links.garantia'), href: "/garantia" },
+    ],
+    [t('sections.ayuda')]: [
+      { label: t('links.contacto'), href: "/contacto" },
+      { label: t('links.faq'), href: "/faq" },
+      { label: t('links.reembolso'), href: "/reembolso" },
+    ],
+    [t('sections.nosotros')]: [
+      { label: t('links.nosotros'), href: "/nosotros" },
+      { label: t('links.porQue'), href: "/nosotros#por-que" },
+      { label: t('links.suscribeteAhorra'), href: "/suscripciones" },
+    ],
+    [t('sections.legal')]: [
+      { label: t('links.privacidad'), href: "/privacidad" },
+      { label: t('links.terminos'), href: "/terminos" },
+    ],
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,16 +62,16 @@ export default function Footer() {
           {/* Newsletter */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
             <h4 className="text-xs font-bold uppercase tracking-widest text-[#0D1B35]/40 mb-4">Newsletter</h4>
-            <p className="text-sm text-[#0D1B35]/55 mb-4 leading-relaxed">Tips de bienestar y descuentos exclusivos.</p>
+            <p className="text-sm text-[#0D1B35]/55 mb-4 leading-relaxed">{t('newsletter.label')}</p>
             {sent ? (
-              <p className="text-sm text-[#C9D849] font-semibold">¡Gracias por suscribirte! 🎉</p>
+              <p className="text-sm text-[#C9D849] font-semibold">{t('newsletter.success')}</p>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-6">
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tu@correo.com"
+                  placeholder={t('newsletter.placeholder')}
                   required
                   className="w-full px-4 py-2.5 rounded-xl bg-[#0D1B35]/6 border border-[#0D1B35]/15 text-sm text-[#0D1B35] placeholder-[#0D1B35]/35 focus:outline-none focus:border-[#E8503A]/60 transition-colors duration-200"
                 />
@@ -74,7 +79,7 @@ export default function Footer() {
                   type="submit"
                   className="w-full px-4 py-2.5 bg-[#E8503A] text-white text-sm font-semibold rounded-xl hover:bg-[#C43B28] active:scale-95 transition-all duration-200"
                 >
-                  Suscribirme
+                  {t('newsletter.button')}
                 </button>
               </form>
             )}
@@ -94,18 +99,39 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-[#0D1B35]/10">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-3">
-          <Image src="/logos/logocolor.webp" alt="Novapatch" width={130} height={36} className="h-7 w-auto object-contain opacity-50" />
-          <p className="text-xs text-[#0D1B35]/35 text-center">© 2026 Novapatch®. Todos los derechos reservados.</p>
-          <div className="flex items-center gap-1.5">
-            {["Visa", "Mastercard", "OXXO", "SPEI"].map((m) => (
-              <span key={m} className="px-2 py-1 bg-[#0D1B35]/8 rounded text-[10px] text-[#0D1B35]/50 font-medium">{m}</span>
-            ))}
-          </div>
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
+          <Image src="/logos/logocolor.webp" alt="Novapatch" width={130} height={36} className="h-7 w-auto object-contain opacity-40" />
+          <CountrySelector currentLocale={locale} />
+          <p className="text-[11px] text-[#0D1B35]/30 text-center tracking-wide">{t('copyright', { year: new Date().getFullYear() })}</p>
+          <PaymentBadges locale={locale} />
         </div>
       </div>
     </footer>
   );
+}
+
+const PAYMENT_METHODS: Record<string, Array<'visa' | 'mastercard' | 'oxxo' | 'spei' | 'pix' | 'boleto'>> = {
+  mx: ['visa', 'mastercard', 'oxxo', 'spei'],
+  br: ['visa', 'mastercard', 'pix', 'boleto'],
+  ar: ['visa', 'mastercard'],
+  cl: ['visa', 'mastercard'],
+  co: ['visa', 'mastercard'],
+}
+
+function PaymentBadges({ locale }: { locale: string }) {
+  const methods = PAYMENT_METHODS[locale] ?? ['visa', 'mastercard']
+  return (
+    <div className="flex items-center gap-1.5">
+      {methods.map((m) => (
+        <span
+          key={m}
+          className="px-2 py-1 bg-[#0D1B35]/8 rounded text-[10px] text-[#0D1B35]/50 font-medium"
+        >
+          {m === 'visa' ? 'Visa' : m === 'mastercard' ? 'Mastercard' : m.toUpperCase()}
+        </span>
+      ))}
+    </div>
+  )
 }
 
 function InstagramIcon() {

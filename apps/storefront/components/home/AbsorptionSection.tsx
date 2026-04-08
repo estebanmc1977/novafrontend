@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 const MOLECULES = [
   { x: 88,  delay: 0.0 },
@@ -103,13 +104,14 @@ function SkinDiagram() {
   );
 }
 
-const stats = [
-  { value: "<500", unit: "Da", label: "Tamaño molecular" },
-  { value: "10–12", unit: "h", label: "Absorción sostenida" },
-  { value: "0",    unit: "×",  label: "Digestión requerida" },
-];
-
 export default function AbsorptionSection() {
+  const t = useTranslations("home.absorption");
+
+  const stats = [
+    { value: t("stat1Value"), unit: "Da", label: t("stat1Label") },
+    { value: t("stat2Value"), unit: "h",  label: t("stat2Label") },
+    { value: t("stat3Value"), unit: "×",  label: t("stat3Label") },
+  ];
   return (
     <section
       className="text-[#005088] overflow-hidden"
@@ -133,7 +135,7 @@ export default function AbsorptionSection() {
               className="text-[11px] font-bold uppercase tracking-[0.12em]"
               style={{ color: "#1CB1BC" }}
             >
-              La ciencia
+              {t("badge")}
             </p>
           </div>
 
@@ -141,26 +143,14 @@ export default function AbsorptionSection() {
             className="font-black leading-[1.1] tracking-[-0.02em] mb-5"
             style={{ fontSize: "clamp(28px,3.2vw,44px)" }}
           >
-            No cualquier ingrediente<br />
-            funciona en un parche.
+            {t("title")}
           </h2>
-
-          <p
-            className="leading-[1.65] mb-5"
-            style={{ fontSize: "16px", color: "rgba(13,27,53,0.65)" }}
-          >
-            Para atravesar la piel, un ingrediente necesita tener menos de{" "}
-            <strong style={{ color: "#E8503A", fontWeight: 700 }}>500 Daltons</strong> de masa molecular. Por eso
-            las fórmulas de Novapatch no son adaptaciones de suplementos en cápsula — se diseñan
-            desde cero para este formato.
-          </p>
 
           <p
             className="leading-[1.65] mb-10"
             style={{ fontSize: "16px", color: "rgba(13,27,53,0.65)" }}
           >
-            El resultado: absorción directa al torrente sanguíneo, sin pasar por el sistema
-            digestivo, sin interferencias, durante entre 10 y 12 horas continuas.
+            {t("subtitle")}
           </p>
 
           {/* Stats */}

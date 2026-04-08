@@ -7,7 +7,8 @@
  * sin card chrome (sin borde, sin sombra, sin fondo propio).
  */
 
-import { esMX } from "@clerk/localizations";
+import { esMX, ptBR, esES } from "@clerk/localizations";
+import type { Market } from "@/lib/markets";
 
 // ─── Tema visual Novapatch ────────────────────────────────────────────────────
 
@@ -313,6 +314,14 @@ function deepMerge<T extends Record<string, any>>(base: T, overrides: DeepPartia
   return result;
 }
 
+const baseLocalizations = {
+  mx: esMX,
+  br: ptBR,
+  ar: esES,
+  cl: esES,
+  co: esES,
+};
+
 const novapatchOverrides = {
   signIn: {
     start: {
@@ -335,7 +344,35 @@ const novapatchOverrides = {
   formFieldInputPlaceholder__lastName:     "García",
 };
 
+// Keep the existing esLocalization export for backwards compatibility
+// during migration (remove once app/layout.tsx is updated)
 export const esLocalization = deepMerge(
   esMX as object,
   novapatchOverrides as object
 ) as typeof esMX;
+
+export function getClerkLocalization(locale: Market) {
+  const base = baseLocalizations[locale];
+  const isPortuguese = locale === "br";
+  return {
+    ...base,
+    signIn: {
+      ...base?.signIn,
+      start: {
+        ...base?.signIn?.start,
+        subtitle: isPortuguese
+          ? "Entre na sua conta Novapatch"
+          : "Ingresa a tu cuenta de Novapatch",
+      },
+    },
+    signUp: {
+      ...base?.signUp,
+      start: {
+        ...base?.signUp?.start,
+        subtitle: isPortuguese
+          ? "Cadastre-se para gerenciar seus pedidos e assinaturas"
+          : "Regístrate para gestionar tus pedidos y suscripciones",
+      },
+    },
+  };
+}

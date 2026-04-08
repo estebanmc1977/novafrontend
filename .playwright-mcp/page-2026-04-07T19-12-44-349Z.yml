@@ -1,0 +1,190 @@
+- generic [ref=e2]:
+  - region
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#start-of-content"
+    - banner "Global Navigation Menu" [ref=e8]:
+      - generic [ref=e9]:
+        - generic [ref=e10]:
+          - button "Open menu" [ref=e12] [cursor=pointer]:
+            - img [ref=e13]
+          - link "Homepage (g then d)" [ref=e15] [cursor=pointer]:
+            - /url: /
+            - img [ref=e16]
+        - generic [ref=e18]:
+          - navigation "Breadcrumbs" [ref=e19]:
+            - list [ref=e20]:
+              - listitem [ref=e21]:
+                - link "dlucca" [ref=e22] [cursor=pointer]:
+                  - /url: /dlucca
+                  - generic [ref=e23]: dlucca
+          - button "Search or jump to…" [ref=e26] [cursor=pointer]:
+            - generic [ref=e27]:
+              - generic:
+                - img
+              - generic [ref=e28]:
+                - generic:
+                  - text: Type
+                  - generic: /
+                  - text: to search
+        - generic [ref=e29]:
+          - generic [ref=e30]:
+            - generic [ref=e32]:
+              - link "Chat with Copilot" [ref=e34] [cursor=pointer]:
+                - /url: /copilot
+                - img [ref=e35]
+              - button "Open Copilot…" [ref=e39] [cursor=pointer]:
+                - generic:
+                  - img
+            - button "Create new..." [ref=e41] [cursor=pointer]:
+              - generic [ref=e42]:
+                - generic:
+                  - img
+              - generic:
+                - img
+            - link "Issues (g then i)" [ref=e43] [cursor=pointer]:
+              - /url: /issues
+              - img [ref=e44]
+            - link "Pull requests (g then p)" [ref=e47] [cursor=pointer]:
+              - /url: /pulls
+              - img [ref=e48]
+            - link "Repositories" [ref=e50] [cursor=pointer]:
+              - /url: /repos
+              - img [ref=e51]
+          - link "You have unread notifications (g then n)" [ref=e53] [cursor=pointer]:
+            - /url: /notifications
+            - img [ref=e54]
+          - button "Open user navigation menu" [ref=e57] [cursor=pointer]:
+            - img "Cristian Dlucca" [ref=e58]
+      - heading "User navigation" [level=2] [ref=e59]
+      - navigation "User" [ref=e60]:
+        - list [ref=e61]:
+          - listitem [ref=e62]:
+            - link "Overview" [ref=e63] [cursor=pointer]:
+              - /url: /dlucca
+              - img [ref=e65]
+              - generic [ref=e67]: Overview
+          - listitem [ref=e68]:
+            - link "Repositories (11)" [ref=e69] [cursor=pointer]:
+              - /url: /dlucca?tab=repositories
+              - img [ref=e71]
+              - generic [ref=e73]: Repositories
+              - generic [ref=e74]:
+                - generic [ref=e75]: "11"
+                - generic [ref=e76]: (11)
+          - listitem [ref=e77]:
+            - link "Projects" [ref=e78] [cursor=pointer]:
+              - /url: /dlucca?tab=projects
+              - img [ref=e80]
+              - generic [ref=e82]: Projects
+          - listitem [ref=e83]:
+            - link "Packages" [ref=e84] [cursor=pointer]:
+              - /url: /dlucca?tab=packages
+              - img [ref=e86]
+              - generic [ref=e88]: Packages
+          - listitem [ref=e89]:
+            - link "Stars (15)" [ref=e90] [cursor=pointer]:
+              - /url: /dlucca?tab=stars
+              - img [ref=e92]
+              - generic [ref=e94]: Stars
+              - generic [ref=e95]:
+                - generic [ref=e96]: "15"
+                - generic [ref=e97]: (15)
+  - main [ref=e100]:
+    - generic [ref=e102]:
+      - generic [ref=e105]:
+        - generic [ref=e106]:
+          - generic [ref=e107]:
+            - link "Change your avatar" [ref=e109] [cursor=pointer]:
+              - /url: https://github.com/account
+            - button "Set status" [ref=e114] [cursor=pointer]:
+              - generic [ref=e117]:
+                - img [ref=e120]
+                - generic:
+                  - generic: Set status
+          - heading "Cristian Dlucca dlucca" [level=1] [ref=e123]:
+            - generic [ref=e124]: Cristian Dlucca
+            - generic [ref=e125]: dlucca
+        - generic [ref=e127]:
+          - button "Edit profile" [ref=e129] [cursor=pointer]
+          - generic [ref=e131]:
+            - link "14 followers" [ref=e132] [cursor=pointer]:
+              - /url: https://github.com/dlucca?tab=followers
+              - img [ref=e133]
+              - text: 14 followers
+            - text: ·
+            - link "12 following" [ref=e135] [cursor=pointer]:
+              - /url: https://github.com/dlucca?tab=following
+          - list [ref=e136]:
+            - 'listitem "Home location: Buenos Aires, Argentina" [ref=e137]':
+              - img [ref=e138]
+              - generic [ref=e140]: Buenos Aires, Argentina
+        - generic [ref=e141]:
+          - heading "Achievements" [level=2] [ref=e142]:
+            - link "Achievements" [ref=e143] [cursor=pointer]:
+              - /url: /dlucca?tab=achievements
+          - generic [ref=e144]:
+            - 'link "Achievement: Pull Shark" [ref=e145] [cursor=pointer]':
+              - /url: /dlucca?achievement=pull-shark&tab=achievements
+              - 'img "Achievement: Pull Shark" [ref=e146]'
+            - 'link "Achievement: YOLO" [ref=e147] [cursor=pointer]':
+              - /url: /dlucca?achievement=yolo&tab=achievements
+              - 'img "Achievement: YOLO" [ref=e148]'
+            - 'link "Achievement: Pair Extraordinaire" [ref=e149] [cursor=pointer]':
+              - /url: /dlucca?achievement=pair-extraordinaire&tab=achievements
+              - 'img "Achievement: Pair Extraordinaire" [ref=e150]'
+      - generic [ref=e153]:
+        - generic [ref=e155]:
+          - button "Customize your pins" [ref=e157] [cursor=pointer]:
+            - generic [ref=e159]: Customize your pins
+          - heading "Popular repositories Loading" [level=2] [ref=e160]:
+            - text: Popular repositories
+            - generic [ref=e161]: Loading
+            - status
+          - list [ref=e162]:
+            - listitem [ref=e163]:
+              - generic [ref=e165]:
+                - generic [ref=e166]:
+                  - link "novapatchecommerce" [ref=e168] [cursor=pointer]:
+                    - /url: /dlucca/novapatchecommerce
+                  - generic [ref=e170]: Public
+                - paragraph [ref=e171]: E-commerce Novapatch BR/MX
+                - paragraph [ref=e172]:
+                  - generic [ref=e173]: TypeScript
+        - img "Loading" [ref=e179]
+  - contentinfo [ref=e182]:
+    - heading "Footer" [level=2] [ref=e183]
+    - generic [ref=e184]:
+      - generic [ref=e185]:
+        - link "GitHub Homepage" [ref=e186] [cursor=pointer]:
+          - /url: https://github.com
+          - img [ref=e187]
+        - generic [ref=e189]: © 2026 GitHub, Inc.
+      - navigation "Footer" [ref=e190]:
+        - heading "Footer navigation" [level=3] [ref=e191]
+        - list "Footer navigation" [ref=e192]:
+          - listitem [ref=e193]:
+            - link "Terms" [ref=e194] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+          - listitem [ref=e195]:
+            - link "Privacy" [ref=e196] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+          - listitem [ref=e197]:
+            - link "Security" [ref=e198] [cursor=pointer]:
+              - /url: https://github.com/security
+          - listitem [ref=e199]:
+            - link "Status" [ref=e200] [cursor=pointer]:
+              - /url: https://www.githubstatus.com/
+          - listitem [ref=e201]:
+            - link "Community" [ref=e202] [cursor=pointer]:
+              - /url: https://github.community/
+          - listitem [ref=e203]:
+            - link "Docs" [ref=e204] [cursor=pointer]:
+              - /url: https://docs.github.com/
+          - listitem [ref=e205]:
+            - link "Contact" [ref=e206] [cursor=pointer]:
+              - /url: https://support.github.com?tags=dotcom-footer
+          - listitem [ref=e207]:
+            - button "Manage cookies" [ref=e209] [cursor=pointer]
+          - listitem [ref=e210]:
+            - button "Do not share my personal information" [ref=e212] [cursor=pointer]

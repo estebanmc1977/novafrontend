@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 const plans = [
   {
@@ -51,6 +52,7 @@ const plans = [
 ];
 
 export default function CTABanner() {
+  const t = useTranslations("home.cta");
   return (
     <section
       id="suscripciones"
@@ -76,23 +78,17 @@ export default function CTABanner() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <p
-            className="text-[11px] font-bold uppercase tracking-[0.12em] mb-3"
-            style={{ color: "rgba(255,255,255,0.7)" }}
-          >
-            Ahorra con suscripción
-          </p>
           <h2
             className="font-black text-white tracking-[-0.02em] mb-3"
             style={{ fontSize: "clamp(28px,3.5vw,44px)" }}
           >
-            Tu rutina de bienestar,<br />sin interrupciones
+            {t("title")}
           </h2>
           <p
             className="text-[16px] max-w-[500px] mx-auto leading-[1.6]"
             style={{ color: "rgba(255,255,255,0.75)" }}
           >
-            Elige la frecuencia que mejor se adapte a tu ritmo. Pausa, cambia o cancela cuando quieras.
+            {t("subtitle")}
           </p>
         </motion.div>
 
@@ -193,7 +189,7 @@ export default function CTABanner() {
                     : "bg-transparent text-white border-2 border-white/55 hover:bg-white/15"
                 }`}
               >
-                Elegir plan
+                {t("button")}
               </Link>
             </motion.div>
           ))}

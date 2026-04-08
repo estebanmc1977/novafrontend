@@ -2,26 +2,16 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-
-const steps = [
-  {
-    n: 1,
-    title: "Eliges tu parche",
-    desc: "Energy, Sleep, Zen, Shield, Glow o Woman. Uno solo, según lo que necesitas hoy.",
-  },
-  {
-    n: 2,
-    title: "Lo pones en segundos",
-    desc: "En piel limpia, donde te sea cómodo. Sin agua, sin planificación, sin ritual.",
-  },
-  {
-    n: 3,
-    title: "Listo. Ya está.",
-    desc: "Durante las próximas horas el parche trabaja mientras tú vives tu día normal.",
-  },
-];
+import { useTranslations } from "next-intl";
 
 export default function HowItWorks() {
+  const t = useTranslations("home.howItWorks");
+
+  const steps = [
+    { n: 1, title: t("step1Title"), desc: t("step1Desc") },
+    { n: 2, title: t("step2Title"), desc: t("step2Desc") },
+    { n: 3, title: t("step3Title"), desc: t("step3Desc") },
+  ];
   return (
     <section id="como-funciona" className="bg-white" style={{ padding: "80px 48px" }}>
       <div className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -81,17 +71,14 @@ export default function HowItWorks() {
             className="text-[11px] font-bold uppercase tracking-[0.12em] mb-2.5"
             style={{ color: "#3CBFAB" }}
           >
-            Uso diario
+            {t("badge")}
           </p>
           <h2
             className="font-extrabold text-[#005088] leading-[1.15] tracking-[-0.02em]"
             style={{ fontSize: "clamp(26px,3vw,40px)" }}
           >
-            Así de simple.
+            {t("title")}
           </h2>
-          <p className="text-[16px] text-[#6B7280] mt-3 leading-[1.6]">
-            Bienestar que se integra. No que se agrega.
-          </p>
 
           <div className="mt-10 flex flex-col gap-7">
             {steps.map((step, i) => (

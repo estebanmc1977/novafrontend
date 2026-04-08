@@ -1,0 +1,374 @@
+- generic [ref=e2]:
+  - region
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#start-of-content"
+    - banner "Global Navigation Menu" [ref=e8]:
+      - generic [ref=e9]:
+        - generic [ref=e10]:
+          - button "Open menu" [ref=e12] [cursor=pointer]:
+            - img [ref=e13]
+          - link "Homepage (g then d)" [ref=e15] [cursor=pointer]:
+            - /url: /
+            - img [ref=e16]
+        - generic [ref=e18]:
+          - navigation "Breadcrumbs" [ref=e19]:
+            - list [ref=e20]:
+              - listitem [ref=e21]:
+                - link "dlucca" [ref=e22] [cursor=pointer]:
+                  - /url: /dlucca
+                  - generic [ref=e23]: dlucca
+          - button "Search or jump to…" [ref=e26] [cursor=pointer]:
+            - generic [ref=e27]:
+              - generic:
+                - img
+              - generic [ref=e28]:
+                - generic:
+                  - text: Type
+                  - generic: /
+                  - text: to search
+        - generic [ref=e29]:
+          - generic [ref=e30]:
+            - generic [ref=e32]:
+              - link "Chat with Copilot" [ref=e34] [cursor=pointer]:
+                - /url: /copilot
+                - img [ref=e35]
+              - button "Open Copilot…" [ref=e39] [cursor=pointer]:
+                - generic:
+                  - img
+            - button "Create new..." [ref=e41] [cursor=pointer]:
+              - generic [ref=e42]:
+                - generic:
+                  - img
+              - generic:
+                - img
+            - link "Issues (g then i)" [ref=e43] [cursor=pointer]:
+              - /url: /issues
+              - img [ref=e44]
+            - link "Pull requests (g then p)" [ref=e47] [cursor=pointer]:
+              - /url: /pulls
+              - img [ref=e48]
+            - link "Repositories" [ref=e50] [cursor=pointer]:
+              - /url: /repos
+              - img [ref=e51]
+          - link "You have unread notifications (g then n)" [ref=e53] [cursor=pointer]:
+            - /url: /notifications
+            - img [ref=e54]
+          - button "Open user navigation menu" [ref=e57] [cursor=pointer]:
+            - img "Cristian Dlucca" [ref=e58]
+      - heading "User navigation" [level=2] [ref=e59]
+      - navigation "User" [ref=e60]:
+        - list [ref=e61]:
+          - listitem [ref=e62]:
+            - link "Overview" [ref=e63] [cursor=pointer]:
+              - /url: /dlucca
+              - img [ref=e65]
+              - generic [ref=e67]: Overview
+          - listitem [ref=e68]:
+            - link "Repositories (11)" [active] [ref=e69] [cursor=pointer]:
+              - /url: /dlucca?tab=repositories
+              - img [ref=e71]
+              - generic [ref=e73]: Repositories
+              - generic [ref=e74]:
+                - generic [ref=e75]: "11"
+                - generic [ref=e76]: (11)
+          - listitem [ref=e77]:
+            - link "Projects" [ref=e78] [cursor=pointer]:
+              - /url: /dlucca?tab=projects
+              - img [ref=e80]
+              - generic [ref=e82]: Projects
+          - listitem [ref=e83]:
+            - link "Packages" [ref=e84] [cursor=pointer]:
+              - /url: /dlucca?tab=packages
+              - img [ref=e86]
+              - generic [ref=e88]: Packages
+          - listitem [ref=e89]:
+            - link "Stars (15)" [ref=e90] [cursor=pointer]:
+              - /url: /dlucca?tab=stars
+              - img [ref=e92]
+              - generic [ref=e94]: Stars
+              - generic [ref=e95]:
+                - generic [ref=e96]: "15"
+                - generic [ref=e97]: (15)
+  - main [ref=e100]:
+    - generic [ref=e102]:
+      - generic [ref=e105]:
+        - generic [ref=e106]:
+          - generic [ref=e107]:
+            - link "Change your avatar" [ref=e109] [cursor=pointer]:
+              - /url: https://github.com/account
+            - button "Set status" [ref=e114] [cursor=pointer]:
+              - generic [ref=e117]:
+                - img [ref=e120]
+                - generic:
+                  - generic: Set status
+          - heading "Cristian Dlucca dlucca" [level=1] [ref=e123]:
+            - generic [ref=e124]: Cristian Dlucca
+            - generic [ref=e125]: dlucca
+        - generic [ref=e127]:
+          - button "Edit profile" [ref=e129] [cursor=pointer]
+          - generic [ref=e131]:
+            - link "14 followers" [ref=e132] [cursor=pointer]:
+              - /url: https://github.com/dlucca?tab=followers
+              - img [ref=e133]
+              - text: 14 followers
+            - text: ·
+            - link "12 following" [ref=e135] [cursor=pointer]:
+              - /url: https://github.com/dlucca?tab=following
+          - list [ref=e136]:
+            - 'listitem "Home location: Buenos Aires, Argentina" [ref=e137]':
+              - img [ref=e138]
+              - generic [ref=e140]: Buenos Aires, Argentina
+        - generic [ref=e141]:
+          - heading "Achievements" [level=2] [ref=e142]:
+            - link "Achievements" [ref=e143] [cursor=pointer]:
+              - /url: /dlucca?tab=achievements
+          - generic [ref=e144]:
+            - 'link "Achievement: Pull Shark" [ref=e145] [cursor=pointer]':
+              - /url: /dlucca?achievement=pull-shark&tab=achievements
+              - 'img "Achievement: Pull Shark" [ref=e146]'
+            - 'link "Achievement: YOLO" [ref=e147] [cursor=pointer]':
+              - /url: /dlucca?achievement=yolo&tab=achievements
+              - 'img "Achievement: YOLO" [ref=e148]'
+            - 'link "Achievement: Pair Extraordinaire" [ref=e149] [cursor=pointer]':
+              - /url: /dlucca?achievement=pair-extraordinaire&tab=achievements
+              - 'img "Achievement: Pair Extraordinaire" [ref=e150]'
+      - generic [ref=e890]:
+        - generic [ref=e892]:
+          - search "Repositories" [ref=e893]:
+            - generic [ref=e894]:
+              - searchbox "Find a repository…" [ref=e896]
+              - generic [ref=e897]:
+                - group [ref=e898]:
+                  - button "Type" [ref=e899] [cursor=pointer]: Type
+                - group [ref=e901]:
+                  - button "Language" [ref=e902] [cursor=pointer]: Language
+                - group [ref=e904]:
+                  - button "Sort" [ref=e905] [cursor=pointer]: Sort
+          - link "New" [ref=e908] [cursor=pointer]:
+            - /url: /new
+            - img [ref=e909]
+            - text: New
+        - list [ref=e912]:
+          - listitem [ref=e913]:
+            - generic [ref=e914]:
+              - heading "novafrontend Private" [level=3] [ref=e916]:
+                - link "novafrontend" [ref=e917] [cursor=pointer]:
+                  - /url: /dlucca/novafrontend
+                - generic [ref=e918]: Private
+              - generic [ref=e919]:
+                - generic [ref=e920]: TypeScript
+                - text: Updated Apr 7, 202648 minutes ago
+            - generic [ref=e922]:
+              - generic [ref=e924]:
+                - button "Star this repository" [ref=e926] [cursor=pointer]:
+                  - img [ref=e927]
+                  - text: Star
+                - button "Add this repository to a list" [ref=e932] [cursor=pointer]:
+                  - img
+              - img [ref=e934]
+          - listitem [ref=e937]:
+            - generic [ref=e938]:
+              - heading "polymarketclaude Private" [level=3] [ref=e940]:
+                - link "polymarketclaude" [ref=e941] [cursor=pointer]:
+                  - /url: /dlucca/polymarketclaude
+                - generic [ref=e942]: Private
+              - generic [ref=e943]:
+                - generic [ref=e944]: Python
+                - text: Updated Apr 7, 20263 hours ago
+            - generic [ref=e946]:
+              - generic [ref=e948]:
+                - button "Star this repository" [ref=e950] [cursor=pointer]:
+                  - img [ref=e951]
+                  - text: Star
+                - button "Add this repository to a list" [ref=e956] [cursor=pointer]:
+                  - img
+              - img [ref=e958]
+          - listitem [ref=e961]:
+            - generic [ref=e962]:
+              - heading "novabackend Private" [level=3] [ref=e964]:
+                - link "novabackend" [ref=e965] [cursor=pointer]:
+                  - /url: /dlucca/novabackend
+                - generic [ref=e966]: Private
+              - generic [ref=e967]:
+                - generic [ref=e968]: TypeScript
+                - text: Updated Apr 5, 20263 days ago
+            - generic [ref=e970]:
+              - generic [ref=e972]:
+                - button "Star this repository" [ref=e974] [cursor=pointer]:
+                  - img [ref=e975]
+                  - text: Star
+                - button "Add this repository to a list" [ref=e980] [cursor=pointer]:
+                  - img
+              - img [ref=e982]
+          - listitem [ref=e985]:
+            - generic [ref=e986]:
+              - heading "novadev Private" [level=3] [ref=e988]:
+                - link "novadev" [ref=e989] [cursor=pointer]:
+                  - /url: /dlucca/novadev
+                - generic [ref=e990]: Private
+              - generic [ref=e991]:
+                - generic [ref=e992]: TypeScript
+                - text: Updated Apr 2, 20265 days ago
+            - generic [ref=e994]:
+              - generic [ref=e996]:
+                - button "Star this repository" [ref=e998] [cursor=pointer]:
+                  - img [ref=e999]
+                  - text: Star
+                - button "Add this repository to a list" [ref=e1004] [cursor=pointer]:
+                  - img
+              - img [ref=e1006]
+          - listitem [ref=e1009]:
+            - generic [ref=e1010]:
+              - heading "novadevvendure Private" [level=3] [ref=e1012]:
+                - link "novadevvendure" [ref=e1013] [cursor=pointer]:
+                  - /url: /dlucca/novadevvendure
+                - generic [ref=e1014]: Private
+              - generic [ref=e1015]:
+                - generic [ref=e1016]: TypeScript
+                - text: Updated Mar 31, 2026last week
+            - generic [ref=e1018]:
+              - generic [ref=e1020]:
+                - button "Star this repository" [ref=e1022] [cursor=pointer]:
+                  - img [ref=e1023]
+                  - text: Star
+                - button "Add this repository to a list" [ref=e1028] [cursor=pointer]:
+                  - img
+              - img [ref=e1030]
+          - listitem [ref=e1033]:
+            - generic [ref=e1034]:
+              - heading "novacommercev4 Private" [level=3] [ref=e1036]:
+                - link "novacommercev4" [ref=e1037] [cursor=pointer]:
+                  - /url: /dlucca/novacommercev4
+                - generic [ref=e1038]: Private
+              - generic [ref=e1039]:
+                - generic [ref=e1040]: TypeScript
+                - text: Updated Mar 26, 20262 weeks ago
+            - generic [ref=e1042]:
+              - generic [ref=e1044]:
+                - button "Star this repository" [ref=e1046] [cursor=pointer]:
+                  - img [ref=e1047]
+                  - text: Star
+                - button "Add this repository to a list" [ref=e1052] [cursor=pointer]:
+                  - img
+              - img [ref=e1054]
+          - listitem [ref=e1057]:
+            - generic [ref=e1058]:
+              - heading "novacommerce Private" [level=3] [ref=e1060]:
+                - link "novacommerce" [ref=e1061] [cursor=pointer]:
+                  - /url: /dlucca/novacommerce
+                - generic [ref=e1062]: Private
+              - generic [ref=e1063]: Updated Mar 26, 20262 weeks ago
+            - generic [ref=e1064]:
+              - generic [ref=e1066]:
+                - button "Star this repository" [ref=e1068] [cursor=pointer]:
+                  - img [ref=e1069]
+                  - text: Star
+                - button "Add this repository to a list" [ref=e1074] [cursor=pointer]:
+                  - img
+              - img [ref=e1076]
+          - listitem [ref=e1079]:
+            - generic [ref=e1080]:
+              - heading "novapatchecommerce Public" [level=3] [ref=e1082]:
+                - link "novapatchecommerce" [ref=e1083] [cursor=pointer]:
+                  - /url: /dlucca/novapatchecommerce
+                - generic [ref=e1084]: Public
+              - paragraph [ref=e1086]: E-commerce Novapatch BR/MX
+              - generic [ref=e1087]:
+                - generic [ref=e1088]: TypeScript
+                - text: Updated Mar 24, 20262 weeks ago
+            - generic [ref=e1090]:
+              - generic [ref=e1092]:
+                - button "Star this repository" [ref=e1094] [cursor=pointer]:
+                  - img [ref=e1095]
+                  - text: Star
+                - button "Add this repository to a list" [ref=e1100] [cursor=pointer]:
+                  - img
+              - img [ref=e1102]
+          - listitem [ref=e1105]:
+            - generic [ref=e1106]:
+              - heading "novapatchpitch Private" [level=3] [ref=e1108]:
+                - link "novapatchpitch" [ref=e1109] [cursor=pointer]:
+                  - /url: /dlucca/novapatchpitch
+                - generic [ref=e1110]: Private
+              - generic [ref=e1111]:
+                - generic [ref=e1112]: TypeScript
+                - text: Updated Mar 17, 20263 weeks ago
+            - generic [ref=e1114]:
+              - generic [ref=e1116]:
+                - button "Star this repository" [ref=e1118] [cursor=pointer]:
+                  - img [ref=e1119]
+                  - text: Star
+                - button "Add this repository to a list" [ref=e1124] [cursor=pointer]:
+                  - img
+              - img [ref=e1126]
+          - listitem [ref=e1129]:
+            - generic [ref=e1130]:
+              - heading "novapatch Private" [level=3] [ref=e1132]:
+                - link "novapatch" [ref=e1133] [cursor=pointer]:
+                  - /url: /dlucca/novapatch
+                - generic [ref=e1134]: Private
+              - generic [ref=e1135]:
+                - generic [ref=e1136]: TypeScript
+                - text: Updated Jan 16, 2026on Jan 16
+            - generic [ref=e1138]:
+              - generic [ref=e1140]:
+                - button "Star this repository" [ref=e1142] [cursor=pointer]:
+                  - img [ref=e1143]
+                  - text: Star
+                - button "Add this repository to a list" [ref=e1148] [cursor=pointer]:
+                  - img
+              - img [ref=e1150]
+          - listitem [ref=e1153]:
+            - generic [ref=e1154]:
+              - heading "ccm-calculator-o-calculadora-mercado-novapatch Private" [level=3] [ref=e1156]:
+                - link "ccm-calculator-o-calculadora-mercado-novapatch" [ref=e1157] [cursor=pointer]:
+                  - /url: /dlucca/ccm-calculator-o-calculadora-mercado-novapatch
+                - generic [ref=e1158]: Private
+              - generic [ref=e1159]:
+                - generic [ref=e1160]: TypeScript
+                - text: Updated Jul 22, 2025on Jul 22, 2025
+            - generic [ref=e1162]:
+              - generic [ref=e1164]:
+                - button "Star this repository" [ref=e1166] [cursor=pointer]:
+                  - img [ref=e1167]
+                  - text: Star
+                - button "Add this repository to a list" [ref=e1172] [cursor=pointer]:
+                  - img
+              - img [ref=e1174]
+  - contentinfo [ref=e182]:
+    - heading "Footer" [level=2] [ref=e183]
+    - generic [ref=e184]:
+      - generic [ref=e185]:
+        - link "GitHub Homepage" [ref=e186] [cursor=pointer]:
+          - /url: https://github.com
+          - img [ref=e187]
+        - generic [ref=e189]: © 2026 GitHub, Inc.
+      - navigation "Footer" [ref=e190]:
+        - heading "Footer navigation" [level=3] [ref=e191]
+        - list "Footer navigation" [ref=e192]:
+          - listitem [ref=e193]:
+            - link "Terms" [ref=e194] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+          - listitem [ref=e195]:
+            - link "Privacy" [ref=e196] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+          - listitem [ref=e197]:
+            - link "Security" [ref=e198] [cursor=pointer]:
+              - /url: https://github.com/security
+          - listitem [ref=e199]:
+            - link "Status" [ref=e200] [cursor=pointer]:
+              - /url: https://www.githubstatus.com/
+          - listitem [ref=e201]:
+            - link "Community" [ref=e202] [cursor=pointer]:
+              - /url: https://github.community/
+          - listitem [ref=e203]:
+            - link "Docs" [ref=e204] [cursor=pointer]:
+              - /url: https://docs.github.com/
+          - listitem [ref=e205]:
+            - link "Contact" [ref=e206] [cursor=pointer]:
+              - /url: https://support.github.com?tags=dotcom-footer
+          - listitem [ref=e207]:
+            - button "Manage cookies" [ref=e209] [cursor=pointer]
+          - listitem [ref=e210]:
+            - button "Do not share my personal information" [ref=e212] [cursor=pointer]
