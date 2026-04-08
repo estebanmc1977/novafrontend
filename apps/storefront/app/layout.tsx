@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html suppressHydrationWarning>
-      <body className={`${montserrat.variable} min-h-screen`}>{children}</body>
+      <body suppressHydrationWarning className={`${montserrat.variable} min-h-screen`}>{children}</body>
     </html>
   )
 }
