@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from '@sentry/nextjs'
 import { useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -7,6 +8,7 @@ import { useParams } from "next/navigation";
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
     console.error(error);
+    Sentry.captureException(error)
   }, [error]);
 
   const params = useParams();
