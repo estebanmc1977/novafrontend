@@ -150,10 +150,15 @@ export default function GlobalError({
   }, [error])
 
   return (
-    <html>
-      <body>
-        {/* Reusar la UI de error existente en app/error.tsx */}
-        {/* o una versión mínima si el layout está roto */}
+    <html lang="es">
+      <body style={{ margin: 0, background: '#FAF7F2', fontFamily: 'sans-serif', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <h1 style={{ color: '#0D1B35' }}>Algo salió mal</h1>
+          <p style={{ color: '#4A5568' }}>Ocurrió un error inesperado. Intenta recargar la página.</p>
+          <button onClick={reset} style={{ marginTop: '1rem', padding: '0.75rem 1.5rem', background: '#E8503A', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
+            Reintentar
+          </button>
+        </div>
       </body>
     </html>
   )
