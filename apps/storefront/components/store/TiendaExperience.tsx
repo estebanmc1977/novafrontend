@@ -88,7 +88,7 @@ function ModeToggle({ mode, onChange }: { mode: Mode; onChange: (m: Mode) => voi
         onClick={() => onChange("once")}
         className="px-6 py-2.5 rounded-full text-[13px] font-bold transition-all duration-200"
         style={{
-          background: mode === "once" ? "#005088" : "transparent",
+          background: mode === "once" ? "var(--color-ocean)" : "transparent",
           color: mode === "once" ? "#fff" : "#6B7280",
         }}
       >
@@ -98,13 +98,13 @@ function ModeToggle({ mode, onChange }: { mode: Mode; onChange: (m: Mode) => voi
         onClick={() => onChange("sub")}
         className="flex items-center gap-2 px-6 py-2.5 rounded-full text-[13px] font-bold transition-all duration-200"
         style={{
-          background: mode === "sub" ? "#E8503A" : "transparent",
+          background: mode === "sub" ? "var(--color-coral)" : "transparent",
           color: mode === "sub" ? "#fff" : "#6B7280",
         }}
       >
         Suscripción
         {mode === "once" && (
-          <span className="text-[10px] font-black bg-[#E8503A] text-white px-2 py-0.5 rounded-full">
+          <span className="text-[10px] font-black bg-coral text-white px-2 py-0.5 rounded-full">
             hasta 20% OFF
           </span>
         )}
@@ -191,7 +191,7 @@ function ProductCard({
         style={{ background: meta.bg }}
       >
         {meta.popular && (
-          <span className="absolute top-3 right-3 bg-[#E8503A] text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full">
+          <span className="absolute top-3 right-3 bg-coral text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full">
             Más popular
           </span>
         )}
@@ -223,7 +223,7 @@ function ProductCard({
       {/* Cuerpo */}
       <div className="p-5 flex flex-col gap-3 flex-1">
         <div>
-          <h3 className="text-[22px] font-black tracking-tight leading-none text-[#1D3461]">
+          <h3 className="text-[22px] font-black tracking-tight leading-none text-navy-light">
             {product.title}
           </h3>
           <p
@@ -278,7 +278,7 @@ function ProductCard({
         {/* Precio + CTA */}
         <div className="mt-auto pt-3 border-t border-black/[0.05]">
           <div className="flex items-baseline gap-2 mb-3">
-            <span className="text-[26px] font-black tracking-tight text-[#1D3461]">
+            <span className="text-[26px] font-black tracking-tight text-navy-light">
               ${displayPrice}
               <span className="text-[14px] font-semibold text-[#9CA3AF] ml-1">MXN</span>
             </span>
@@ -343,7 +343,7 @@ export default function TiendaExperience({ products }: { products: Product[] }) 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
-          className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#E8503A] mb-3"
+          className="text-[11px] font-bold uppercase tracking-[0.22em] text-coral mb-3"
         >
           Tienda Novapatch
         </motion.p>
@@ -351,7 +351,7 @@ export default function TiendaExperience({ products }: { products: Product[] }) 
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, delay: 0.07 }}
-          className="font-black text-[#005088] tracking-tight mb-3"
+          className="font-black text-ocean tracking-tight mb-3"
           style={{ fontSize: "clamp(28px, 4vw, 46px)" }}
         >
           Elige el parche que necesita tu cuerpo
@@ -432,7 +432,7 @@ export default function TiendaExperience({ products }: { products: Product[] }) 
               {[
                 {
                   icon: (
-                    <svg width="24" height="24" fill="none" stroke="#E8503A" strokeWidth="1.8" viewBox="0 0 24 24">
+                    <svg width="24" height="24" fill="none" stroke="var(--color-coral)" strokeWidth="1.8" viewBox="0 0 24 24">
                       <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   ),
@@ -441,7 +441,7 @@ export default function TiendaExperience({ products }: { products: Product[] }) 
                 },
                 {
                   icon: (
-                    <svg width="24" height="24" fill="none" stroke="#E8503A" strokeWidth="1.8" viewBox="0 0 24 24">
+                    <svg width="24" height="24" fill="none" stroke="var(--color-coral)" strokeWidth="1.8" viewBox="0 0 24 24">
                       <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   ),
@@ -450,7 +450,7 @@ export default function TiendaExperience({ products }: { products: Product[] }) 
                 },
                 {
                   icon: (
-                    <svg width="24" height="24" fill="none" stroke="#E8503A" strokeWidth="1.8" viewBox="0 0 24 24">
+                    <svg width="24" height="24" fill="none" stroke="var(--color-coral)" strokeWidth="1.8" viewBox="0 0 24 24">
                       <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" strokeLinecap="round" strokeLinejoin="round"/>
                       <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
@@ -463,7 +463,7 @@ export default function TiendaExperience({ products }: { products: Product[] }) 
                   <div className="w-11 h-11 rounded-full bg-[#FFF0ED] flex items-center justify-center">
                     {b.icon}
                   </div>
-                  <p className="text-[14px] font-bold text-[#005088]">{b.title}</p>
+                  <p className="text-[14px] font-bold text-ocean">{b.title}</p>
                   <p className="text-[13px] text-[#6B7280] leading-relaxed">{b.desc}</p>
                 </div>
               ))}

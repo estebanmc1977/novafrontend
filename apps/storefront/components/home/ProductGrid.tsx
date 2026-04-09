@@ -136,12 +136,12 @@ function HeroProductCard({
           >
             {p.tagline}
           </p>
-          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#9CA3AF] mt-3">
+          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-gray-400 mt-3">
             Pack de 30 parches
           </p>
           <ul className="mt-1.5 space-y-0.5">
             {p.ingredients.map((ing) => (
-              <li key={ing} className="text-[13px] text-[#4B5563] flex items-center gap-1.5">
+              <li key={ing} className="text-[13px] text-gray-600 flex items-center gap-1.5">
                 <span className="w-1 h-1 rounded-full flex-shrink-0 inline-block" style={{ background: p.color }} />
                 {ing}
               </li>
@@ -167,9 +167,9 @@ function HeroProductCard({
               style={{ color: p.taglineColor }}
             >
               ${RETAIL_PRICE}
-              <span className="text-[14px] font-medium text-[#9CA3AF] ml-1">MXN</span>
+              <span className="text-[14px] font-medium text-gray-400 ml-1">MXN</span>
             </span>
-            <span className="text-[13px] text-[#16A34A] font-bold bg-[#F0FDF4] px-2.5 py-1 rounded-lg">
+            <span className="text-[13px] text-green-600 font-bold bg-green-50 px-2.5 py-1 rounded-lg">
               Desde ${SUB_PRICE} con suscripción
             </span>
           </div>
@@ -245,10 +245,10 @@ function ProductCard({
           </div>
 
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#9CA3AF] mb-1">
+            <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-gray-400 mb-1">
               Pack de 30 parches
             </p>
-            <p className="text-[12px] text-[#6B7280] leading-[1.5]">
+            <p className="text-[12px] text-gray-500 leading-[1.5]">
               {p.ingredients.join(" · ")}
             </p>
           </div>
@@ -273,9 +273,9 @@ function ProductCard({
             >
               ${RETAIL_PRICE}
             </span>
-            <span className="text-[12px] font-medium text-[#9CA3AF]">MXN</span>
+            <span className="text-[12px] font-medium text-gray-400">MXN</span>
           </div>
-          <p className="text-[11px] text-[#16A34A] font-semibold -mt-1">
+          <p className="text-[11px] text-green-600 font-semibold -mt-1">
             Desde ${SUB_PRICE}/caja con suscripción
           </p>
 
@@ -319,7 +319,7 @@ export default function ProductGrid() {
   };
 
   return (
-    <section id="productos" className="bg-[#F9FAFB]" style={{ padding: "80px 48px 64px" }}>
+    <section id="productos" className="bg-gray-50" style={{ padding: "80px 48px 64px" }}>
       <div className="max-w-[1200px] mx-auto">
         {/* Header */}
         <motion.div
@@ -330,12 +330,12 @@ export default function ProductGrid() {
           className="text-center mb-14"
         >
           <h2
-            className="font-black text-[#005088] tracking-[-0.02em] mb-3"
+            className="font-black text-ocean tracking-[-0.02em] mb-3"
             style={{ fontSize: "clamp(26px,3vw,38px)" }}
           >
             Elige el parche que tu cuerpo necesita
           </h2>
-          <p className="text-[16px] text-[#6B7280] max-w-[480px] mx-auto leading-[1.6]">
+          <p className="text-[16px] text-gray-500 max-w-[480px] mx-auto leading-[1.6]">
             Seis fórmulas, seis objetivos. Un solo formato: pega, olvida y deja que trabaje.
           </p>
         </motion.div>

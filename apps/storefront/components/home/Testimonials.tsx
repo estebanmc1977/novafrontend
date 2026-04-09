@@ -54,7 +54,7 @@ const PAGE_SIZE = 3;
 const Stars = () => (
   <div className="flex gap-0.5 mb-3.5">
     {[...Array(5)].map((_, i) => (
-      <span key={i} className="text-[18px]" style={{ color: "#1EB1BC" }}>★</span>
+      <span key={i} className="text-[18px]" style={{ color: "var(--color-teal)" }}>★</span>
     ))}
   </div>
 );
@@ -69,7 +69,7 @@ export default function Testimonials() {
   };
 
   return (
-    <div style={{ background: "#E4F4F4" }}>
+    <div style={{ background: "var(--color-teal-pale)" }}>
       {/* Wave top */}
       <svg
         viewBox="0 0 1440 60"
@@ -78,10 +78,10 @@ export default function Testimonials() {
         className="block w-full"
         style={{ height: "60px", transform: "scaleY(-1)", background: "white", marginBottom: "-1px" }}
       >
-        <path d="M0,40 C360,80 1080,0 1440,40 L1440,60 L0,60 Z" fill="#E4F4F4" />
+        <path d="M0,40 C360,80 1080,0 1440,40 L1440,60 L0,60 Z" fill="var(--color-teal-pale)" />
       </svg>
 
-      <section style={{ background: "#E4F4F4", padding: "80px 48px", position: "relative" }}>
+      <section style={{ background: "var(--color-teal-pale)", padding: "80px 48px", position: "relative" }}>
         {/* Header — social proof number instead of standard label */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -92,16 +92,16 @@ export default function Testimonials() {
         >
           <div className="flex items-center justify-center gap-1 mb-3">
             {[...Array(5)].map((_, i) => (
-              <span key={i} className="text-[24px]" style={{ color: "#1EB1BC" }}>★</span>
+              <span key={i} className="text-[24px]" style={{ color: "var(--color-teal)" }}>★</span>
             ))}
           </div>
           <h2
-            className="font-black text-[#005088] tracking-[-0.02em]"
+            className="font-black text-ocean tracking-[-0.02em]"
             style={{ fontSize: "clamp(26px,3vw,40px)" }}
           >
             Lo que dicen quienes ya lo usan.
           </h2>
-          <p className="text-[15px] text-[#005088]/60 mt-2">
+          <p className="text-[15px] text-ocean/60 mt-2">
             4.8 de 5 estrellas en promedio
           </p>
         </motion.div>
@@ -123,7 +123,7 @@ export default function Testimonials() {
                   className="bg-white rounded-[32px] p-7 shadow-[0_1px_4px_rgba(0,0,0,0.07)] flex flex-col"
                 >
                   <Stars />
-                  <p className="text-[15px] text-[#111827] leading-[1.7] flex-1 mb-5">
+                  <p className="text-[15px] text-gray-900 leading-[1.7] flex-1 mb-5">
                     &ldquo;{t.text}&rdquo;
                   </p>
                   <div className="flex items-center gap-3">
@@ -137,13 +137,13 @@ export default function Testimonials() {
                       />
                     </div>
                     <div>
-                      <p className="font-bold text-[14px] text-[#111827]">{t.name}</p>
+                      <p className="font-bold text-[14px] text-gray-900">{t.name}</p>
                       <div className="flex items-center gap-1.5 mt-0.5">
                         <span
                           className="w-2 h-2 rounded-full inline-block flex-shrink-0"
                           style={{ background: t.dot }}
                         />
-                        <span className="text-[12px] text-[#6B7280]">Novapatch {t.product}</span>
+                        <span className="text-[12px] text-gray-500">Novapatch {t.product}</span>
                       </div>
                     </div>
                   </div>
@@ -175,7 +175,7 @@ export default function Testimonials() {
                 className="h-2 rounded-full transition-all duration-300"
                 style={{
                   width: i === page ? "20px" : "8px",
-                  background: i === page ? "#1EB1BC" : "rgba(0,0,0,0.2)",
+                  background: i === page ? "var(--color-teal)" : "rgba(0,0,0,0.2)",
                   border: "none",
                   cursor: "pointer",
                 }}
@@ -203,9 +203,9 @@ export default function Testimonials() {
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="none"
         className="block w-full"
-        style={{ height: "60px", background: "#E4F4F4", marginTop: "-1px" }}
+        style={{ height: "60px", background: "var(--color-teal-pale)", marginTop: "-1px" }}
       >
-        <path d="M0,20 C480,60 960,0 1440,20 L1440,60 L0,60 Z" fill="#ffffff" />
+        <path d="M0,20 C480,60 960,0 1440,20 L1440,60 L0,60 Z" fill="white" />
       </svg>
     </div>
   );

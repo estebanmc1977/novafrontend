@@ -17,6 +17,15 @@
   --color-lime:        #C9D849;
   --color-lime-dark:   #A8B42A;
 
+  /* Extended palette */
+  --color-ocean:       #005088;
+  --color-ocean-dark:  #003D6B;
+  --color-teal:        #1CB1BC;
+  --color-gold:        #F5C628;
+  --color-blush:       #F8EDEB;
+  --color-teal-pale:   #E4F4F4;
+  --color-warm:        #FEF7ED;
+
   /* Typography */
   --font-display: "Montserrat", var(--font-montserrat), system-ui, sans-serif;
   --font-body:    "Montserrat", var(--font-montserrat), system-ui, sans-serif;
@@ -47,11 +56,11 @@ p {
 
 /* Scrollbar */
 ::-webkit-scrollbar        { width: 5px; }
-::-webkit-scrollbar-track  { background: #FAF7F2; }
-::-webkit-scrollbar-thumb  { background: #E8503A; border-radius: 4px; }
+::-webkit-scrollbar-track  { background: var(--color-cream); }
+::-webkit-scrollbar-thumb  { background: var(--color-coral); border-radius: 4px; }
 
 /* Selection */
-::selection { background: #E8503A; color: #fff; }
+::selection { background: var(--color-coral); color: #fff; }
 
 /* Google Places Autocomplete dropdown — encima de modales y drawers */
 .pac-container {
@@ -77,9 +86,9 @@ p {
 }
 .pac-item-query {
   font-weight: 600;
-  color: #005088;
+  color: var(--color-ocean);
 }
-.pac-matched { color: #E8503A; }
+.pac-matched { color: var(--color-coral); }
 .pac-icon { display: none; } /* Ocultar ícono de Google Maps */
 
 /* Product card button — dynamic accent via CSS custom property */

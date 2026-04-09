@@ -38,7 +38,7 @@ function SkinDiagram() {
       </defs>
 
       {/* ── Patch ── */}
-      <rect x="28" y="10" width="324" height="60" rx="12" fill="#F5C628" />
+      <rect x="28" y="10" width="324" height="60" rx="12" fill="var(--color-gold)" />
       <rect x="28" y="10" width="324" height="60" rx="12" fill="url(#patchShine)" />
       {/* perforation dots */}
       {[55, 90, 125, 160, 195, 230, 265, 300, 335].map((x) => (
@@ -47,7 +47,7 @@ function SkinDiagram() {
       {[55, 90, 125, 160, 195, 230, 265, 300, 335].map((x) => (
         <circle key={`b${x}`} cx={x} cy="70" r="2.8" fill="rgba(0,0,0,0.18)" />
       ))}
-      <text x="190" y="39" textAnchor="middle" fontFamily="Montserrat,system-ui,sans-serif" fontSize="13" fontWeight="800" fill="#005088" letterSpacing="1.5">NOVAPATCH</text>
+      <text x="190" y="39" textAnchor="middle" fontFamily="Montserrat,system-ui,sans-serif" fontSize="13" fontWeight="800" fill="var(--color-ocean)" letterSpacing="1.5">NOVAPATCH</text>
       <text x="190" y="57" textAnchor="middle" fontFamily="Montserrat,system-ui,sans-serif" fontSize="10" fill="rgba(0,0,0,0.48)" fontWeight="500">Liberación controlada · 10–12 horas</text>
 
       {/* dashed connectors patch → skin */}
@@ -79,7 +79,7 @@ function SkinDiagram() {
 
       {/* ── <500 Da badge ── */}
       <rect x="258" y="88" width="104" height="22" rx="11" fill="rgba(28,177,188,0.14)" stroke="rgba(28,177,188,0.45)" strokeWidth="1" />
-      <text x="310" y="103" textAnchor="middle" fontFamily="Montserrat,system-ui,sans-serif" fontSize="10" fontWeight="700" fill="#1CB1BC">{"< 500 Daltons"}</text>
+      <text x="310" y="103" textAnchor="middle" fontFamily="Montserrat,system-ui,sans-serif" fontSize="10" fontWeight="700" fill="var(--color-teal)">{"< 500 Daltons"}</text>
 
       {/* ── Animated molecules ── */}
       {MOLECULES.map((m, i) => (
@@ -88,7 +88,7 @@ function SkinDiagram() {
           cx={m.x}
           cy={78}
           r="4.5"
-          fill="#1CB1BC"
+          fill="var(--color-teal)"
           filter="url(#glow)"
           initial={{ y: 0, opacity: 0 }}
           animate={{ y: [0, TRAVEL], opacity: [0, 1, 1, 0] }}
@@ -114,9 +114,9 @@ export default function AbsorptionSection() {
   ];
   return (
     <section
-      className="text-[#005088] overflow-hidden"
+      className="text-ocean overflow-hidden"
       style={{
-        background: "#F8EDEB",
+        background: "var(--color-blush)",
         padding: "96px 48px",
       }}
     >
@@ -130,10 +130,10 @@ export default function AbsorptionSection() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-[3px] rounded-full bg-[#1CB1BC]" />
+            <div className="w-10 h-[3px] rounded-full bg-teal" />
             <p
               className="text-[11px] font-bold uppercase tracking-[0.12em]"
-              style={{ color: "#1CB1BC" }}
+              style={{ color: "var(--color-teal)" }}
             >
               {t("badge")}
             </p>
@@ -166,7 +166,7 @@ export default function AbsorptionSection() {
               >
                 <div
                   className="font-black leading-none"
-                  style={{ fontSize: "22px", color: "#005088" }}
+                  style={{ fontSize: "22px", color: "var(--color-ocean)" }}
                 >
                   {s.value}
                   <span style={{ fontSize: "12px", opacity: 0.5, marginLeft: "2px" }}>
@@ -182,7 +182,7 @@ export default function AbsorptionSection() {
 
           <Link
             href="#productos"
-            className="inline-flex items-center gap-2 bg-[#005088] text-white font-bold text-[15px] px-8 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#003d6b] hover:shadow-[0_8px_32px_rgba(0,80,136,0.28)] shadow-[0_4px_20px_rgba(0,80,136,0.18)]"
+            className="inline-flex items-center gap-2 bg-ocean text-white font-bold text-[15px] px-8 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-0.5 hover:bg-ocean-dark hover:shadow-[0_8px_32px_rgba(0,80,136,0.28)] shadow-[0_4px_20px_rgba(0,80,136,0.18)]"
             style={{ color: "white" }}
           >
             Encuentra tu parche

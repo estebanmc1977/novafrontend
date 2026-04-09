@@ -29,10 +29,10 @@ function Toast({ message, visible }: ToastState) {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 8, scale: 0.96 }}
           transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[90] flex items-center gap-2.5 bg-[#1D3461] text-white text-[13px] font-semibold px-4 py-3 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.22)] max-w-[340px] w-max"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[90] flex items-center gap-2.5 bg-navy-light text-white text-[13px] font-semibold px-4 py-3 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.22)] max-w-[340px] w-max"
           role="alert"
         >
-          <span className="text-[#E8503A] flex-shrink-0">✕</span>
+          <span className="text-coral flex-shrink-0">✕</span>
           {message}
         </motion.div>
       )}
@@ -104,14 +104,14 @@ function CouponInput({ onApply, onRemove, status, applied }: CouponInputProps) {
           onKeyDown={(e) => e.key === "Enter" && handleApply()}
           placeholder="Código de descuento"
           disabled={status === "loading"}
-          className="w-full pl-8 pr-3 py-2.5 text-[13px] font-semibold text-[#1D3461] placeholder:text-[#CBD5E1] placeholder:font-normal bg-white border-2 border-[#E5E7EB] focus:border-[#E8503A] focus:outline-none rounded-xl transition-colors duration-150 disabled:opacity-50 uppercase tracking-wide"
+          className="w-full pl-8 pr-3 py-2.5 text-[13px] font-semibold text-navy-light placeholder:text-[#CBD5E1] placeholder:font-normal bg-white border-2 border-gray-200 focus:border-coral focus:outline-none rounded-xl transition-colors duration-150 disabled:opacity-50 uppercase tracking-wide"
           maxLength={20}
         />
       </div>
       <button
         onClick={handleApply}
         disabled={!code.trim() || status === "loading"}
-        className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-[#1D3461] hover:bg-[#0D1B35] disabled:bg-[#E5E7EB] disabled:text-[#9CA3AF] text-white text-[12px] font-black rounded-xl transition-all duration-150 min-w-[80px]"
+        className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-navy-light hover:bg-navy disabled:bg-[#E5E7EB] disabled:text-[#9CA3AF] text-white text-[12px] font-black rounded-xl transition-all duration-150 min-w-[80px]"
       >
         {status === "loading" ? (
           <Loader2 size={13} className="animate-spin" />
@@ -151,7 +151,7 @@ function CartItemRow({ item }: { item: CartItem }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <p className="text-[14px] font-bold text-[#1D3461] leading-tight">{item.title}</p>
+            <p className="text-[14px] font-bold text-navy-light leading-tight">{item.title}</p>
             {isSub ? (
               <span
                 className="inline-block mt-0.5 text-[10px] font-black px-2 py-0.5 rounded-full text-white"
@@ -165,7 +165,7 @@ function CartItemRow({ item }: { item: CartItem }) {
           </div>
           <button
             onClick={() => removeItem(item.slug, item.mode, item.freq)}
-            className="text-[#CBD5E1] hover:text-[#E8503A] transition-colors duration-150 flex-shrink-0 mt-0.5"
+            className="text-[#CBD5E1] hover:text-coral transition-colors duration-150 flex-shrink-0 mt-0.5"
             aria-label="Eliminar"
           >
             <Trash2 size={13} />
@@ -181,7 +181,7 @@ function CartItemRow({ item }: { item: CartItem }) {
             >
               −
             </button>
-            <span className="w-5 text-center text-[13px] font-bold text-[#1D3461]">
+            <span className="w-5 text-center text-[13px] font-bold text-navy-light">
               {item.quantity}
             </span>
             <button
@@ -193,7 +193,7 @@ function CartItemRow({ item }: { item: CartItem }) {
           </div>
 
           <div className="text-right">
-            <p className="text-[15px] font-black text-[#1D3461]">
+            <p className="text-[15px] font-black text-navy-light">
               ${displayPrice * item.quantity}
               <span className="text-[11px] font-normal text-[#9CA3AF] ml-0.5">MXN</span>
             </p>
@@ -213,10 +213,10 @@ function EmptyCart({ onClose }: { onClose: () => void }) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center gap-4 px-8 py-16 text-center">
       <div className="w-16 h-16 rounded-full bg-[#FFF0ED] flex items-center justify-center">
-        <ShoppingBag size={28} className="text-[#E8503A]" strokeWidth={1.5} />
+        <ShoppingBag size={28} className="text-coral" strokeWidth={1.5} />
       </div>
       <div>
-        <p className="text-[15px] font-bold text-[#1D3461]">Tu carrito está vacío</p>
+        <p className="text-[15px] font-bold text-navy-light">Tu carrito está vacío</p>
         <p className="text-[13px] text-[#9CA3AF] mt-1 leading-relaxed">
           Agrega un parche y empieza tu rutina.
         </p>
@@ -224,7 +224,7 @@ function EmptyCart({ onClose }: { onClose: () => void }) {
       <Link
         href="/tienda"
         onClick={onClose}
-        className="mt-2 inline-flex items-center gap-2 bg-[#E8503A] text-white font-bold text-[14px] px-6 py-3 rounded-full hover:bg-[#C43B28] transition-colors duration-200"
+        className="mt-2 inline-flex items-center gap-2 bg-coral text-white font-bold text-[14px] px-6 py-3 rounded-full hover:bg-coral-dark transition-colors duration-200"
       >
         Ver productos
         <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -327,8 +327,8 @@ export default function CartDrawer() {
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-black/[0.06]">
                 <div className="flex items-center gap-2">
-                  <ShoppingBag size={18} className="text-[#E8503A]" />
-                  <h2 className="text-[16px] font-black text-[#005088]">
+                  <ShoppingBag size={18} className="text-coral" />
+                  <h2 className="text-[16px] font-black text-ocean">
                     Tu carrito
                     {count > 0 && (
                       <span className="ml-1.5 text-[12px] font-bold text-[#9CA3AF]">({count})</span>
@@ -393,7 +393,7 @@ export default function CartDrawer() {
                     <div className="flex flex-col gap-1.5">
                       <div className="flex justify-between text-[13px]">
                         <span className="text-[#6B7280]">Subtotal</span>
-                        <span className="font-semibold text-[#1D3461]">${total} MXN</span>
+                        <span className="font-semibold text-navy-light">${total} MXN</span>
                       </div>
 
                       {/* Línea de descuento — aparece cuando hay cupón */}
@@ -423,12 +423,12 @@ export default function CartDrawer() {
                         <span className="font-semibold text-[#16A34A]">Gratis</span>
                       </div>
 
-                      <div className="flex justify-between text-[16px] font-black text-[#005088] pt-1 border-t border-black/[0.06]">
+                      <div className="flex justify-between text-[16px] font-black text-ocean pt-1 border-t border-black/[0.06]">
                         <span>Total</span>
                         <motion.span
                           key={finalTotal}
                           initial={{ scale: 1.08, color: "#16A34A" }}
-                          animate={{ scale: 1, color: "#005088" }}
+                          animate={{ scale: 1, color: "var(--color-ocean)" }}
                           transition={{ duration: 0.3 }}
                         >
                           ${finalTotal} MXN
@@ -440,7 +440,7 @@ export default function CartDrawer() {
                     <Link
                       href="/checkout"
                       onClick={closeCart}
-                      className="w-full flex items-center justify-center gap-2 bg-[#E8503A] hover:bg-[#C43B28] text-white font-bold text-[15px] py-4 rounded-2xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(232,80,58,0.35)] shadow-[0_4px_12px_rgba(232,80,58,0.2)]"
+                      className="w-full flex items-center justify-center gap-2 bg-coral hover:bg-coral-dark text-white font-bold text-[15px] py-4 rounded-2xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(232,80,58,0.35)] shadow-[0_4px_12px_rgba(232,80,58,0.2)]"
                     >
                       Ir a pagar
                       <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">

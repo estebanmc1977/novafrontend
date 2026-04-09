@@ -30,7 +30,7 @@ export default function CountrySelector({ currentLocale }: { currentLocale: Loca
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 text-[11px] text-[#0D1B35]/45 hover:text-[#0D1B35]/75 transition-colors duration-200"
+        className="flex items-center gap-1.5 text-[11px] text-navy/45 hover:text-navy/75 transition-colors duration-200"
         aria-expanded={open}
         aria-haspopup="listbox"
       >
@@ -47,7 +47,7 @@ export default function CountrySelector({ currentLocale }: { currentLocale: Loca
       {open && (
         <div
           role="listbox"
-          className="absolute bottom-full mb-2.5 left-1/2 -translate-x-1/2 bg-white border border-[#0D1B35]/8 rounded-xl shadow-md shadow-[#0D1B35]/5 py-1.5 min-w-[130px] z-50"
+          className="absolute bottom-full mb-2.5 left-1/2 -translate-x-1/2 bg-white border border-navy/8 rounded-xl shadow-md shadow-navy/5 py-1.5 min-w-[130px] z-50"
         >
           {routing.locales.map((locale) => (
             <button
@@ -57,8 +57,8 @@ export default function CountrySelector({ currentLocale }: { currentLocale: Loca
               onClick={() => select(locale)}
               className={`w-full px-4 py-2 text-left text-[11px] font-medium transition-colors duration-150 ${
                 locale === currentLocale
-                  ? 'text-[#E8503A]'
-                  : 'text-[#0D1B35]/55 hover:text-[#0D1B35] hover:bg-[#0D1B35]/3'
+                  ? 'text-coral'
+                  : 'text-navy/55 hover:text-navy hover:bg-navy/3'
               }`}
             >
               {t(`markets.${locale}`)}

@@ -23,7 +23,7 @@ function Check({ ok }: { ok: boolean }) {
 export default function ComparisonTable() {
   const t = useTranslations("home.comparison");
   return (
-    <section className="bg-[#F9FAFB] py-[72px] px-5 md:px-12">
+    <section className="bg-gray-50 py-[72px] px-5 md:px-12">
       <div className="max-w-[1100px] mx-auto">
         {/* Header text */}
         <motion.div
@@ -33,7 +33,7 @@ export default function ComparisonTable() {
           transition={{ duration: 0.6 }}
         >
           <h2
-            className="font-extrabold text-[#005088] leading-[1.15] tracking-[-0.02em]"
+            className="font-extrabold text-ocean leading-[1.15] tracking-[-0.02em]"
             style={{ fontSize: "clamp(26px,3vw,40px)" }}
           >
             {t("title")}
@@ -52,12 +52,12 @@ export default function ComparisonTable() {
           <div style={{ overflowX: "auto" }}>
           <div style={{ minWidth: "480px" }} className="rounded-[20px] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.10)] bg-white">
             {/* Header */}
-            <div className="grid border-b-2 border-[#E5E7EB]" style={{ gridTemplateColumns: "1.6fr 1fr 1fr 1fr", minHeight: "100px" }}>
-              <div className="p-4 text-[14px] font-bold text-[#6B7280] flex items-center">Características</div>
+            <div className="grid border-b-2 border-gray-200" style={{ gridTemplateColumns: "1.6fr 1fr 1fr 1fr", minHeight: "100px" }}>
+              <div className="p-4 text-[14px] font-bold text-gray-500 flex items-center">Características</div>
               {/* NovaPatch */}
               <div
                 className="p-4 flex flex-col items-center justify-center gap-2 text-white"
-                style={{ background: "#005088" }}
+                style={{ background: "var(--color-ocean)" }}
               >
                 <Image
                   src="/logos/logowht.webp"
@@ -78,7 +78,7 @@ export default function ComparisonTable() {
                     d="M44.59 3.38c4.29 4.39 4.36 11.36 0.2 15.86L20 44.05C8.85 53.7-5.92 38.94 3.73 27.78L28.52 2.98C33.15-1.27 40.2-1.11 44.59 3.38zm-1.34 14.14c7.24-8.62-3.65-20.09-12.64-13.32L18.58 16.15l13.03 13.03zm-25.79 25.63c.33-.23.62-.52.94-.75L29.92 31l-13.03-13.03-11.52 11.52c-7.38 8.05 3.06 20.17 12.09 13.79z"
                   />
                 </svg>
-                <span className="text-[12px] text-[#6B7280] font-bold text-center">{t("colTraditional")}</span>
+                <span className="text-[12px] text-gray-500 font-bold text-center">{t("colTraditional")}</span>
               </div>
               {/* Gummies */}
               <div className="p-4 flex flex-col items-center justify-center gap-2">
@@ -89,7 +89,7 @@ export default function ComparisonTable() {
                   height={32}
                   className="h-8 w-auto opacity-60"
                 />
-                <span className="text-[12px] text-[#6B7280] font-bold text-center">Gomitas comunes</span>
+                <span className="text-[12px] text-gray-500 font-bold text-center">Gomitas comunes</span>
               </div>
             </div>
 
@@ -97,14 +97,14 @@ export default function ComparisonTable() {
             {rows.map((row, i) => (
               <div
                 key={row.feature}
-                className="grid border-b border-[#F3F4F6] last:border-b-0"
+                className="grid border-b border-gray-100 last:border-b-0"
                 style={{
                   gridTemplateColumns: "1.6fr 1fr 1fr 1fr",
                   background: i % 2 === 1 ? "#F9FAFB" : "white",
                 }}
               >
                 <div
-                  className="px-4 py-3.5 text-[14px] font-medium text-[#111827] flex items-center"
+                  className="px-4 py-3.5 text-[14px] font-medium text-gray-900 flex items-center"
                 >
                   {row.feature}
                 </div>
@@ -142,10 +142,10 @@ export default function ComparisonTable() {
             <div
               className="absolute -bottom-5 -left-5 bg-white rounded-[20px] px-5 py-4 shadow-[0_8px_32px_rgba(0,0,0,0.14)]"
             >
-              <strong className="block text-[16px] font-extrabold" style={{ color: "#005088" }}>
+              <strong className="block text-[16px] font-extrabold text-ocean">
                 Un parche, todo el día.
               </strong>
-              <span className="text-[12px] text-[#6B7280]">Sin agua. Sin horarios. Sin pastillas.</span>
+              <span className="text-[12px] text-gray-500">Sin agua. Sin horarios. Sin pastillas.</span>
             </div>
           </div>
         </motion.div>
@@ -156,11 +156,11 @@ export default function ComparisonTable() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="text-center mt-12 text-[15px] text-[#6B7280] leading-[1.7]"
+          className="text-center mt-12 text-[15px] text-gray-500 leading-[1.7]"
         >
           <em>Lo simple se repite. Lo complejo se abandona.</em>
           <br />
-          <strong className="text-[#111827]">
+          <strong className="text-gray-900">
             Novapatch está diseñado para ser el hábito que sí se sostiene.
           </strong>
         </motion.p>
