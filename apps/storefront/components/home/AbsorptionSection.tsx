@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
@@ -17,7 +17,7 @@ const MOLECULES = [
 
 const TRAVEL = 222; // cy start=78 → end=300
 
-function SkinDiagram() {
+function SkinDiagram({ shouldAnimate }: { shouldAnimate: boolean }) {
   return (
     <svg
       viewBox="0 0 380 390"
@@ -91,13 +91,13 @@ function SkinDiagram() {
           fill="var(--color-teal)"
           filter="url(#glow)"
           initial={{ y: 0, opacity: 0 }}
-          animate={{ y: [0, TRAVEL], opacity: [0, 1, 1, 0] }}
-          transition={{
+          animate={shouldAnimate ? { y: [0, TRAVEL], opacity: [0, 1, 1, 0] } : { y: TRAVEL * 0.5, opacity: 0.55 }}
+          transition={shouldAnimate ? {
             duration: 3.6,
             delay: m.delay,
             repeat: Infinity,
             ease: "linear",
-          }}
+          } : { duration: 0 }}
         />
       ))}
     </svg>
@@ -106,6 +106,7 @@ function SkinDiagram() {
 
 export default function AbsorptionSection() {
   const t = useTranslations("home.absorption");
+  const prefersReducedMotion = useReducedMotion();
 
   const stats = [
     { value: t("stat1Value"), unit: "Da", label: t("stat1Label") },
@@ -208,7 +209,7 @@ export default function AbsorptionSection() {
               border: "1px solid rgba(13,27,53,0.10)",
             }}
           >
-            <SkinDiagram />
+            <SkinDiagram shouldAnimate={!prefersReducedMotion} />
           </div>
         </motion.div>
 
