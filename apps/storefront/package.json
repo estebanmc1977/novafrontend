@@ -22,6 +22,9 @@
     "react-dom": "^19.0.0",
     "resend": "^6.10.0"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": ["@sentry/cli"]
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
