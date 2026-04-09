@@ -30,26 +30,35 @@ const faqs = [
 
 function FAQItem({
   faq,
+  id,
   isOpen,
   onToggle,
 }: {
   faq: { q: string; a: string };
+  id: string;
   isOpen: boolean;
   onToggle: () => void;
 }) {
+  const triggerId = `faq-trigger-${id}`;
+  const panelId = `faq-panel-${id}`;
+
   return (
-    <div className="border-b border-[#E5E7EB]">
+    <div className="border-b border-gray-200">
       <button
+        id={triggerId}
         onClick={onToggle}
-        className="w-full flex justify-between items-center gap-4 text-left transition-colors duration-150 hover:text-[#005088]"
-        style={{ padding: "22px 0", fontSize: "16px", fontWeight: 600, color: "#0D1B35" }}
+        aria-expanded={isOpen}
+        aria-controls={panelId}
+        className="w-full flex justify-between items-center gap-4 text-left transition-colors duration-150 hover:text-ocean focus-visible:outline-none focus-visible:text-ocean"
+        style={{ padding: "22px 0", fontSize: "16px", fontWeight: 600, color: "var(--color-navy)" }}
       >
         <span>{faq.q}</span>
         <span
+          aria-hidden="true"
           className="w-[30px] h-[30px] rounded-full flex items-center justify-center flex-shrink-0 text-[18px] font-normal leading-none transition-all duration-[250ms]"
           style={{
-            background: isOpen ? "#005088" : "#F3F4F6",
-            color: isOpen ? "white" : "#005088",
+            background: isOpen ? "var(--color-ocean)" : "#F3F4F6",
+            color: isOpen ? "white" : "var(--color-ocean)",
             transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
           }}
         >
@@ -58,12 +67,15 @@ function FAQItem({
       </button>
 
       <div
+        id={panelId}
+        role="region"
+        aria-labelledby={triggerId}
         className="grid transition-[grid-template-rows] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
         style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
       >
         <div className="overflow-hidden">
           <p
-            className="leading-[1.65] text-[#6B7280]"
+            className="leading-[1.65] text-gray-500"
             style={{ fontSize: "16px", paddingBottom: isOpen ? "20px" : "0px", paddingRight: "48px", transition: "padding-bottom 0.35s" }}
           >
             {faq.a}
@@ -79,7 +91,7 @@ export default function HomeFAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section className="bg-white" style={{ padding: "80px 48px" }}>
+    <section className="bg-white px-5 sm:px-8 md:px-12 py-20">
       <div className="max-w-[600px] mx-auto text-center mb-12">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -89,12 +101,12 @@ export default function HomeFAQ() {
         >
           <p
             className="text-[11px] font-bold uppercase tracking-[0.12em] mb-2.5"
-            style={{ color: "#3CBFAB" }}
+            style={{ color: "var(--color-teal)" }}
           >
             {t("badge")}
           </p>
           <h2
-            className="font-black text-[#005088] tracking-[-0.02em]"
+            className="font-black text-ocean tracking-[-0.02em]"
             style={{ fontSize: "clamp(26px,3vw,40px)" }}
           >
             {t("title")}
@@ -107,6 +119,7 @@ export default function HomeFAQ() {
           <FAQItem
             key={i}
             faq={faq}
+            id={String(i)}
             isOpen={open === i}
             onToggle={() => setOpen(open === i ? null : i)}
           />
@@ -114,10 +127,10 @@ export default function HomeFAQ() {
 
         {/* CTA */}
         <div className="text-center mt-12">
-          <p className="text-[16px] text-[#6B7280] mb-5">¿No encontraste lo que buscabas?</p>
+          <p className="text-[16px] text-gray-500 mb-5">¿No encontraste lo que buscabas?</p>
           <Link
             href="/contacto"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-white font-bold text-[15px] transition-all duration-200 hover:-translate-y-0.5 bg-[#005088] hover:bg-[#003d6b] shadow-[0_4px_16px_rgba(0,80,136,0.3)]"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-white font-bold text-[15px] transition-all duration-200 hover:-translate-y-0.5 bg-ocean hover:bg-ocean-dark shadow-[0_4px_16px_rgba(0,80,136,0.3)]"
           >
             Contactar soporte
           </Link>

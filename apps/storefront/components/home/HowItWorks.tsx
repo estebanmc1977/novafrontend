@@ -28,6 +28,7 @@ export default function HowItWorks() {
               src="/productusers/bellypatch.webp"
               alt="Cómo usar Novapatch"
               fill
+              loading="lazy"
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
@@ -35,7 +36,7 @@ export default function HowItWorks() {
           {/* Badge — 30-day grid */}
           <div
             className="absolute top-6 right-6 rounded-[20px] p-4 flex flex-col items-center gap-2.5"
-            style={{ background: "#F5C628", boxShadow: "0 4px 20px rgba(0,0,0,0.15)" }}
+            style={{ background: "var(--color-gold)", boxShadow: "0 4px 20px rgba(0,0,0,0.15)" }}
           >
             {/* 5 × 6 grid — one square per day, number centered */}
             <div className="relative grid gap-[4px]" style={{ gridTemplateColumns: "repeat(6, 11px)" }}>
@@ -48,8 +49,8 @@ export default function HowItWorks() {
               ))}
               {/* Number centered over the grid */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-[30px] font-black leading-none text-[#111827] tracking-tight"
-                  style={{ textShadow: "0 0 12px #F5C628, 0 0 4px #F5C628" }}>
+                <span className="text-[30px] font-black leading-none text-gray-900 tracking-tight"
+                  style={{ textShadow: "0 0 12px var(--color-gold), 0 0 4px var(--color-gold)" }}>
                   30
                 </span>
               </div>
@@ -69,12 +70,12 @@ export default function HowItWorks() {
         >
           <p
             className="text-[11px] font-bold uppercase tracking-[0.12em] mb-2.5"
-            style={{ color: "#3CBFAB" }}
+            style={{ color: "var(--color-teal)" }}
           >
             {t("badge")}
           </p>
           <h2
-            className="font-extrabold text-[#005088] leading-[1.15] tracking-[-0.02em]"
+            className="font-extrabold text-ocean leading-[1.15] tracking-[-0.02em]"
             style={{ fontSize: "clamp(26px,3vw,40px)" }}
           >
             {t("title")}
@@ -93,15 +94,15 @@ export default function HowItWorks() {
                 <div
                   className="w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center text-white font-extrabold text-[20px]"
                   style={{
-                    background: "#005088",
+                    background: "var(--color-ocean)",
                     boxShadow: "0 4px 14px rgba(0,80,136,0.3)",
                   }}
                 >
                   {step.n}
                 </div>
                 <div>
-                  <h3 className="text-[18px] font-bold text-[#0D1B35] mb-1">{step.title}</h3>
-                  <p className="text-[14px] text-[#6B7280] leading-[1.6]">{step.desc}</p>
+                  <h3 className="text-[18px] font-bold text-navy mb-1">{step.title}</h3>
+                  <p className="text-[14px] text-gray-500 leading-[1.6]">{step.desc}</p>
                 </div>
               </motion.div>
             ))}

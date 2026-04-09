@@ -51,11 +51,17 @@ const testimonials = [
 
 const PAGE_SIZE = 3;
 
+function StarIcon() {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true" style={{ color: "var(--color-teal)" }}>
+      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+    </svg>
+  );
+}
+
 const Stars = () => (
-  <div className="flex gap-0.5 mb-3.5">
-    {[...Array(5)].map((_, i) => (
-      <span key={i} className="text-[18px]" style={{ color: "#1EB1BC" }}>★</span>
-    ))}
+  <div role="img" aria-label="Calificación: 5 de 5 estrellas" className="flex gap-0.5 mb-3.5">
+    {[...Array(5)].map((_, i) => <StarIcon key={i} />)}
   </div>
 );
 
@@ -69,7 +75,7 @@ export default function Testimonials() {
   };
 
   return (
-    <div style={{ background: "#E4F4F4" }}>
+    <div style={{ background: "var(--color-teal-pale)" }}>
       {/* Wave top */}
       <svg
         viewBox="0 0 1440 60"
@@ -78,10 +84,10 @@ export default function Testimonials() {
         className="block w-full"
         style={{ height: "60px", transform: "scaleY(-1)", background: "white", marginBottom: "-1px" }}
       >
-        <path d="M0,40 C360,80 1080,0 1440,40 L1440,60 L0,60 Z" fill="#E4F4F4" />
+        <path d="M0,40 C360,80 1080,0 1440,40 L1440,60 L0,60 Z" fill="var(--color-teal-pale)" />
       </svg>
 
-      <section style={{ background: "#E4F4F4", padding: "80px 48px", position: "relative" }}>
+      <section style={{ background: "var(--color-teal-pale)", padding: "80px 48px", position: "relative" }}>
         {/* Header — social proof number instead of standard label */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -90,24 +96,31 @@ export default function Testimonials() {
           transition={{ duration: 0.6 }}
           className="text-center max-w-[600px] mx-auto mb-12"
         >
-          <div className="flex items-center justify-center gap-1 mb-3">
+          <div className="flex items-center justify-center gap-1 mb-3" aria-hidden="true">
             {[...Array(5)].map((_, i) => (
-              <span key={i} className="text-[24px]" style={{ color: "#1EB1BC" }}>★</span>
+              <svg key={i} viewBox="0 0 20 20" fill="currentColor" width="24" height="24" style={{ color: "var(--color-teal)" }}>
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
             ))}
           </div>
           <h2
-            className="font-black text-[#005088] tracking-[-0.02em]"
+            className="font-black text-ocean tracking-[-0.02em]"
             style={{ fontSize: "clamp(26px,3vw,40px)" }}
           >
             Lo que dicen quienes ya lo usan.
           </h2>
-          <p className="text-[15px] text-[#005088]/60 mt-2">
+          <p className="text-[15px] text-ocean/60 mt-2">
             4.8 de 5 estrellas en promedio
           </p>
         </motion.div>
 
         {/* Cards */}
-        <div className="max-w-[1100px] mx-auto relative overflow-hidden">
+        <div
+          role="region"
+          aria-label="Testimonios de clientes"
+          aria-live="polite"
+          className="max-w-[1100px] mx-auto relative overflow-hidden"
+        >
           <AnimatePresence mode="wait">
             <motion.div
               key={page}
@@ -120,30 +133,34 @@ export default function Testimonials() {
               {visible.map((t) => (
                 <div
                   key={t.name}
+                  role="group"
+                  aria-roledescription="slide"
+                  aria-label={`Testimonio de ${t.name}`}
                   className="bg-white rounded-[32px] p-7 shadow-[0_1px_4px_rgba(0,0,0,0.07)] flex flex-col"
                 >
                   <Stars />
-                  <p className="text-[15px] text-[#111827] leading-[1.7] flex-1 mb-5">
+                  <p className="text-[15px] text-gray-900 leading-[1.7] flex-1 mb-5">
                     &ldquo;{t.text}&rdquo;
                   </p>
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
                       <Image
                         src={t.img}
-                        alt={t.name}
+                        alt={`Foto de ${t.name}`}
                         width={48}
                         height={48}
+                        loading="lazy"
                         className="object-cover w-full h-full"
                       />
                     </div>
                     <div>
-                      <p className="font-bold text-[14px] text-[#111827]">{t.name}</p>
+                      <p className="font-bold text-[14px] text-gray-900">{t.name}</p>
                       <div className="flex items-center gap-1.5 mt-0.5">
                         <span
                           className="w-2 h-2 rounded-full inline-block flex-shrink-0"
                           style={{ background: t.dot }}
                         />
-                        <span className="text-[12px] text-[#6B7280]">Novapatch {t.product}</span>
+                        <span className="text-[12px] text-gray-500">Novapatch {t.product}</span>
                       </div>
                     </div>
                   </div>
@@ -167,20 +184,25 @@ export default function Testimonials() {
           </button>
 
           {/* Dots */}
-          <div className="flex gap-2">
+          <div className="flex items-center">
             {Array.from({ length: totalPages }).map((_, i) => (
               <button
                 key={i}
                 onClick={() => setPage(i)}
-                className="h-2 rounded-full transition-all duration-300"
-                style={{
-                  width: i === page ? "20px" : "8px",
-                  background: i === page ? "#1EB1BC" : "rgba(0,0,0,0.2)",
-                  border: "none",
-                  cursor: "pointer",
-                }}
+                className="flex items-center justify-center"
+                style={{ width: "44px", height: "44px", border: "none", cursor: "pointer", background: "transparent" }}
                 aria-label={`Página ${i + 1}`}
-              />
+                aria-current={i === page ? "true" : undefined}
+              >
+                <span
+                  className="rounded-full block transition-all duration-300"
+                  style={{
+                    height: "8px",
+                    width: i === page ? "20px" : "8px",
+                    background: i === page ? "var(--color-teal)" : "rgba(0,0,0,0.2)",
+                  }}
+                />
+              </button>
             ))}
           </div>
 
@@ -203,9 +225,9 @@ export default function Testimonials() {
         xmlns="http://www.w3.org/2000/svg"
         preserveAspectRatio="none"
         className="block w-full"
-        style={{ height: "60px", background: "#E4F4F4", marginTop: "-1px" }}
+        style={{ height: "60px", background: "var(--color-teal-pale)", marginTop: "-1px" }}
       >
-        <path d="M0,20 C480,60 960,0 1440,20 L1440,60 L0,60 Z" fill="#ffffff" />
+        <path d="M0,20 C480,60 960,0 1440,20 L1440,60 L0,60 Z" fill="white" />
       </svg>
     </div>
   );

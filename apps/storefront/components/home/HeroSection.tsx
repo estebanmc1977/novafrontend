@@ -161,7 +161,7 @@ export default function HeroSection({ slides, current, onNav, onDot, onPause, on
               <Link
                 href="#productos"
                 className="inline-flex items-center justify-center gap-2 bg-white font-bold px-7 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(0,0,0,0.2)] shadow-[0_4px_20px_rgba(0,0,0,0.15)]"
-                style={{ color: "#005088", fontSize: "clamp(14px, 3.5vw, 15px)" }}
+                style={{ color: "var(--color-ocean)", fontSize: "clamp(14px, 3.5vw, 15px)" }}
               >
                 {t("cta")}
                 <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -204,24 +204,25 @@ export default function HeroSection({ slides, current, onNav, onDot, onPause, on
         </svg>
       </button>
 
-      {/* Dots — más grandes en mobile para facilitar el toque */}
-      <div className="absolute bottom-4 sm:bottom-4 left-1/2 -translate-x-1/2 z-[5] flex gap-2 items-center">
+      {/* Dots — 44×44px touch target wrapping the visual dot */}
+      <div className="absolute bottom-0 sm:bottom-1 left-1/2 -translate-x-1/2 z-[5] flex items-center">
         {slides.map((s, i) => (
           <button
             key={i}
             onClick={() => onDot(i)}
             aria-label={`Slide ${i + 1}`}
-            className="rounded-full transition-all duration-[350ms]"
-            style={{
-              height: "8px",
-              width: i === current ? "24px" : "8px",
-              background: i === current ? s.accent : "rgba(255,255,255,0.5)",
-              // Área de toque mínima de 44px en mobile
-              padding: "8px 0",
-              margin: "-8px 0",
-              boxSizing: "content-box",
-            }}
-          />
+            className="flex items-center justify-center"
+            style={{ width: "44px", height: "44px" }}
+          >
+            <span
+              className="rounded-full block transition-all duration-[350ms]"
+              style={{
+                height: "8px",
+                width: i === current ? "24px" : "8px",
+                background: i === current ? s.accent : "rgba(255,255,255,0.5)",
+              }}
+            />
+          </button>
         ))}
       </div>
     </section>

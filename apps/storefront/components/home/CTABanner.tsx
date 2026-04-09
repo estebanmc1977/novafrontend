@@ -58,7 +58,7 @@ export default function CTABanner() {
       id="suscripciones"
       className="relative overflow-hidden text-white text-center"
       style={{
-        background: "linear-gradient(135deg, #005088 0%, #0068AA 100%)",
+        background: "linear-gradient(135deg, var(--color-ocean) 0%, #0068AA 100%)",
         padding: "80px 48px",
       }}
     >
@@ -116,7 +116,7 @@ export default function CTABanner() {
               {plan.best && (
                 <div
                   className="inline-block text-[11px] font-extrabold uppercase tracking-[0.08em] px-3 py-1 rounded-full mb-3.5"
-                  style={{ background: "#F5C628", color: "#111827" }}
+                  style={{ background: "var(--color-gold)", color: "#111827" }}
                 >
                   {plan.chip}
                 </div>
@@ -125,7 +125,7 @@ export default function CTABanner() {
               {/* Label */}
               <p
                 className="text-[12px] font-semibold uppercase tracking-[0.1em] mb-1.5"
-                style={{ color: plan.best ? "#6B7280" : "rgba(255,255,255,0.65)", opacity: plan.best ? 1 : 1 }}
+                style={{ color: plan.best ? "#6B7280" : "rgba(255,255,255,0.65)" }}
               >
                 {plan.label}
               </p>
@@ -133,7 +133,7 @@ export default function CTABanner() {
               {/* Days */}
               <p
                 className="text-[40px] font-black leading-none tracking-[-0.02em] mb-0.5"
-                style={{ color: plan.best ? "#005088" : "white" }}
+                style={{ color: plan.best ? "var(--color-ocean)" : "white" }}
               >
                 {plan.days}
               </p>
@@ -147,7 +147,7 @@ export default function CTABanner() {
               {/* Discount */}
               <p
                 className="text-[34px] font-black tracking-[-0.02em] mb-0.5"
-                style={{ color: plan.best ? "#005088" : "#F5C628" }}
+                style={{ color: plan.best ? "var(--color-ocean)" : "var(--color-gold)" }}
               >
                 {plan.discount}
               </p>
@@ -159,7 +159,7 @@ export default function CTABanner() {
               </p>
               <p
                 className="text-[18px] font-bold mb-5"
-                style={{ color: plan.best ? "#005088" : "white" }}
+                style={{ color: plan.best ? "var(--color-ocean)" : "white" }}
               >
                 {plan.price}
               </p>
@@ -172,7 +172,7 @@ export default function CTABanner() {
                     className="text-[13px] flex items-center gap-2"
                     style={{ color: plan.best ? "#111827" : "rgba(255,255,255,0.85)" }}
                   >
-                    <span className="font-bold flex-shrink-0" style={{ color: plan.best ? "#005088" : "#3CBFAB" }}>
+                    <span className="font-bold flex-shrink-0" style={{ color: plan.best ? "var(--color-ocean)" : "var(--color-teal)" }}>
                       ✓
                     </span>
                     {f}
@@ -185,7 +185,7 @@ export default function CTABanner() {
                 href="/suscripciones"
                 className={`block w-full py-3 rounded-full text-[15px] font-bold text-center transition-all duration-200 ${
                   plan.best
-                    ? "bg-[#005088] text-white border-2 border-[#005088] shadow-[0_4px_16px_rgba(0,80,136,0.3)] hover:bg-[#003d6b]"
+                    ? "bg-ocean text-white border-2 border-ocean shadow-[0_4px_16px_rgba(0,80,136,0.3)] hover:bg-ocean-dark"
                     : "bg-transparent text-white border-2 border-white/55 hover:bg-white/15"
                 }`}
               >
