@@ -24,6 +24,6 @@ module.exports = withSentryConfig(
     silent: true,             // sin spam en CI
     widenClientFileUpload: true,
     hideSourceMaps: true,     // no exponer source maps al browser
-    disableLogger: true,
+    // disableLogger deprecated in v10 — tree-shaking handled automatically
   }
 )
