@@ -215,6 +215,7 @@ function ProductCard({
             src={product.image}
             alt={`Novapatch ${product.title}`}
             fill
+            loading="lazy"
             className="object-contain drop-shadow-md"
           />
         </div>
@@ -299,18 +300,8 @@ function ProductCard({
 
           <button
             onClick={handleAddToCart}
-            className="w-full py-3 rounded-xl border-2 text-[14px] font-bold transition-all duration-200 active:scale-[0.97]"
-            style={{ borderColor: meta.color, color: meta.color, background: "transparent" }}
-            onMouseEnter={(e) => {
-              const btn = e.currentTarget;
-              btn.style.backgroundColor = meta.color;
-              btn.style.color = "#fff";
-            }}
-            onMouseLeave={(e) => {
-              const btn = e.currentTarget;
-              btn.style.backgroundColor = "transparent";
-              btn.style.color = meta.color;
-            }}
+            className="product-card-btn w-full py-3 rounded-xl border-2 text-[14px] font-bold transition-all duration-200 active:scale-[0.97]"
+            style={{ "--btn-accent": meta.color, borderColor: meta.color } as React.CSSProperties}
           >
             {mode === "sub" ? "Suscribirse" : "Agregar al carrito"}
           </button>

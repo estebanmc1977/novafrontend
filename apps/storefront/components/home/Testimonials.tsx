@@ -133,6 +133,7 @@ export default function Testimonials() {
                         alt={t.name}
                         width={48}
                         height={48}
+                        loading="lazy"
                         className="object-cover w-full h-full"
                       />
                     </div>

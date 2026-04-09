@@ -222,6 +222,7 @@ function ProductCard({
               src={p.imgSrc}
               alt={`NovaPatch ${p.name}`}
               fill
+              loading="lazy"
               className="object-contain group-hover:scale-[1.06] transition-transform duration-300"
             />
           </div>

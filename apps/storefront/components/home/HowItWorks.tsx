@@ -28,6 +28,7 @@ export default function HowItWorks() {
               src="/productusers/bellypatch.webp"
               alt="Cómo usar Novapatch"
               fill
+              loading="lazy"
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
