@@ -99,10 +99,10 @@ export default function Navbar({ lightBg = false }: { lightBg?: boolean }) {
             <Link
               key={link.href}
               href={link.href}
-              className={`text-[15px] font-semibold tracking-wide transition-colors duration-200 relative group ${
+              className={`text-[15px] font-semibold tracking-wide transition-colors duration-200 relative group rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 ${
                 scrolled || lightBg
-                  ? "text-ocean hover:text-ocean-dark"
-                  : "text-white hover:text-white/80"
+                  ? "text-ocean hover:text-ocean-dark focus-visible:outline-ocean"
+                  : "text-white hover:text-white/80 focus-visible:outline-white"
               }`}
             >
               {link.label}
@@ -132,10 +132,10 @@ export default function Navbar({ lightBg = false }: { lightBg?: boolean }) {
 <button
             onClick={openCart}
             aria-label="Carrito"
-            className={`relative p-2.5 rounded-xl transition-all duration-200 ${
+            className={`relative p-2.5 rounded-xl transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 ${
               scrolled || lightBg
-                ? "text-ocean hover:text-ocean-dark hover:bg-ocean/8"
-                : "text-white hover:text-white/80 hover:bg-white/10"
+                ? "text-ocean hover:text-ocean-dark hover:bg-ocean/8 focus-visible:outline-ocean"
+                : "text-white hover:text-white/80 hover:bg-white/10 focus-visible:outline-white"
             }`}
           >
             <ShoppingBag size={20} />

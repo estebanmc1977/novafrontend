@@ -30,22 +30,31 @@ const faqs = [
 
 function FAQItem({
   faq,
+  id,
   isOpen,
   onToggle,
 }: {
   faq: { q: string; a: string };
+  id: string;
   isOpen: boolean;
   onToggle: () => void;
 }) {
+  const triggerId = `faq-trigger-${id}`;
+  const panelId = `faq-panel-${id}`;
+
   return (
     <div className="border-b border-gray-200">
       <button
+        id={triggerId}
         onClick={onToggle}
-        className="w-full flex justify-between items-center gap-4 text-left transition-colors duration-150 hover:text-ocean"
+        aria-expanded={isOpen}
+        aria-controls={panelId}
+        className="w-full flex justify-between items-center gap-4 text-left transition-colors duration-150 hover:text-ocean focus-visible:outline-none focus-visible:text-ocean"
         style={{ padding: "22px 0", fontSize: "16px", fontWeight: 600, color: "var(--color-navy)" }}
       >
         <span>{faq.q}</span>
         <span
+          aria-hidden="true"
           className="w-[30px] h-[30px] rounded-full flex items-center justify-center flex-shrink-0 text-[18px] font-normal leading-none transition-all duration-[250ms]"
           style={{
             background: isOpen ? "var(--color-ocean)" : "#F3F4F6",
@@ -58,6 +67,9 @@ function FAQItem({
       </button>
 
       <div
+        id={panelId}
+        role="region"
+        aria-labelledby={triggerId}
         className="grid transition-[grid-template-rows] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
         style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
       >
@@ -107,6 +119,7 @@ export default function HomeFAQ() {
           <FAQItem
             key={i}
             faq={faq}
+            id={String(i)}
             isOpen={open === i}
             onToggle={() => setOpen(open === i ? null : i)}
           />

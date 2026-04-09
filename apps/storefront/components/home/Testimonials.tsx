@@ -168,20 +168,25 @@ export default function Testimonials() {
           </button>
 
           {/* Dots */}
-          <div className="flex gap-2">
+          <div className="flex items-center">
             {Array.from({ length: totalPages }).map((_, i) => (
               <button
                 key={i}
                 onClick={() => setPage(i)}
-                className="h-2 rounded-full transition-all duration-300"
-                style={{
-                  width: i === page ? "20px" : "8px",
-                  background: i === page ? "var(--color-teal)" : "rgba(0,0,0,0.2)",
-                  border: "none",
-                  cursor: "pointer",
-                }}
+                className="flex items-center justify-center"
+                style={{ width: "44px", height: "44px", border: "none", cursor: "pointer", background: "transparent" }}
                 aria-label={`Página ${i + 1}`}
-              />
+                aria-current={i === page ? "true" : undefined}
+              >
+                <span
+                  className="rounded-full block transition-all duration-300"
+                  style={{
+                    height: "8px",
+                    width: i === page ? "20px" : "8px",
+                    background: i === page ? "var(--color-teal)" : "rgba(0,0,0,0.2)",
+                  }}
+                />
+              </button>
             ))}
           </div>
 
