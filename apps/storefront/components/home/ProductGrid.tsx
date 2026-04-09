@@ -106,7 +106,7 @@ function HeroProductCard({
       >
         {/* Image */}
         <div className="relative flex items-center justify-center py-12 px-8 md:py-16 md:px-12">
-          <div className="relative w-56 h-56 md:w-72 md:h-72">
+          <div className="relative w-[clamp(180px,22vw,288px)] h-[clamp(180px,22vw,288px)]">
             <Image
               src={p.imgSrc}
               alt={`NovaPatch ${p.name}`}
@@ -320,7 +320,7 @@ export default function ProductGrid() {
   };
 
   return (
-    <section id="productos" className="bg-gray-50" style={{ padding: "80px 48px 64px" }}>
+    <section id="productos" className="bg-gray-50 px-5 sm:px-8 md:px-12 pt-20 pb-16">
       <div className="max-w-[1200px] mx-auto">
         {/* Header */}
         <motion.div
@@ -348,7 +348,7 @@ export default function ProductGrid() {
         />
 
         {/* Remaining products */}
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           {rest.map((p, i) => (
             <ProductCard
               key={p.slug}

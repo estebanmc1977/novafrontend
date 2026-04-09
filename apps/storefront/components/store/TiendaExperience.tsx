@@ -383,7 +383,7 @@ export default function TiendaExperience({ products }: { products: Product[] }) 
 
       {/* ── Grid de productos ── */}
       <section className="px-4 pb-24 max-w-[1200px] mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           {products.map((product, i) => (
             <motion.div
               key={product.slug}
@@ -394,7 +394,7 @@ export default function TiendaExperience({ products }: { products: Product[] }) 
                 duration: 0.55,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="flex"
+              className={`flex ${i === 0 ? "sm:col-span-2 md:col-span-1" : ""}`}
             >
               <ProductCard
                 product={product}

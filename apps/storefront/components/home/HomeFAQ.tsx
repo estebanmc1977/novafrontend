@@ -91,7 +91,7 @@ export default function HomeFAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section className="bg-white" style={{ padding: "80px 48px" }}>
+    <section className="bg-white px-5 sm:px-8 md:px-12 py-20">
       <div className="max-w-[600px] mx-auto text-center mb-12">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
