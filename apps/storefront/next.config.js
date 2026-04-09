@@ -1,5 +1,6 @@
 // apps/storefront/next.config.js
 const createNextIntlPlugin = require('next-intl/plugin')
+const { withSentryConfig } = require('@sentry/nextjs')
 
 const withNextIntl = createNextIntlPlugin('./i18n/request.ts')
 
@@ -15,4 +16,14 @@ const nextConfig = {
   },
 }
 
-module.exports = withNextIntl(nextConfig)
+module.exports = withSentryConfig(
+  withNextIntl(nextConfig),
+  {
+    org: process.env.SENTRY_ORG,
+    project: process.env.SENTRY_PROJECT,
+    silent: true,             // sin spam en CI
+    widenClientFileUpload: true,
+    hideSourceMaps: true,     // no exponer source maps al browser
+    // disableLogger deprecated in v10 — tree-shaking handled automatically
+  }
+)
