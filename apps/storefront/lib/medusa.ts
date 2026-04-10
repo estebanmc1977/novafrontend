@@ -166,13 +166,14 @@ const cart = {
   /**
    * POST /store/carts
    * Inicia un nuevo carrito vacío con region_id.
-   * Si se pasa customer_id (usuario logueado), el carrito queda vinculado al cliente.
+   * En Medusa V2 el cliente se vincula automáticamente via Bearer token — no se pasa customer_id.
    * Guarda el cart_id en localStorage para persistencia.
    */
   async create(region_id: string, customer_id?: string): Promise<MedusaCart> {
+    void customer_id; // ignorado — Medusa V2 vincula el cliente via auth token
     const data = await medusaFetch<{ cart: MedusaCart }>("/store/carts", {
       method: "POST",
-      body: JSON.stringify({ region_id, ...(customer_id ? { customer_id } : {}) }),
+      body: JSON.stringify({ region_id }),
     });
     if (typeof window !== "undefined") {
       localStorage.setItem("novapatch_medusa_cart_id", data.cart.id);
@@ -190,7 +191,7 @@ const cart = {
 
   /**
    * Garantiza que existe un carrito en Medusa, creándolo si hace falta.
-   * Pasa customer_id cuando el usuario está logueado (obligatorio para suscripciones).
+   * El customer_id es ignorado — la asociación ocurre via Bearer token automáticamente.
    */
   async ensure(region_id: string, customer_id?: string): Promise<string> {
     const existing = cart.getStoredId();
