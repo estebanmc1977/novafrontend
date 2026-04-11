@@ -112,17 +112,13 @@ export default function ComparisonTable() {
             {rows.map((row, i) => (
               <div
                 key={row.feature}
-                className="grid border-b border-gray-100 last:border-b-0 [grid-template-columns:1fr_76px_76px_76px] md:[grid-template-columns:1fr_100px_100px_100px]"
-                style={{
-                  background: i % 2 === 1 ? "#F9FAFB" : "white",
-                }}
+                className={`grid border-b border-gray-100 last:border-b-0 [grid-template-columns:1fr_76px_76px_76px] md:[grid-template-columns:1fr_100px_100px_100px] ${i % 2 === 1 ? "bg-gray-50" : "bg-white"}`}
               >
                 <div className="px-4 py-4 text-[13px] md:text-[14px] font-medium text-gray-800 flex items-center leading-snug">
                   {row.feature}
                 </div>
                 <div
-                  className="py-4 flex items-center justify-center"
-                  style={{ background: i % 2 === 1 ? "#E8F3FA" : "#EEF5FB" }}
+                  className={`py-4 flex items-center justify-center ${i % 2 === 1 ? "bg-sky-pale/70" : "bg-sky-pale"}`}
                 >
                   <Check ok={row.nova} />
                 </div>
@@ -137,7 +133,7 @@ export default function ComparisonTable() {
           </div>
 
           {/* Image + bubble */}
-          <div className="relative">
+          <div className="relative pb-0 sm:pb-5">
             <div className="rounded-[32px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.14)]">
               <div className="relative w-full" style={{ height: "380px" }}>
                 <Image
@@ -150,8 +146,8 @@ export default function ComparisonTable() {
                 />
               </div>
             </div>
-            {/* Bubble */}
-            <div className="absolute -bottom-5 -left-5 bg-white rounded-[20px] px-5 py-4 shadow-[0_8px_32px_rgba(0,0,0,0.14)]">
+            {/* Bubble — static below image on mobile, overlapping on sm+ */}
+            <div className="mt-4 sm:mt-0 sm:absolute sm:-bottom-5 sm:-left-5 bg-white rounded-[20px] px-5 py-4 shadow-[0_8px_32px_rgba(0,0,0,0.14)]">
               <strong className="block text-[16px] font-extrabold text-ocean">
                 Un parche, todo el día.
               </strong>

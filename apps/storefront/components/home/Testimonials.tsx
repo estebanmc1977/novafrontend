@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useCallback } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 
 const testimonials = [
@@ -69,10 +69,21 @@ export default function Testimonials() {
   const [page, setPage] = useState(0);
   const totalPages = Math.ceil(testimonials.length / PAGE_SIZE);
   const visible = testimonials.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+  const shouldReduceMotion = useReducedMotion();
 
   const go = (dir: number) => {
     setPage((p) => (p + dir + totalPages) % totalPages);
   };
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      go(-1);
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      go(1);
+    }
+  }, [go]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div style={{ background: "var(--color-teal-pale)" }}>
@@ -87,7 +98,7 @@ export default function Testimonials() {
         <path d="M0,40 C360,80 1080,0 1440,40 L1440,60 L0,60 Z" fill="var(--color-teal-pale)" />
       </svg>
 
-      <section style={{ background: "var(--color-teal-pale)", padding: "80px 48px", position: "relative" }}>
+      <section className="py-16 sm:py-20 px-5 sm:px-8 lg:px-12 relative" style={{ background: "var(--color-teal-pale)" }}>
         {/* Header — social proof number instead of standard label */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -117,17 +128,24 @@ export default function Testimonials() {
         {/* Cards */}
         <div
           role="region"
+          aria-roledescription="carrusel"
           aria-label="Testimonios de clientes"
           aria-live="polite"
-          className="max-w-[1100px] mx-auto relative overflow-hidden"
+          tabIndex={0}
+          className="max-w-[1100px] mx-auto relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/50 focus-visible:ring-offset-4 rounded-2xl"
+          onKeyDown={handleKeyDown}
         >
+          {/* Screen-reader page announcement */}
+          <div aria-live="assertive" aria-atomic="true" className="sr-only">
+            Página {page + 1} de {totalPages}
+          </div>
           <AnimatePresence mode="wait">
             <motion.div
               key={page}
-              initial={{ opacity: 0, x: 40 }}
+              initial={shouldReduceMotion ? false : { opacity: 0, x: 40 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -40 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              exit={shouldReduceMotion ? {} : { opacity: 0, x: -40 }}
+              transition={{ duration: shouldReduceMotion ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
               className="grid grid-cols-1 md:grid-cols-3 gap-5"
             >
               {visible.map((t) => (
@@ -174,8 +192,7 @@ export default function Testimonials() {
         <div className="flex justify-center items-center gap-4 mt-9">
           <button
             onClick={() => go(-1)}
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200"
-            style={{ background: "rgba(0,0,0,0.08)", border: "none", color: "#111827", cursor: "pointer" }}
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 bg-black/[0.08] text-gray-900 cursor-pointer border-none"
             aria-label="Anterior"
           >
             <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -189,18 +206,12 @@ export default function Testimonials() {
               <button
                 key={i}
                 onClick={() => setPage(i)}
-                className="flex items-center justify-center"
-                style={{ width: "44px", height: "44px", border: "none", cursor: "pointer", background: "transparent" }}
+                className="flex items-center justify-center w-11 h-11 border-none cursor-pointer bg-transparent"
                 aria-label={`Página ${i + 1}`}
                 aria-current={i === page ? "true" : undefined}
               >
                 <span
-                  className="rounded-full block transition-all duration-300"
-                  style={{
-                    height: "8px",
-                    width: i === page ? "20px" : "8px",
-                    background: i === page ? "var(--color-teal)" : "rgba(0,0,0,0.2)",
-                  }}
+                  className={`rounded-full block transition-all duration-300 h-2 ${i === page ? "w-5 bg-teal" : "w-2 bg-black/20"}`}
                 />
               </button>
             ))}
@@ -208,8 +219,7 @@ export default function Testimonials() {
 
           <button
             onClick={() => go(1)}
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200"
-            style={{ background: "rgba(0,0,0,0.08)", border: "none", color: "#111827", cursor: "pointer" }}
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 bg-black/[0.08] text-gray-900 cursor-pointer border-none"
             aria-label="Siguiente"
           >
             <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">

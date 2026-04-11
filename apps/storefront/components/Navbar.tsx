@@ -259,6 +259,8 @@ export default function Navbar({ lightBg = false }: { lightBg?: boolean }) {
 
           <button
             aria-label="Menú"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-nav"
             onClick={() => setMenuOpen(!menuOpen)}
             className={`md:hidden p-2.5 rounded-xl transition-colors duration-200 ${
               scrolled || lightBg
@@ -275,6 +277,7 @@ export default function Navbar({ lightBg = false }: { lightBg?: boolean }) {
       <AnimatePresence>
         {menuOpen && (
           <motion.div
+            id="mobile-nav"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
@@ -282,16 +285,18 @@ export default function Navbar({ lightBg = false }: { lightBg?: boolean }) {
             className="md:hidden bg-warm border-t border-navy/8 overflow-hidden"
           >
             <div className="px-8 py-6 flex flex-col gap-5">
+              <nav aria-label="Menú principal">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className="text-[16px] font-semibold text-ocean hover:text-ocean-dark transition-colors"
+                  className="block text-[16px] font-semibold text-ocean hover:text-ocean-dark transition-colors py-1"
                 >
                   {link.label}
                 </Link>
               ))}
+              </nav>
 
               {/* Cuenta mobile */}
               <div className="pt-2 border-t border-ocean/10">

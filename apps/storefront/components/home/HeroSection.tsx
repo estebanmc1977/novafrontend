@@ -4,6 +4,7 @@ import { useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useReducedMotion } from "framer-motion";
 
 interface Slide {
   src: string;
@@ -24,6 +25,7 @@ const SWIPE_THRESHOLD = 50;
 
 export default function HeroSection({ slides, current, onNav, onDot, onPause, onResume }: HeroSectionProps) {
   const t = useTranslations("home.hero");
+  const shouldReduceMotion = useReducedMotion();
   const pointerStartX = useRef<number | null>(null);
   const swiping = useRef(false);
 
@@ -63,24 +65,55 @@ export default function HeroSection({ slides, current, onNav, onDot, onPause, on
     onResume();
   }, [onResume]);
 
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      onNav(-1);
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      onNav(1);
+    }
+  }, [onNav]);
+
   return (
     <section
-      className="relative w-full overflow-hidden min-h-[580px] sm:min-h-0 sm:aspect-video touch-pan-y"
+      role="region"
+      aria-roledescription="carrusel"
+      aria-label="Imágenes destacadas"
+      tabIndex={0}
+      className="relative w-full overflow-hidden min-h-[580px] sm:min-h-0 sm:aspect-video touch-pan-y focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-inset"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerCancel}
       onMouseEnter={onPause}
       onMouseLeave={onResume}
+      onFocus={onPause}
+      onBlur={onResume}
+      onKeyDown={handleKeyDown}
     >
+      {/* Screen-reader live announcement — visually hidden */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        Imagen {current + 1} de {slides.length}: {slides[current]?.alt}
+      </div>
 
       {/* Carousel track */}
       <div
-        className="absolute inset-0 flex transition-transform duration-[600ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
-        style={{ transform: `translateX(-${current * 100}%)` }}
+        className="absolute inset-0 flex"
+        style={{
+          transform: `translateX(-${current * 100}%)`,
+          transition: shouldReduceMotion ? "none" : "transform 600ms cubic-bezier(0.4,0,0.2,1)",
+        }}
       >
         {slides.map((slide, i) => (
-          <div key={i} className="relative min-w-full h-full flex-shrink-0">
+          <div
+            key={i}
+            role="group"
+            aria-roledescription="diapositiva"
+            aria-label={`${i + 1} de ${slides.length}`}
+            aria-hidden={i !== current}
+            className="relative min-w-full h-full flex-shrink-0"
+          >
             <Image
               src={slide.src}
               alt={slide.alt}
@@ -205,12 +238,14 @@ export default function HeroSection({ slides, current, onNav, onDot, onPause, on
       </button>
 
       {/* Dots — 44×44px touch target wrapping the visual dot */}
-      <div className="absolute bottom-0 sm:bottom-1 left-1/2 -translate-x-1/2 z-[5] flex items-center">
+      <div role="tablist" aria-label="Diapositivas" className="absolute bottom-0 sm:bottom-1 left-1/2 -translate-x-1/2 z-[5] flex items-center">
         {slides.map((s, i) => (
           <button
             key={i}
+            role="tab"
             onClick={() => onDot(i)}
-            aria-label={`Slide ${i + 1}`}
+            aria-label={`Diapositiva ${i + 1} de ${slides.length}`}
+            aria-selected={i === current}
             className="flex items-center justify-center"
             style={{ width: "44px", height: "44px" }}
           >

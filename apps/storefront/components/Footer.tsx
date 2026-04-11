@@ -136,7 +136,8 @@ function PaymentBadges({ locale }: { locale: string }) {
 
 function InstagramIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" opacity="0.7">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-navy)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" opacity="0.7" aria-hidden="true" focusable="false">
+      <title>Instagram</title>
       <rect x="2" y="2" width="20" height="20" rx="5" />
       <circle cx="12" cy="12" r="4" />
       <circle cx="17.5" cy="6.5" r="0.5" fill="var(--color-navy)" stroke="none" />
@@ -146,7 +147,8 @@ function InstagramIcon() {
 
 function TikTokIcon() {
   return (
-    <svg width="14" height="16" viewBox="0 0 24 24" fill="var(--color-navy)" opacity="0.7">
+    <svg width="14" height="16" viewBox="0 0 24 24" fill="var(--color-navy)" opacity="0.7" aria-hidden="true" focusable="false">
+      <title>TikTok</title>
       <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V9.49a8.16 8.16 0 0 0 4.77 1.52V7.56a4.85 4.85 0 0 1-1-.87z" />
     </svg>
   );

@@ -33,12 +33,8 @@ import {
   MapPin,
   Loader2,
   ChevronDown,
+  XCircle,
 } from "lucide-react";
-import {
-  ShieldCheckIcon,
-  TruckIcon,
-  XCircleIcon,
-} from "@heroicons/react/24/outline";
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -166,9 +162,9 @@ function AuthGate() {
       {/* perks */}
       <div className="mt-7 grid grid-cols-3 gap-3 text-center">
         {[
-          { icon: <ShieldCheckIcon className="w-6 h-6 mx-auto text-[#005088]" />, label: "Datos seguros" },
-          { icon: <TruckIcon className="w-6 h-6 mx-auto text-[#005088]" />, label: "Envíos gestionados" },
-          { icon: <XCircleIcon className="w-6 h-6 mx-auto text-[#005088]" />, label: "Cancela cuando quieras" },
+          { icon: <ShieldCheck className="w-6 h-6 mx-auto text-[#005088]" />, label: "Datos seguros" },
+          { icon: <Truck className="w-6 h-6 mx-auto text-[#005088]" />, label: "Envíos gestionados" },
+          { icon: <XCircle className="w-6 h-6 mx-auto text-[#005088]" />, label: "Cancela cuando quieras" },
         ].map((p) => (
           <div
             key={p.label}

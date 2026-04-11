@@ -13,7 +13,7 @@ export default function HowItWorks() {
     { n: 3, title: t("step3Title"), desc: t("step3Desc") },
   ];
   return (
-    <section id="como-funciona" className="bg-white" style={{ padding: "80px 48px" }}>
+    <section id="como-funciona" className="bg-white py-16 sm:py-20 px-5 sm:px-8 lg:px-12">
       <div className="max-w-[1100px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         {/* Image — left */}
         <motion.div
@@ -39,11 +39,11 @@ export default function HowItWorks() {
             style={{ background: "var(--color-gold)", boxShadow: "0 4px 20px rgba(0,0,0,0.15)" }}
           >
             {/* 5 × 6 grid — one square per day, number centered */}
-            <div className="relative grid gap-[4px]" style={{ gridTemplateColumns: "repeat(6, 11px)" }}>
+            <div className="relative grid gap-[0.25em]" style={{ gridTemplateColumns: "repeat(6, 0.7em)" }}>
               {Array.from({ length: 30 }).map((_, i) => (
                 <div
                   key={i}
-                  className="w-[11px] h-[11px]"
+                  className="w-[0.7em] h-[0.7em]"
                   style={{ background: "rgba(0,0,0,0.20)", borderRadius: "3px" }}
                 />
               ))}
@@ -55,7 +55,7 @@ export default function HowItWorks() {
                 </span>
               </div>
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#111827]/60 leading-none">
+            <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-navy/60 leading-none">
               un día · un parche
             </span>
           </div>

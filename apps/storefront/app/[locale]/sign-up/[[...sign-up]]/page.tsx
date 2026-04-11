@@ -1,27 +1,22 @@
 import { SignUp } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  GiftIcon,
-  AdjustmentsHorizontalIcon,
-  BellAlertIcon,
-} from "@heroicons/react/24/outline";
-import { StarIcon } from "@heroicons/react/24/solid";
+import { Gift, SlidersHorizontal, BellRing, Star } from "lucide-react";
 import { novapatchAppearance } from "@/lib/clerk-theme";
 
 const BENEFITS = [
   {
-    icon: GiftIcon,
+    icon: Gift,
     title: "20% OFF en tu primera suscripción",
     desc:  "Solo para miembros nuevos.",
   },
   {
-    icon: AdjustmentsHorizontalIcon,
+    icon: SlidersHorizontal,
     title: "Panel de control completo",
     desc:  "Pausá, cambiá o cancelá cuando quieras.",
   },
   {
-    icon: BellAlertIcon,
+    icon: BellRing,
     title: "Recordatorios personalizados",
     desc:  "Te avisamos antes de cada envío.",
   },
@@ -129,7 +124,7 @@ export default function SignUpPage() {
               border:     "1px solid rgba(201,216,73,0.15)",
             }}
           >
-            <StarIcon className="h-5 w-5 flex-shrink-0" style={{ color: "#C9D849" }} />
+            <Star className="h-5 w-5 flex-shrink-0" fill="currentColor" style={{ color: "#C9D849" }} />
             <div>
               <p className="text-[12px] font-bold" style={{ color: "#C9D849" }}>
                 +2,400 clientes en México

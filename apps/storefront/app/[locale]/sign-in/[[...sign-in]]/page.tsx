@@ -1,19 +1,14 @@
 import { SignIn } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ClipboardDocumentListIcon,
-  ArrowPathIcon,
-  CreditCardIcon,
-  MapPinIcon,
-} from "@heroicons/react/24/outline";
+import { ClipboardList, RefreshCw, CreditCard, MapPin } from "lucide-react";
 import { novapatchAppearance } from "@/lib/clerk-theme";
 
 const PERKS = [
-  { icon: ClipboardDocumentListIcon, label: "Historial de pedidos completo" },
-  { icon: ArrowPathIcon,             label: "Gestión de suscripciones" },
-  { icon: CreditCardIcon,            label: "Tarjetas guardadas de forma segura" },
-  { icon: MapPinIcon,                label: "Direcciones guardadas" },
+  { icon: ClipboardList, label: "Historial de pedidos completo" },
+  { icon: RefreshCw,    label: "Gestión de suscripciones" },
+  { icon: CreditCard,   label: "Tarjetas guardadas de forma segura" },
+  { icon: MapPin,       label: "Direcciones guardadas" },
 ];
 
 export default function SignInPage() {
