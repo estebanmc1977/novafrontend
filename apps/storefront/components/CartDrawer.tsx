@@ -20,23 +20,34 @@ interface ToastState {
 // ─── Toast ────────────────────────────────────────────────────────────────────
 
 function Toast({ message, visible }: ToastState) {
+  // Persistent aria-live container stays in the DOM so ATs reliably catch
+  // the announcement even when the visual element mounts/unmounts.
   return (
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          key="toast"
-          initial={{ opacity: 0, y: 16, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 8, scale: 0.96 }}
-          transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[90] flex items-center gap-2.5 bg-navy-light text-white text-[13px] font-semibold px-4 py-3 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.22)] max-w-[340px] w-max"
-          role="alert"
-        >
-          <span className="text-coral flex-shrink-0">✕</span>
-          {message}
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <>
+      <div
+        aria-live="assertive"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {visible ? message : ""}
+      </div>
+      <AnimatePresence>
+        {visible && (
+          <motion.div
+            key="toast"
+            initial={{ opacity: 0, y: 16, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.96 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            aria-hidden="true"
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[90] flex items-center gap-2.5 bg-navy-light text-white text-[13px] font-semibold px-4 py-3 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.22)] max-w-[340px] w-max"
+          >
+            <span className="text-coral flex-shrink-0">✕</span>
+            {message}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
@@ -64,21 +75,21 @@ function CouponInput({ onApply, onRemove, status, applied }: CouponInputProps) {
         initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        className="flex items-center justify-between bg-[#F0FDF4] border border-[#BBF7D0] rounded-xl px-3.5 py-2.5"
+        className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-3.5 py-2.5"
       >
         <div className="flex items-center gap-2">
-          <CheckCircle2 size={14} className="text-[#16A34A] flex-shrink-0" />
+          <CheckCircle2 size={14} className="text-green-600 flex-shrink-0" />
           <div>
-            <p className="text-[12px] font-black text-[#16A34A] tracking-wide">{applied.code}</p>
-            <p className="text-[10px] text-[#4ADE80] font-medium">{applied.label} aplicado</p>
+            <p className="text-[12px] font-black text-green-600 tracking-wide">{applied.code}</p>
+            <p className="text-[10px] text-green-400 font-medium">{applied.label} aplicado</p>
           </div>
         </div>
         <button
           onClick={onRemove}
-          className="w-6 h-6 rounded-lg bg-[#DCFCE7] hover:bg-[#BBF7D0] flex items-center justify-center transition-colors duration-150"
+          className="w-6 h-6 rounded-lg bg-green-100 hover:bg-green-200 flex items-center justify-center transition-colors duration-150"
           aria-label="Quitar cupón"
         >
-          <X size={11} className="text-[#16A34A]" />
+          <X size={11} className="text-green-600" />
         </button>
       </motion.div>
     );
@@ -95,7 +106,7 @@ function CouponInput({ onApply, onRemove, status, applied }: CouponInputProps) {
       <div className="relative flex-1">
         <Tag
           size={13}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] pointer-events-none"
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
         />
         <input
           type="text"
@@ -104,14 +115,14 @@ function CouponInput({ onApply, onRemove, status, applied }: CouponInputProps) {
           onKeyDown={(e) => e.key === "Enter" && handleApply()}
           placeholder="Código de descuento"
           disabled={status === "loading"}
-          className="w-full pl-8 pr-3 py-2.5 text-[13px] font-semibold text-navy-light placeholder:text-[#CBD5E1] placeholder:font-normal bg-white border-2 border-gray-200 focus:border-coral focus:outline-none rounded-xl transition-colors duration-150 disabled:opacity-50 uppercase tracking-wide"
+          className="w-full pl-8 pr-3 py-2.5 text-[13px] font-semibold text-navy-light placeholder:text-slate-300 placeholder:font-normal bg-white border-2 border-gray-200 focus:border-coral focus:outline-none rounded-xl transition-colors duration-150 disabled:opacity-50 uppercase tracking-wide"
           maxLength={20}
         />
       </div>
       <button
         onClick={handleApply}
         disabled={!code.trim() || status === "loading"}
-        className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-navy-light hover:bg-navy disabled:bg-[#E5E7EB] disabled:text-[#9CA3AF] text-white text-[12px] font-black rounded-xl transition-all duration-150 min-w-[80px]"
+        className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-navy-light hover:bg-navy disabled:bg-gray-200 disabled:text-gray-400 text-white text-[12px] font-black rounded-xl transition-all duration-150 min-w-[80px]"
       >
         {status === "loading" ? (
           <Loader2 size={13} className="animate-spin" />
@@ -160,12 +171,12 @@ function CartItemRow({ item }: { item: CartItem }) {
                 SUB · {FREQ_LABELS[item.freq]}
               </span>
             ) : (
-              <span className="text-[11px] text-[#9CA3AF]">Compra única</span>
+              <span className="text-[11px] text-gray-400">Compra única</span>
             )}
           </div>
           <button
             onClick={() => removeItem(item.slug, item.mode, item.freq)}
-            className="text-[#CBD5E1] hover:text-coral transition-colors duration-150 flex-shrink-0 mt-0.5"
+            className="text-slate-300 hover:text-coral transition-colors duration-150 flex-shrink-0 mt-0.5"
             aria-label="Eliminar"
           >
             <Trash2 size={13} />
@@ -174,31 +185,40 @@ function CartItemRow({ item }: { item: CartItem }) {
 
         {/* Precio + qty */}
         <div className="flex items-center justify-between mt-2">
-          <div className="flex items-center gap-1 bg-[#F3F4F6] rounded-lg p-0.5">
+          <div
+            role="group"
+            aria-label={`Cantidad de ${item.title}`}
+            className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5"
+          >
             <button
               onClick={() => updateQty(item.slug, item.mode, item.freq, -1)}
-              className="w-6 h-6 rounded-md flex items-center justify-center text-[#374151] hover:bg-white hover:shadow-sm transition-all duration-150 text-[13px] font-bold"
+              aria-label={`Disminuir cantidad de ${item.title}`}
+              className="w-6 h-6 rounded-md flex items-center justify-center text-gray-700 hover:bg-white hover:shadow-sm transition-all duration-150 text-[13px] font-bold"
             >
-              −
+              <span aria-hidden="true">−</span>
             </button>
-            <span className="w-5 text-center text-[13px] font-bold text-navy-light">
+            <span
+              aria-label={`${item.quantity} en el carrito`}
+              className="w-5 text-center text-[13px] font-bold text-navy-light"
+            >
               {item.quantity}
             </span>
             <button
               onClick={() => updateQty(item.slug, item.mode, item.freq, +1)}
-              className="w-6 h-6 rounded-md flex items-center justify-center text-[#374151] hover:bg-white hover:shadow-sm transition-all duration-150 text-[13px] font-bold"
+              aria-label={`Aumentar cantidad de ${item.title}`}
+              className="w-6 h-6 rounded-md flex items-center justify-center text-gray-700 hover:bg-white hover:shadow-sm transition-all duration-150 text-[13px] font-bold"
             >
-              +
+              <span aria-hidden="true">+</span>
             </button>
           </div>
 
           <div className="text-right">
             <p className="text-[15px] font-black text-navy-light">
               ${displayPrice * item.quantity}
-              <span className="text-[11px] font-normal text-[#9CA3AF] ml-0.5">MXN</span>
+              <span className="text-[11px] font-normal text-gray-400 ml-0.5">MXN</span>
             </p>
             {isSub && item.quantity === 1 && (
-              <p className="text-[10px] text-[#9CA3AF] line-through">${item.price}</p>
+              <p className="text-[10px] text-gray-400 line-through">${item.price}</p>
             )}
           </div>
         </div>
@@ -212,12 +232,12 @@ function CartItemRow({ item }: { item: CartItem }) {
 function EmptyCart({ onClose }: { onClose: () => void }) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center gap-4 px-8 py-16 text-center">
-      <div className="w-16 h-16 rounded-full bg-[#FFF0ED] flex items-center justify-center">
+      <div className="w-16 h-16 rounded-full bg-coral/10 flex items-center justify-center">
         <ShoppingBag size={28} className="text-coral" strokeWidth={1.5} />
       </div>
       <div>
         <p className="text-[15px] font-bold text-navy-light">Tu carrito está vacío</p>
-        <p className="text-[13px] text-[#9CA3AF] mt-1 leading-relaxed">
+        <p className="text-[13px] text-gray-400 mt-1 leading-relaxed">
           Agrega un parche y empieza tu rutina.
         </p>
       </div>
@@ -318,6 +338,9 @@ export default function CartDrawer() {
             {/* Panel */}
             <motion.aside
               key="panel"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="cart-heading"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
@@ -328,19 +351,19 @@ export default function CartDrawer() {
               <div className="flex items-center justify-between px-5 py-4 border-b border-black/[0.06]">
                 <div className="flex items-center gap-2">
                   <ShoppingBag size={18} className="text-coral" />
-                  <h2 className="text-[16px] font-black text-ocean">
+                  <h2 id="cart-heading" className="text-[16px] font-black text-ocean">
                     Tu carrito
                     {count > 0 && (
-                      <span className="ml-1.5 text-[12px] font-bold text-[#9CA3AF]">({count})</span>
+                      <span className="ml-1.5 text-[12px] font-bold text-gray-400">({count})</span>
                     )}
                   </h2>
                 </div>
                 <button
                   onClick={closeCart}
-                  className="w-8 h-8 rounded-xl bg-[#F3F4F6] hover:bg-[#E5E7EB] flex items-center justify-center transition-colors duration-150"
+                  className="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors duration-150"
                   aria-label="Cerrar carrito"
                 >
-                  <X size={15} className="text-[#374151]" />
+                  <X size={15} className="text-gray-700" />
                 </button>
               </div>
 
@@ -366,16 +389,15 @@ export default function CartDrawer() {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 16 }}
-                    className="border-t border-black/[0.06] px-5 py-5 flex flex-col gap-3"
-                    style={{ background: "#FAFAFA" }}
+                    className="border-t border-black/[0.06] px-5 py-5 flex flex-col gap-3 bg-surface"
                   >
                     {/* Ahorro suscripción */}
                     {hasSubs && savings > 0 && (
-                      <div className="flex items-center justify-between bg-[#F0FDF4] border border-[#BBF7D0] rounded-xl px-4 py-2.5">
-                        <p className="text-[12px] font-semibold text-[#16A34A]">
+                      <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-4 py-2.5">
+                        <p className="text-[12px] font-semibold text-green-600">
                           🎉 Ahorro con suscripción
                         </p>
-                        <p className="text-[13px] font-black text-[#16A34A]">−${savings} MXN</p>
+                        <p className="text-[13px] font-black text-green-600">−${savings} MXN</p>
                       </div>
                     )}
 
@@ -392,7 +414,7 @@ export default function CartDrawer() {
                     {/* Totales */}
                     <div className="flex flex-col gap-1.5">
                       <div className="flex justify-between text-[13px]">
-                        <span className="text-[#6B7280]">Subtotal</span>
+                        <span className="text-gray-500">Subtotal</span>
                         <span className="font-semibold text-navy-light">${total} MXN</span>
                       </div>
 
@@ -408,26 +430,26 @@ export default function CartDrawer() {
                             className="overflow-hidden"
                           >
                             <div className="flex justify-between text-[13px] py-0.5">
-                              <span className="text-[#16A34A] font-semibold flex items-center gap-1">
+                              <span className="text-green-600 font-semibold flex items-center gap-1">
                                 <Tag size={11} />
                                 {appliedCoupon.code}
                               </span>
-                              <span className="font-bold text-[#16A34A]">−${discountAmount} MXN</span>
+                              <span className="font-bold text-green-600">−${discountAmount} MXN</span>
                             </div>
                           </motion.div>
                         )}
                       </AnimatePresence>
 
                       <div className="flex justify-between text-[13px]">
-                        <span className="text-[#6B7280]">Envío</span>
-                        <span className="font-semibold text-[#16A34A]">Gratis</span>
+                        <span className="text-gray-500">Envío</span>
+                        <span className="font-semibold text-green-600">Gratis</span>
                       </div>
 
                       <div className="flex justify-between text-[16px] font-black text-ocean pt-1 border-t border-black/[0.06]">
                         <span>Total</span>
                         <motion.span
                           key={finalTotal}
-                          initial={{ scale: 1.08, color: "#16A34A" }}
+                          initial={{ scale: 1.08, color: "var(--color-teal)" }}
                           animate={{ scale: 1, color: "var(--color-ocean)" }}
                           transition={{ duration: 0.3 }}
                         >
@@ -451,7 +473,7 @@ export default function CartDrawer() {
                     {/* Trust badges */}
                     <div className="flex items-center justify-center gap-2 flex-wrap">
                       {["🔒 Pago seguro", "Visa", "MC", "OXXO", "SPEI"].map((b) => (
-                        <span key={b} className="text-[10px] text-[#9CA3AF] font-medium bg-[#F3F4F6] px-2 py-0.5 rounded-md">
+                        <span key={b} className="text-[10px] text-gray-400 font-medium bg-gray-100 px-2 py-0.5 rounded-md">
                           {b}
                         </span>
                       ))}

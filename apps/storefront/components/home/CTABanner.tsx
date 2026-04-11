@@ -56,11 +56,8 @@ export default function CTABanner() {
   return (
     <section
       id="suscripciones"
-      className="relative overflow-hidden text-white text-center"
-      style={{
-        background: "linear-gradient(135deg, var(--color-ocean) 0%, #0068AA 100%)",
-        padding: "80px 48px",
-      }}
+      className="relative overflow-hidden text-white text-center py-16 sm:py-20 px-5 sm:px-8 lg:px-12"
+      style={{ background: "linear-gradient(135deg, var(--color-ocean) 0%, var(--color-ocean-light) 100%)" }}
     >
       {/* Dot pattern */}
       <div
@@ -103,7 +100,7 @@ export default function CTABanner() {
               transition={{ delay: i * 0.1, duration: 0.5 }}
               className={`rounded-[32px] text-center transition-all duration-200 ${
                 plan.best
-                  ? "bg-white text-[#111827] shadow-[0_20px_60px_rgba(0,0,0,0.22)]"
+                  ? "bg-white text-gray-900 shadow-[0_20px_60px_rgba(0,0,0,0.22)]"
                   : "hover:bg-white/20 hover:-translate-y-1"
               }`}
               style={{
@@ -116,7 +113,7 @@ export default function CTABanner() {
               {plan.best && (
                 <div
                   className="inline-block text-[11px] font-extrabold uppercase tracking-[0.08em] px-3 py-1 rounded-full mb-3.5"
-                  style={{ background: "var(--color-gold)", color: "#111827" }}
+                  style={{ background: "var(--color-gold)", color: "var(--color-navy)" }}
                 >
                   {plan.chip}
                 </div>
@@ -124,42 +121,36 @@ export default function CTABanner() {
 
               {/* Label */}
               <p
-                className="text-[12px] font-semibold uppercase tracking-[0.1em] mb-1.5"
-                style={{ color: plan.best ? "#6B7280" : "rgba(255,255,255,0.65)" }}
+                className={`text-[12px] font-semibold uppercase tracking-[0.1em] mb-1.5 ${plan.best ? "text-gray-500" : "text-white/65"}`}
               >
                 {plan.label}
               </p>
 
               {/* Days */}
               <p
-                className="text-[40px] font-black leading-none tracking-[-0.02em] mb-0.5"
-                style={{ color: plan.best ? "var(--color-ocean)" : "white" }}
+                className={`text-[40px] font-black leading-none tracking-[-0.02em] mb-0.5 ${plan.best ? "text-ocean" : "text-white"}`}
               >
                 {plan.days}
               </p>
               <span
-                className="block text-[16px] font-medium mb-4"
-                style={{ color: plan.best ? "#6B7280" : "rgba(255,255,255,0.8)" }}
+                className={`block text-[16px] font-medium mb-4 ${plan.best ? "text-gray-500" : "text-white/80"}`}
               >
                 {plan.unit}
               </span>
 
               {/* Discount */}
               <p
-                className="text-[34px] font-black tracking-[-0.02em] mb-0.5"
-                style={{ color: plan.best ? "var(--color-ocean)" : "var(--color-gold)" }}
+                className={`text-[34px] font-black tracking-[-0.02em] mb-0.5 ${plan.best ? "text-ocean" : "text-gold"}`}
               >
                 {plan.discount}
               </p>
               <p
-                className="text-[13px] mb-1"
-                style={{ color: plan.best ? "#6B7280" : "rgba(255,255,255,0.6)" }}
+                className={`text-[13px] mb-1 ${plan.best ? "text-gray-500" : "text-white/60"}`}
               >
                 {plan.original}
               </p>
               <p
-                className="text-[18px] font-bold mb-5"
-                style={{ color: plan.best ? "var(--color-ocean)" : "white" }}
+                className={`text-[18px] font-bold mb-5 ${plan.best ? "text-ocean" : "text-white"}`}
               >
                 {plan.price}
               </p>
@@ -169,8 +160,7 @@ export default function CTABanner() {
                 {plan.features.map((f) => (
                   <li
                     key={f}
-                    className="text-[13px] flex items-center gap-2"
-                    style={{ color: plan.best ? "#111827" : "rgba(255,255,255,0.85)" }}
+                    className={`text-[13px] flex items-center gap-2 ${plan.best ? "text-gray-900" : "text-white/85"}`}
                   >
                     <span className="font-bold flex-shrink-0" style={{ color: plan.best ? "var(--color-ocean)" : "var(--color-teal)" }}>
                       ✓

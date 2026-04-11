@@ -70,6 +70,7 @@ function FAQItem({
         id={panelId}
         role="region"
         aria-labelledby={triggerId}
+        aria-hidden={!isOpen}
         className="grid transition-[grid-template-rows] duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
         style={{ gridTemplateRows: isOpen ? "1fr" : "0fr" }}
       >

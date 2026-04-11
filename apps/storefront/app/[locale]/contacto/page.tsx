@@ -2,12 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  EnvelopeIcon,
-  ClockIcon,
-  PhoneIcon,
-  MapPinIcon,
-} from "@heroicons/react/24/outline";
+import { Mail, Clock, Phone, MapPin } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -31,28 +26,28 @@ function TikTokIcon() {
 
 const contactItems = [
   {
-    icon: EnvelopeIcon,
+    icon: Mail,
     title: "Email",
     value: "hola@novapatch.care",
     link: "mailto:hola@novapatch.care",
     display: "link",
   },
   {
-    icon: PhoneIcon,
+    icon: Phone,
     title: "Teléfono",
     value: "55 4545 1328",
     link: "tel:5545451328",
     display: "link",
   },
   {
-    icon: ClockIcon,
+    icon: Clock,
     title: "Horario de atención",
     value: "Lunes – Viernes\n9:00 AM – 6:00 PM (CDMX)",
     link: null,
     display: "text",
   },
   {
-    icon: MapPinIcon,
+    icon: MapPin,
     title: "Dirección",
     value: "Privada Lago Bolsena 22, Col. Modelo Pensil, CP 11450, Miguel Hidalgo, CDMX",
     link: null,
@@ -116,7 +111,7 @@ export default function ContactoPage() {
               {sent ? (
                 <div className="bg-white rounded-3xl p-10 shadow-[0_4px_20px_rgba(13,27,53,0.06)] border border-[#005088]/6 text-center flex flex-col gap-4 items-center">
                   <div className="w-16 h-16 rounded-2xl bg-[#C9D849]/20 flex items-center justify-center">
-                    <EnvelopeIcon className="w-8 h-8 text-[#3CBFAB]" />
+                    <Mail className="w-8 h-8 text-[#3CBFAB]" />
                   </div>
                   <h2 className="text-2xl font-bold text-[#005088]">¡Mensaje enviado!</h2>
                   <p className="text-[#6B7280]">Te responderemos en menos de 24 horas a <strong>{form.email}</strong></p>
