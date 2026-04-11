@@ -27,8 +27,8 @@
   --color-warm:        #FEF7ED;
 
   /* Typography */
-  --font-display: "Montserrat", var(--font-montserrat), system-ui, sans-serif;
-  --font-body:    "Montserrat", var(--font-montserrat), system-ui, sans-serif;
+  --font-display: "Outfit", var(--font-outfit), system-ui, sans-serif;
+  --font-body:    "Outfit", var(--font-outfit), system-ui, sans-serif;
 }
 
 html {
@@ -36,7 +36,7 @@ html {
 }
 
 body {
-  font-family: var(--font-body), system-ui, sans-serif;
+  font-family: var(--font-outfit), var(--font-body), system-ui, sans-serif;
   background-color: #ffffff;
   color: #111827;
   -webkit-font-smoothing: antialiased;
