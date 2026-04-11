@@ -5,18 +5,27 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 const rows = [
-  { feature: "Alta tasa de absorción", nova: true, caps: false, gummies: false },
-  { feature: "Sin pastillas difíciles de tragar", nova: true, caps: false, gummies: true },
-  { feature: "Sin azúcar ni calorías", nova: true, caps: true, gummies: false },
+  { feature: "Alta tasa de absorción",               nova: true,  caps: false, gummies: false },
+  { feature: "Sin pastillas difíciles de tragar",    nova: true,  caps: false, gummies: true  },
+  { feature: "Sin azúcar ni calorías",               nova: true,  caps: true,  gummies: false },
   { feature: "Sin colorantes ni rellenos artificiales", nova: true, caps: false, gummies: false },
-  { feature: "No afecta tu sistema digestivo", nova: true, caps: false, gummies: false },
+  { feature: "No afecta tu sistema digestivo",       nova: true,  caps: false, gummies: false },
 ];
 
 function Check({ ok }: { ok: boolean }) {
-  return ok ? (
-    <span className="text-[#10B981] text-[20px] font-bold">✓</span>
-  ) : (
-    <span className="text-[#EF4444] text-[20px]">✕</span>
+  if (ok) {
+    return (
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="11" cy="11" r="11" fill="#10B981" fillOpacity="0.12" />
+        <path d="M6.5 11.2l3 3 6-6" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  return (
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="11" cy="11" r="11" fill="#EF4444" fillOpacity="0.10" />
+      <path d="M7.5 7.5l7 7M14.5 7.5l-7 7" stroke="#EF4444" strokeWidth="2" strokeLinecap="round" />
+    </svg>
   );
 }
 
@@ -50,12 +59,17 @@ export default function ComparisonTable() {
         >
           {/* Table */}
           <div className="rounded-[20px] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.10)] bg-white">
-            {/* Header */}
-            <div className="grid border-b-2 border-gray-200" style={{ gridTemplateColumns: "1fr 56px 56px 56px", minHeight: "80px" }}>
-              <div className="p-3 md:p-4 text-[13px] md:text-[14px] font-bold text-gray-500 flex items-center">Características</div>
-              {/* NovaPatch */}
+
+            {/* Header row */}
+            <div className="grid border-b-2 border-gray-200 [grid-template-columns:1fr_76px_76px_76px] md:[grid-template-columns:1fr_100px_100px_100px]">
+              {/* Feature label */}
+              <div className="px-4 py-4 text-[13px] font-bold text-gray-400 flex items-end">
+                Características
+              </div>
+
+              {/* Novapatch */}
               <div
-                className="p-2 flex flex-col items-center justify-center gap-1 text-white"
+                className="py-4 px-2 flex flex-col items-center justify-end gap-2 text-white"
                 style={{ background: "var(--color-ocean)" }}
               >
                 <Image
@@ -63,13 +77,14 @@ export default function ComparisonTable() {
                   alt="Novapatch"
                   width={80}
                   height={22}
-                  className="h-5 w-auto object-contain brightness-0 invert hidden sm:block"
+                  className="h-5 w-auto object-contain brightness-0 invert"
                 />
-                <span className="text-[9px] sm:text-[10px] font-bold opacity-90 text-center leading-tight">Nova<br className="sm:hidden" />patch</span>
+                <span className="text-[11px] font-bold opacity-90">Novapatch</span>
               </div>
-              {/* Capsules */}
-              <div className="p-2 flex flex-col items-center justify-center gap-1">
-                <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="hidden sm:block">
+
+              {/* Cápsulas */}
+              <div className="py-4 px-2 flex flex-col items-center justify-end gap-2">
+                <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
                     fillRule="evenodd"
                     clipRule="evenodd"
@@ -77,44 +92,44 @@ export default function ComparisonTable() {
                     d="M44.59 3.38c4.29 4.39 4.36 11.36 0.2 15.86L20 44.05C8.85 53.7-5.92 38.94 3.73 27.78L28.52 2.98C33.15-1.27 40.2-1.11 44.59 3.38zm-1.34 14.14c7.24-8.62-3.65-20.09-12.64-13.32L18.58 16.15l13.03 13.03zm-25.79 25.63c.33-.23.62-.52.94-.75L29.92 31l-13.03-13.03-11.52 11.52c-7.38 8.05 3.06 20.17 12.09 13.79z"
                   />
                 </svg>
-                <span className="text-[9px] sm:text-[10px] text-gray-500 font-bold text-center leading-tight">Cáp<br className="sm:hidden" />sulas</span>
+                <span className="text-[11px] font-bold text-gray-500">Cápsulas</span>
               </div>
-              {/* Gummies */}
-              <div className="p-2 flex flex-col items-center justify-center gap-1">
+
+              {/* Gomitas */}
+              <div className="py-4 px-2 flex flex-col items-center justify-end gap-2">
                 <Image
                   src="/comparison/bear.svg"
                   alt="Gomitas"
-                  width={20}
-                  height={20}
-                  className="h-5 w-auto opacity-60 hidden sm:block"
+                  width={24}
+                  height={24}
+                  className="h-6 w-auto opacity-60"
                 />
-                <span className="text-[9px] sm:text-[10px] text-gray-500 font-bold text-center leading-tight">Go<br className="sm:hidden" />mitas</span>
+                <span className="text-[11px] font-bold text-gray-500">Gomitas</span>
               </div>
             </div>
 
-            {/* Rows */}
+            {/* Data rows */}
             {rows.map((row, i) => (
               <div
                 key={row.feature}
-                className="grid border-b border-gray-100 last:border-b-0"
+                className="grid border-b border-gray-100 last:border-b-0 [grid-template-columns:1fr_76px_76px_76px] md:[grid-template-columns:1fr_100px_100px_100px]"
                 style={{
-                  gridTemplateColumns: "1fr 56px 56px 56px",
                   background: i % 2 === 1 ? "#F9FAFB" : "white",
                 }}
               >
-                <div className="px-3 md:px-4 py-3 text-[13px] md:text-[14px] font-medium text-gray-900 flex items-center">
+                <div className="px-4 py-4 text-[13px] md:text-[14px] font-medium text-gray-800 flex items-center leading-snug">
                   {row.feature}
                 </div>
                 <div
-                  className="py-3 flex items-center justify-center"
+                  className="py-4 flex items-center justify-center"
                   style={{ background: i % 2 === 1 ? "#E8F3FA" : "#EEF5FB" }}
                 >
                   <Check ok={row.nova} />
                 </div>
-                <div className="py-3 flex items-center justify-center">
+                <div className="py-4 flex items-center justify-center">
                   <Check ok={row.caps} />
                 </div>
-                <div className="py-3 flex items-center justify-center">
+                <div className="py-4 flex items-center justify-center">
                   <Check ok={row.gummies} />
                 </div>
               </div>
@@ -136,9 +151,7 @@ export default function ComparisonTable() {
               </div>
             </div>
             {/* Bubble */}
-            <div
-              className="absolute -bottom-5 -left-5 bg-white rounded-[20px] px-5 py-4 shadow-[0_8px_32px_rgba(0,0,0,0.14)]"
-            >
+            <div className="absolute -bottom-5 -left-5 bg-white rounded-[20px] px-5 py-4 shadow-[0_8px_32px_rgba(0,0,0,0.14)]">
               <strong className="block text-[16px] font-extrabold text-ocean">
                 Un parche, todo el día.
               </strong>
