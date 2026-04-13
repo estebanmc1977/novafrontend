@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import posthog from "posthog-js";
 import {
   getCart,
   addToCart as cartAdd,
@@ -65,12 +66,37 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         addToCart: (item) => {
           cartAdd(item);
           setIsOpen(true);
+          if (typeof window !== "undefined") {
+            posthog.capture("add_to_cart", {
+              product_id: item.slug,
+              variant_id: item.variantId ?? item.slug,
+              quantity: item.quantity ?? 1,
+              price: item.price,
+              mode: item.mode,
+              freq: item.freq,
+            });
+          }
         },
         updateQty: (slug, mode, freq, delta) => {
           cartUpdateQty(slug, mode, freq, delta);
+          if (typeof window !== "undefined") {
+            posthog.capture("cart_quantity_updated", {
+              product_id: slug,
+              mode,
+              freq,
+              delta,
+            });
+          }
         },
         removeItem: (slug, mode, freq) => {
           cartRemove(slug, mode, freq);
+          if (typeof window !== "undefined") {
+            posthog.capture("remove_from_cart", {
+              product_id: slug,
+              mode,
+              freq,
+            });
+          }
         },
         coupon,
         applyCoupon: (c) => setCoupon(c),

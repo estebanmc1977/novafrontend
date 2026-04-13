@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useUser, useClerk, useAuth } from "@clerk/nextjs";
+import posthog from "posthog-js";
 import { useCart } from "@/contexts/CartContext";
 import { medusa } from "@/lib/medusa";
 import { tokenizeCard, parseCardForm, getDeviceSessionId } from "@/lib/openpay";
@@ -411,6 +412,17 @@ export default function CheckoutPage() {
     }
   }, [isLoaded, items.length, success, router]);
 
+  // ── Analytics: checkout_started ──────────────────────────────
+  const checkoutTracked = useRef(false);
+  useEffect(() => {
+    if (!isLoaded || items.length === 0 || checkoutTracked.current) return;
+    checkoutTracked.current = true;
+    posthog.capture("checkout_started", {
+      cart_total: finalTotal,
+      item_count: items.reduce((sum, i) => sum + i.quantity, 0),
+    });
+  }, [isLoaded, items, finalTotal]);
+
   // ── Pre-carga: ejecutar en paralelo al montar la página ──────
   useEffect(() => {
     if (!isLoaded || items.length === 0 || preloadStarted.current) return;
@@ -630,6 +642,10 @@ export default function CheckoutPage() {
       console.timeEnd("[Checkout] total");
 
       // ── Éxito ─────────────────────────────────────────────────────────────────
+      posthog.capture("order_completed", {
+        cart_total: finalTotal,
+        item_count: items.reduce((sum, i) => sum + i.quantity, 0),
+      });
       clearCart();
       setSuccess(true);
     } catch (err) {
