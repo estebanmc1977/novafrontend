@@ -7,6 +7,7 @@ import { ClerkProvider } from '@clerk/nextjs'
 import { CartProvider } from '@/contexts/CartContext'
 import CartDrawer from '@/components/CartDrawer'
 import { SentryIdentity } from '@/components/SentryIdentity'
+import { PostHogProvider } from '@/components/PostHogProvider'
 import { getClerkLocalization } from '@/lib/clerk-theme'
 import { MARKETS } from '@/lib/markets'
 import { routing, type Locale } from '@/i18n/routing'
@@ -42,6 +43,7 @@ export default async function LocaleLayout({
         signUpFallbackRedirectUrl={`/${locale}`}
       >
         <SentryIdentity />
+        <PostHogProvider />
         <CartProvider>
           {children}
           <CartDrawer />
