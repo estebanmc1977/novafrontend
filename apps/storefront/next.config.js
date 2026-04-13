@@ -7,6 +7,8 @@ const withNextIntl = createNextIntlPlugin('./i18n/request.ts')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    // Serve AVIF first (20-30% smaller than WebP), then WebP as fallback
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -21,9 +23,9 @@ module.exports = withSentryConfig(
   {
     org: process.env.SENTRY_ORG,
     project: process.env.SENTRY_PROJECT,
-    silent: true,             // sin spam en CI
+    silent: true,               // sin spam en CI
     widenClientFileUpload: true,
-    hideSourceMaps: true,     // no exponer source maps al browser
-    // disableLogger deprecated in v10 — tree-shaking handled automatically
+    hideSourceMaps: true,       // no exponer source maps al browser
+    autoInstrumentMiddleware: false, // evita overhead de Sentry en cada request del middleware
   }
 )

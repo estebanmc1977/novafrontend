@@ -51,11 +51,11 @@ export default async function LocaleLayout({
           <>
             <Script
               src="https://js.openpay.mx/openpay.v1.min.js"
-              strategy="afterInteractive"
+              strategy="lazyOnload"
             />
             <Script
               src="https://openpay.s3.amazonaws.com/openpay-data.v1.min.js"
-              strategy="afterInteractive"
+              strategy="lazyOnload"
             />
           </>
         )}

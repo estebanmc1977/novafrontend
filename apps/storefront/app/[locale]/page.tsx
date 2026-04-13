@@ -1,13 +1,16 @@
+import dynamic from "next/dynamic";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import HeroWithBar from "@/components/home/HeroWithBar";
-import HowItWorks from "@/components/home/HowItWorks";
-import AbsorptionSection from "@/components/home/AbsorptionSection";
-import ComparisonTable from "@/components/home/ComparisonTable";
-import ProductGrid from "@/components/home/ProductGrid";
-import Testimonials from "@/components/home/Testimonials";
-import CTABanner from "@/components/home/CTABanner";
-import HomeFAQ from "@/components/home/HomeFAQ";
+
+// Below-the-fold sections: code-split and deferred to unblock LCP/FCP
+const HowItWorks      = dynamic(() => import("@/components/home/HowItWorks"));
+const AbsorptionSection = dynamic(() => import("@/components/home/AbsorptionSection"));
+const ComparisonTable = dynamic(() => import("@/components/home/ComparisonTable"));
+const ProductGrid     = dynamic(() => import("@/components/home/ProductGrid"));
+const CTABanner       = dynamic(() => import("@/components/home/CTABanner"));
+const Testimonials    = dynamic(() => import("@/components/home/Testimonials"));
+const HomeFAQ         = dynamic(() => import("@/components/home/HomeFAQ"));
+const Footer          = dynamic(() => import("@/components/Footer"));
 
 export default function HomePage() {
   return (
