@@ -18,12 +18,15 @@
     "next": "15.2.8",
     "next-intl": "^4.9.0",
     "next-mdx-remote": "^6.0.0",
+    "posthog-js": "^1.368.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "resend": "^6.10.0"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["@sentry/cli"]
+    "onlyBuiltDependencies": [
+      "@sentry/cli"
+    ]
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
