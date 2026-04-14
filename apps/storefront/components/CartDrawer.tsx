@@ -6,7 +6,7 @@ import Link from "next/link";
 import { X, ShoppingBag, Trash2, Tag, Loader2, CheckCircle2 } from "lucide-react";
 import { useCart, type AppliedCoupon } from "@/contexts/CartContext";
 import { cartTotals, itemDisplayPrice, FREQ_LABELS, type CartItem } from "@/lib/cart";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { medusa } from "@/lib/medusa";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -261,17 +261,19 @@ function EmptyCart({ onClose }: { onClose: () => void }) {
 const REGION_ID = process.env.NEXT_PUBLIC_MEDUSA_REGION_ID ?? "";
 
 async function applyDiscountCode(code: string): Promise<AppliedCoupon> {
-  const cartId = await medusa.cart.ensure(REGION_ID);
-  const updatedCart = await medusa.cart.applyPromotion(cartId, code);
-
-  const promotion = updatedCart.promotions?.find(
-    (p) => p.code === code.toUpperCase()
+  const upperCode = code.toUpperCase();
+  const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ?? "";
+  const res = await fetch(
+    `${MEDUSA_URL}/promotions?code=${encodeURIComponent(upperCode)}`
   );
-  if (!promotion) throw new Error("Cupón inválido o expirado");
-
-  const discountPct = promotion.application_method?.value ?? 0;
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body?.message ?? "Cupón inválido o expirado");
+  }
+  const { promotion } = await res.json();
+  const discountPct = promotion.discount_value ?? 0;
   return {
-    code: code.toUpperCase(),
+    code: upperCode,
     discountPct,
     label: `${discountPct}% de descuento`,
   };
@@ -284,6 +286,18 @@ export default function CartDrawer() {
   const { savings, total } = cartTotals(items);
   const count = items.reduce((s, i) => s + i.quantity, 0);
   const hasSubs = items.some((i) => i.mode === "sub");
+
+  const [shippingCost, setShippingCost] = useState(85);
+  useEffect(() => {
+    const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ?? "http://localhost:9000";
+    fetch(`${MEDUSA_URL}/shipping-options`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        const first = data?.shipping_options?.[0];
+        if (first?.amount) setShippingCost(first.amount);
+      })
+      .catch(() => {});
+  }, []);
 
   // Coupon UI state (loading flag — applied/idle derived from context)
   const [couponLoading, setCouponLoading] = useState(false);
@@ -322,7 +336,7 @@ export default function CartDrawer() {
   const discountAmount = appliedCoupon
     ? Math.round(total * (appliedCoupon.discountPct / 100))
     : 0;
-  const finalTotal = total - discountAmount;
+  const finalTotal = total - discountAmount + shippingCost;
 
   return (
     <>
@@ -449,7 +463,7 @@ export default function CartDrawer() {
 
                       <div className="flex justify-between text-[13px]">
                         <span className="text-gray-500">Envío</span>
-                        <span className="font-semibold text-green-600">Gratis</span>
+                        <span className="font-semibold text-gray-700">${shippingCost} MXN</span>
                       </div>
 
                       <div className="flex justify-between text-[16px] font-black text-ocean pt-1 border-t border-black/[0.06]">

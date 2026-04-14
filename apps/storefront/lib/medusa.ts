@@ -313,6 +313,24 @@ const cart = {
   },
 
   /**
+   * POST /store/carts/:id/shipping-methods
+   * Aplica una shipping option al carrito.
+   */
+  async addShippingMethod(
+    cart_id: string,
+    shipping_option_id: string
+  ): Promise<MedusaCart> {
+    const data = await medusaFetch<{ cart: MedusaCart }>(
+      `/store/carts/${cart_id}/shipping-methods`,
+      {
+        method: "POST",
+        body: JSON.stringify({ option_id: shipping_option_id }),
+      }
+    );
+    return data.cart;
+  },
+
+  /**
    * POST /store/carts/:id/line-items/:line_id
    * Actualiza la cantidad de un ítem existente.
    */
