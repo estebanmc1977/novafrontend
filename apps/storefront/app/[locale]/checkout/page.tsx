@@ -325,7 +325,7 @@ export default function CheckoutPage() {
 
   const totals = cartTotals(items);
   const couponDiscount = coupon ? Math.round(totals.total * (coupon.discountPct / 100)) : 0;
-  // effectiveCouponDiscount: used by the UI in the order summary (see coupon discount render block below)
+  // effectiveCouponDiscount: wired into the UI render block in a subsequent step (replaces couponDiscount below)
   const effectiveCouponDiscount =
     medusaCartTotal !== null ? Math.max(0, totals.total - medusaCartTotal) : couponDiscount;
   const finalTotal = medusaCartTotal ?? (totals.total - couponDiscount);
