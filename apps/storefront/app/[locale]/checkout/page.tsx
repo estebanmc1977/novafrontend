@@ -616,6 +616,16 @@ export default function CheckoutPage() {
           },
         });
 
+        // ── Paso 2b: Aplicar shipping method ───────────────────────────────
+        const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ?? "http://localhost:9000";
+        const shippingRes = await fetch(`${MEDUSA_URL}/shipping-options`).catch(() => null);
+        if (shippingRes?.ok) {
+          const { shipping_options } = await shippingRes.json();
+          if (shipping_options?.[0]?.id) {
+            await medusa.cart.addShippingMethod(cart_id!, shipping_options[0].id);
+          }
+        }
+
         // ── Paso 3: Preparando pago ─────────────────────────────────────────
         setPaymentStep(3);
         await medusa.checkout.createPaymentSession(cart_id);
