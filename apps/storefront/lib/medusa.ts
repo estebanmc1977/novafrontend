@@ -56,6 +56,12 @@ export type MedusaCart = {
   items: MedusaLineItem[];
   total: number;
   subtotal: number;
+  discount_total?: number;
+  promotions?: Array<{
+    id: string;
+    code: string;
+    application_method?: { type: string; value: number };
+  }>;
   payment_sessions?: { provider_id: string; status: string }[];
 };
 
@@ -271,6 +277,37 @@ const cart = {
     const data = await medusaFetch<{ cart: MedusaCart }>(
       `/store/carts/${cart_id}`,
       { method: "POST", body: JSON.stringify(fields) }
+    );
+    return data.cart;
+  },
+
+  /**
+   * POST /store/carts/:id/promotions
+   * Aplica un código de descuento al carrito.
+   * Devuelve el carrito actualizado con promotions[].application_method.value.
+   */
+  async applyPromotion(cart_id: string, code: string): Promise<MedusaCart> {
+    const data = await medusaFetch<{ cart: MedusaCart }>(
+      `/store/carts/${cart_id}/promotions`,
+      {
+        method: "POST",
+        body: JSON.stringify({ promo_codes: [code.toUpperCase()] }),
+      }
+    );
+    return data.cart;
+  },
+
+  /**
+   * DELETE /store/carts/:id/promotions
+   * Quita un código de descuento del carrito.
+   */
+  async removePromotion(cart_id: string, code: string): Promise<MedusaCart> {
+    const data = await medusaFetch<{ cart: MedusaCart }>(
+      `/store/carts/${cart_id}/promotions`,
+      {
+        method: "DELETE",
+        body: JSON.stringify({ promo_codes: [code.toUpperCase()] }),
+      }
     );
     return data.cart;
   },

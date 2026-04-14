@@ -7,6 +7,7 @@ import { X, ShoppingBag, Trash2, Tag, Loader2, CheckCircle2 } from "lucide-react
 import { useCart, type AppliedCoupon } from "@/contexts/CartContext";
 import { cartTotals, itemDisplayPrice, FREQ_LABELS, type CartItem } from "@/lib/cart";
 import { useState, useCallback } from "react";
+import { medusa } from "@/lib/medusa";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -255,25 +256,25 @@ function EmptyCart({ onClose }: { onClose: () => void }) {
   );
 }
 
-// ─── Coupon logic (mock — swap with real Medusa call when backend is ready) ───
+// ─── Coupon logic ─────────────────────────────────────────────────────────────
 
-// To wire to Medusa: POST /store/carts/:cartId/discounts { code }
-// Remove: DELETE /store/carts/:cartId/discounts/:code
+const REGION_ID = process.env.NEXT_PUBLIC_MEDUSA_REGION_ID ?? "";
+
 async function applyDiscountCode(code: string): Promise<AppliedCoupon> {
-  // Simula latencia de red (~800ms)
-  await new Promise((r) => setTimeout(r, 850));
+  const cartId = await medusa.cart.ensure(REGION_ID);
+  const updatedCart = await medusa.cart.applyPromotion(cartId, code);
 
-  // Códigos de prueba — reemplazar con respuesta real de Medusa
-  const MOCK_CODES: Record<string, { discountPct: number; label: string }> = {
-    NOVA20: { discountPct: 20, label: "20% de descuento" },
-    BIENVENIDO: { discountPct: 15, label: "15% de descuento" },
-    PATCH10: { discountPct: 10, label: "10% de descuento" },
+  const promotion = updatedCart.promotions?.find(
+    (p) => p.code === code.toUpperCase()
+  );
+  if (!promotion) throw new Error("Cupón inválido o expirado");
+
+  const discountPct = promotion.application_method?.value ?? 0;
+  return {
+    code: code.toUpperCase(),
+    discountPct,
+    label: `${discountPct}% de descuento`,
   };
-
-  const entry = MOCK_CODES[code.toUpperCase()];
-  if (!entry) throw new Error("Cupón inválido o expirado");
-
-  return { code: code.toUpperCase(), ...entry };
 }
 
 // ─── Drawer principal ─────────────────────────────────────────────────────────
@@ -308,8 +309,14 @@ export default function CartDrawer() {
   }, [applyCoupon, showToast]);
 
   const handleRemove = useCallback(() => {
+    if (appliedCoupon) {
+      const cartId = medusa.cart.getStoredId();
+      if (cartId) {
+        medusa.cart.removePromotion(cartId, appliedCoupon.code).catch(() => {});
+      }
+    }
     removeCoupon();
-  }, [removeCoupon]);
+  }, [appliedCoupon, removeCoupon]);
 
   // Totales con descuento
   const discountAmount = appliedCoupon
