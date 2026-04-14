@@ -650,12 +650,14 @@ export default function CheckoutPage() {
         }
 
         // ── Paso 2c: Aplicar cupón de descuento si existe ──────────────────
-        if (coupon?.code) {
-          try {
-            await medusa.cart.applyPromotion(cart_id!, coupon.code);
-          } catch (promoErr) {
-            // No bloquear el checkout si el cupón falla (puede haber expirado)
-            console.warn("[Checkout] No se pudo aplicar el cupón:", promoErr);
+        // Skip if already applied during preload; otherwise apply now and verify.
+        if (coupon?.code && !couponAppliedInPreload.current) {
+          const updatedCart = await medusa.cart.applyPromotion(cart_id!, coupon.code);
+          if (!updatedCart.discount_total || updatedCart.discount_total === 0) {
+            setSubmitError("El cupón no pudo aplicarse. Verifica el código e intenta de nuevo.");
+            setSubmitting(false);
+            setPaymentStep(0);
+            return;
           }
         }
 
