@@ -501,7 +501,10 @@ export default function CheckoutPage() {
         if (capturedCoupon?.code) {
           try {
             const updatedCart = await medusa.cart.applyPromotion(cartId, capturedCoupon.code);
-            if (updatedCart.discount_total && updatedCart.discount_total > 0) {
+            const promotionApplied = updatedCart.promotions?.some(
+              (p) => p.code.toUpperCase() === capturedCoupon.code.toUpperCase()
+            );
+            if (promotionApplied) {
               setMedusaCartTotal(updatedCart.total);
               couponAppliedInPreload.current = true;
             }
