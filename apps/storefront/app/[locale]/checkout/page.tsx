@@ -325,7 +325,7 @@ export default function CheckoutPage() {
 
   const totals = cartTotals(items);
   const couponDiscount = coupon ? Math.round(totals.total * (coupon.discountPct / 100)) : 0;
-  // effectiveCouponDiscount: wired into the UI render block in a subsequent step (replaces couponDiscount below)
+  // effectiveCouponDiscount: Medusa-confirmed discount once preload resolves; falls back to frontend estimate
   const effectiveCouponDiscount =
     medusaCartTotal !== null ? Math.max(0, totals.total - medusaCartTotal) : couponDiscount;
   const finalTotal = medusaCartTotal ?? (totals.total - couponDiscount);
@@ -425,7 +425,7 @@ export default function CheckoutPage() {
     if (!isLoaded || items.length === 0 || checkoutTracked.current) return;
     checkoutTracked.current = true;
     posthog.capture("checkout_started", {
-      cart_total: finalTotal,
+      cart_total: finalTotal + 85, // full charge: discounted products + shipping
       item_count: items.reduce((sum, i) => sum + i.quantity, 0),
     });
   }, [isLoaded, items, finalTotal]);
