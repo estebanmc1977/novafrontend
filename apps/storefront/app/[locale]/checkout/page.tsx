@@ -705,7 +705,7 @@ export default function CheckoutPage() {
 
       // ── Éxito (cobro directo sin 3DS) ─────────────────────────────────────────
       posthog.capture("order_completed", {
-        cart_total: finalTotal,
+        cart_total: finalTotal + 85, // actual charge: discounted products + shipping
         item_count: items.reduce((sum, i) => sum + i.quantity, 0),
       });
       clearCart();
@@ -1311,7 +1311,7 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                {coupon && couponDiscount > 0 && (
+                {coupon && effectiveCouponDiscount > 0 && (
                   <div className="flex justify-between text-[13px]">
                     <span className="flex items-center gap-1.5">
                       <span
@@ -1323,7 +1323,7 @@ export default function CheckoutPage() {
                       {coupon.code}
                     </span>
                     <span className="font-bold text-[#16A34A]">
-                      −{fmt(couponDiscount)}
+                      −{fmt(effectiveCouponDiscount)}
                     </span>
                   </div>
                 )}
@@ -1337,7 +1337,7 @@ export default function CheckoutPage() {
                   <span className="text-[15px] font-black text-[#005088]">Total</span>
                   <div className="text-right">
                     <p className="text-[18px] font-black text-[#005088]">{fmt(finalTotal + 85)}</p>
-                    {(totals.savings > 0 || couponDiscount > 0) && (
+                    {(totals.savings > 0 || effectiveCouponDiscount > 0) && (
                       <p className="text-[11px] text-[#6B7280]">
                         antes {fmt(totals.subtotal + 85)}
                       </p>
