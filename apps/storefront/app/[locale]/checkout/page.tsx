@@ -435,6 +435,9 @@ export default function CheckoutPage() {
     if (!isLoaded || items.length === 0 || preloadStarted.current) return;
     preloadStarted.current = true;
 
+    // Snapshot coupon at effect-fire time — effect runs once
+    const capturedCoupon = coupon;
+
     const preload = async () => {
       console.time("[Checkout] preload");
 
@@ -495,9 +498,9 @@ export default function CheckoutPage() {
         itemsPreloaded.current = true;
 
         // Apply coupon if present — so createPaymentSession sees the discounted total
-        if (coupon?.code) {
+        if (capturedCoupon?.code) {
           try {
-            const updatedCart = await medusa.cart.applyPromotion(cartId, coupon.code);
+            const updatedCart = await medusa.cart.applyPromotion(cartId, capturedCoupon.code);
             if (updatedCart.discount_total && updatedCart.discount_total > 0) {
               setMedusaCartTotal(updatedCart.total);
               couponAppliedInPreload.current = true;
