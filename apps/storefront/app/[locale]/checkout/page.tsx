@@ -325,11 +325,10 @@ export default function CheckoutPage() {
 
   const totals = cartTotals(items);
   const couponDiscount = coupon ? Math.round(totals.total * (coupon.discountPct / 100)) : 0;
-  // effectiveCouponDiscount: uses Medusa's confirmed discount once preload resolves;
-  // falls back to frontend estimate while preload is in flight.
+  // effectiveCouponDiscount: used by the UI in the order summary (see coupon discount render block below)
   const effectiveCouponDiscount =
     medusaCartTotal !== null ? Math.max(0, totals.total - medusaCartTotal) : couponDiscount;
-  const finalTotal = medusaCartTotal ?? totals.total - couponDiscount;
+  const finalTotal = medusaCartTotal ?? (totals.total - couponDiscount);
 
   // ── form state ──────────────────────────────────────────────
   const [contact, setContact] = useState({ name: "", email: "", phone: "" });
