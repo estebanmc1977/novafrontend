@@ -453,8 +453,8 @@ export default function CheckoutPage() {
             for (const v of p.variants ?? []) {
               const t = v.title.toLowerCase();
               if (t.includes("once"))           map[`${p.handle}-once`] = v.id;
-              else if (t.includes("monthly"))   map[`${p.handle}-30`]  = v.id;
               else if (t.includes("bimonthly")) map[`${p.handle}-60`]  = v.id;
+              else if (t.includes("monthly"))   map[`${p.handle}-30`]  = v.id;
               else if (t.includes("quarterly")) map[`${p.handle}-90`]  = v.id;
             }
           }
@@ -626,13 +626,33 @@ export default function CheckoutPage() {
           }
         }
 
+        // ── Paso 2c: Aplicar cupón de descuento si existe ──────────────────
+        if (coupon?.code) {
+          try {
+            await medusa.cart.applyPromotion(cart_id!, coupon.code);
+          } catch (promoErr) {
+            // No bloquear el checkout si el cupón falla (puede haber expirado)
+            console.warn("[Checkout] No se pudo aplicar el cupón:", promoErr);
+          }
+        }
+
         // ── Paso 3: Preparando pago ─────────────────────────────────────────
         setPaymentStep(3);
         await medusa.checkout.createPaymentSession(cart_id);
 
         // ── Paso 4: Procesando cobro ────────────────────────────────────────
         setPaymentStep(4);
-        await medusa.checkout.completeCart(cart_id, openpay_token_id, contact.email, device_session_id);
+        const result = await medusa.checkout.completeCart(cart_id, openpay_token_id, contact.email, device_session_id);
+
+        // ── 3DS: el banco exige autenticación adicional ──────────────────────
+        if (result.type === "redirect") {
+          // Guardar cart_id para que la página de retorno pueda recuperar el contexto
+          sessionStorage.setItem("novapatch_3ds_cart_id", cart_id);
+          sessionStorage.setItem("novapatch_3ds_total", String(finalTotal));
+          sessionStorage.setItem("novapatch_3ds_items", String(items.reduce((sum, i) => sum + i.quantity, 0)));
+          window.location.href = result.redirect_url;
+          return; // el flujo continúa en /checkout/3ds-return
+        }
       } catch (err) {
         if (process.env.NODE_ENV === "development") {
           console.warn("[Checkout] Backend Medusa no disponible, completando en modo demo");
@@ -651,7 +671,7 @@ export default function CheckoutPage() {
 
       console.timeEnd("[Checkout] total");
 
-      // ── Éxito ─────────────────────────────────────────────────────────────────
+      // ── Éxito (cobro directo sin 3DS) ─────────────────────────────────────────
       posthog.capture("order_completed", {
         cart_total: finalTotal,
         item_count: items.reduce((sum, i) => sum + i.quantity, 0),
