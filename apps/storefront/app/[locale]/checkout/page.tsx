@@ -425,7 +425,7 @@ export default function CheckoutPage() {
     if (!isLoaded || items.length === 0 || checkoutTracked.current) return;
     checkoutTracked.current = true;
     posthog.capture("checkout_started", {
-      cart_total: finalTotal + 85, // full charge: discounted products + shipping
+      cart_total: finalTotal + 85, // frontend estimate at fire time; preload may update finalTotal later
       item_count: items.reduce((sum, i) => sum + i.quantity, 0),
     });
   }, [isLoaded, items, finalTotal]);
@@ -679,7 +679,7 @@ export default function CheckoutPage() {
         if (result.type === "redirect") {
           // Guardar cart_id para que la página de retorno pueda recuperar el contexto
           sessionStorage.setItem("novapatch_3ds_cart_id", cart_id);
-          sessionStorage.setItem("novapatch_3ds_total", String(finalTotal));
+          sessionStorage.setItem("novapatch_3ds_total", String(finalTotal + 85)); // includes shipping
           sessionStorage.setItem("novapatch_3ds_items", String(items.reduce((sum, i) => sum + i.quantity, 0)));
           window.location.href = result.redirect_url;
           return; // el flujo continúa en /checkout/3ds-return
