@@ -320,9 +320,15 @@ export default function CheckoutPage() {
   const isSignedIn = !!user;
   const needsAuth = hasSubscriptions && !isSignedIn;
 
+  // ── Preload state (must be declared before totals calculations) ───
+  const [medusaCartTotal, setMedusaCartTotal] = useState<number | null>(null);
+
   const totals = cartTotals(items);
   const couponDiscount = coupon ? Math.round(totals.total * (coupon.discountPct / 100)) : 0;
-  const finalTotal = totals.total - couponDiscount;
+  // effectiveCouponDiscount: Medusa-confirmed discount once preload resolves; falls back to frontend estimate
+  const effectiveCouponDiscount =
+    medusaCartTotal !== null ? Math.max(0, totals.total - medusaCartTotal) : couponDiscount;
+  const finalTotal = medusaCartTotal ?? (totals.total - couponDiscount);
 
   // ── form state ──────────────────────────────────────────────
   const [contact, setContact] = useState({ name: "", email: "", phone: "" });
@@ -360,6 +366,7 @@ export default function CheckoutPage() {
   const [preloadedCustomerId, setPreloadedCustomerId] = useState<string | undefined>();
   const preloadStarted = useRef(false);
   const itemsPreloaded = useRef(false);
+  const couponAppliedInPreload = useRef(false);
 
   // ── COPOMEX (CP → colonias/estado/ciudad) ──────────────────
   const { state: copomex, lookup: lookupCp, reset: resetCopomex } = useCopomex();
@@ -418,7 +425,7 @@ export default function CheckoutPage() {
     if (!isLoaded || items.length === 0 || checkoutTracked.current) return;
     checkoutTracked.current = true;
     posthog.capture("checkout_started", {
-      cart_total: finalTotal,
+      cart_total: finalTotal + 85, // frontend estimate at fire time; preload may update finalTotal later
       item_count: items.reduce((sum, i) => sum + i.quantity, 0),
     });
   }, [isLoaded, items, finalTotal]);
@@ -427,6 +434,9 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (!isLoaded || items.length === 0 || preloadStarted.current) return;
     preloadStarted.current = true;
+
+    // Snapshot coupon at effect-fire time — effect runs once
+    const capturedCoupon = coupon;
 
     const preload = async () => {
       console.time("[Checkout] preload");
@@ -453,8 +463,8 @@ export default function CheckoutPage() {
             for (const v of p.variants ?? []) {
               const t = v.title.toLowerCase();
               if (t.includes("once"))           map[`${p.handle}-once`] = v.id;
-              else if (t.includes("monthly"))   map[`${p.handle}-30`]  = v.id;
               else if (t.includes("bimonthly")) map[`${p.handle}-60`]  = v.id;
+              else if (t.includes("monthly"))   map[`${p.handle}-30`]  = v.id;
               else if (t.includes("quarterly")) map[`${p.handle}-90`]  = v.id;
             }
           }
@@ -486,6 +496,22 @@ export default function CheckoutPage() {
           }
         }
         itemsPreloaded.current = true;
+
+        // Apply coupon if present — so createPaymentSession sees the discounted total
+        if (capturedCoupon?.code) {
+          try {
+            const updatedCart = await medusa.cart.applyPromotion(cartId, capturedCoupon.code);
+            const promotionApplied = updatedCart.promotions?.some(
+              (p) => p.code.toUpperCase() === capturedCoupon.code.toUpperCase()
+            );
+            if (promotionApplied) {
+              setMedusaCartTotal(updatedCart.total);
+              couponAppliedInPreload.current = true;
+            }
+          } catch {
+            // Failed during preload — will retry on submit
+          }
+        }
       } catch { /* se creará en handleSubmit como fallback */ }
 
       console.timeEnd("[Checkout] preload");
@@ -626,13 +652,38 @@ export default function CheckoutPage() {
           }
         }
 
+        // ── Paso 2c: Aplicar cupón de descuento si existe ──────────────────
+        // Skip if already applied during preload; otherwise apply now and verify.
+        if (coupon?.code && !couponAppliedInPreload.current) {
+          const updatedCart = await medusa.cart.applyPromotion(cart_id!, coupon.code);
+          const promotionApplied = updatedCart.promotions?.some(
+            (p) => p.code.toUpperCase() === coupon.code.toUpperCase()
+          );
+          if (!promotionApplied) {
+            setSubmitError("El cupón no pudo aplicarse. Verifica el código e intenta de nuevo.");
+            setSubmitting(false);
+            setPaymentStep(0);
+            return;
+          }
+        }
+
         // ── Paso 3: Preparando pago ─────────────────────────────────────────
         setPaymentStep(3);
         await medusa.checkout.createPaymentSession(cart_id);
 
         // ── Paso 4: Procesando cobro ────────────────────────────────────────
         setPaymentStep(4);
-        await medusa.checkout.completeCart(cart_id, openpay_token_id, contact.email, device_session_id);
+        const result = await medusa.checkout.completeCart(cart_id, openpay_token_id, contact.email, device_session_id);
+
+        // ── 3DS: el banco exige autenticación adicional ──────────────────────
+        if (result.type === "redirect") {
+          // Guardar cart_id para que la página de retorno pueda recuperar el contexto
+          sessionStorage.setItem("novapatch_3ds_cart_id", cart_id);
+          sessionStorage.setItem("novapatch_3ds_total", String(finalTotal + 85)); // includes shipping
+          sessionStorage.setItem("novapatch_3ds_items", String(items.reduce((sum, i) => sum + i.quantity, 0)));
+          window.location.href = result.redirect_url;
+          return; // el flujo continúa en /checkout/3ds-return
+        }
       } catch (err) {
         if (process.env.NODE_ENV === "development") {
           console.warn("[Checkout] Backend Medusa no disponible, completando en modo demo");
@@ -645,15 +696,16 @@ export default function CheckoutPage() {
           setPreloadedCartId(null);
           preloadStarted.current = false;
           itemsPreloaded.current = false;
+          couponAppliedInPreload.current = false;
           return;
         }
       }
 
       console.timeEnd("[Checkout] total");
 
-      // ── Éxito ─────────────────────────────────────────────────────────────────
+      // ── Éxito (cobro directo sin 3DS) ─────────────────────────────────────────
       posthog.capture("order_completed", {
-        cart_total: finalTotal,
+        cart_total: finalTotal + 85, // actual charge: discounted products + shipping
         item_count: items.reduce((sum, i) => sum + i.quantity, 0),
       });
       clearCart();
@@ -1259,7 +1311,7 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                {coupon && couponDiscount > 0 && (
+                {coupon && effectiveCouponDiscount > 0 && (
                   <div className="flex justify-between text-[13px]">
                     <span className="flex items-center gap-1.5">
                       <span
@@ -1271,7 +1323,7 @@ export default function CheckoutPage() {
                       {coupon.code}
                     </span>
                     <span className="font-bold text-[#16A34A]">
-                      −{fmt(couponDiscount)}
+                      −{fmt(effectiveCouponDiscount)}
                     </span>
                   </div>
                 )}
@@ -1285,7 +1337,7 @@ export default function CheckoutPage() {
                   <span className="text-[15px] font-black text-[#005088]">Total</span>
                   <div className="text-right">
                     <p className="text-[18px] font-black text-[#005088]">{fmt(finalTotal + 85)}</p>
-                    {(totals.savings > 0 || couponDiscount > 0) && (
+                    {(totals.savings > 0 || effectiveCouponDiscount > 0) && (
                       <p className="text-[11px] text-[#6B7280]">
                         antes {fmt(totals.subtotal + 85)}
                       </p>

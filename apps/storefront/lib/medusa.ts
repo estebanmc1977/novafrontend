@@ -84,6 +84,10 @@ export type MedusaOrder = {
   items: MedusaLineItem[];
 };
 
+export type CompleteCartResult =
+  | { type: "order"; data: MedusaOrder }
+  | { type: "redirect"; redirect_url: string };
+
 export type MedusaSubscription = {
   id: string;
   status: "active" | "paused" | "cancelled" | "past_due" | "delayed_out_of_stock";
@@ -375,19 +379,21 @@ const checkout = {
     openpay_token_id: string,
     email?: string,
     device_session_id?: string
-  ): Promise<MedusaOrder> {
-    const data = await medusaFetch<{ type: string; data: MedusaOrder }>(
+  ): Promise<CompleteCartResult> {
+    const data = await medusaFetch<CompleteCartResult>(
       `/store/carts/${cart_id}/complete`,
       {
         method: "POST",
         body: JSON.stringify({ openpay_token_id, email, device_session_id }),
       }
     );
-    // Limpiar cart_id del storage al completar
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("novapatch_medusa_cart_id");
+    if (data.type === "order") {
+      // Limpiar cart_id del storage solo cuando el cobro completó sin 3DS
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("novapatch_medusa_cart_id");
+      }
     }
-    return data.data;
+    return data;
   },
 };
 
