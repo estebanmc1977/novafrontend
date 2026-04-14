@@ -32,10 +32,20 @@ type CartContextType = {
 
 const CartContext = createContext<CartContextType | null>(null);
 
+const COUPON_STORAGE_KEY = "novapatch_coupon";
+
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [coupon, setCoupon] = useState<AppliedCoupon | null>(null);
+  const [coupon, setCoupon] = useState<AppliedCoupon | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const stored = localStorage.getItem(COUPON_STORAGE_KEY);
+      return stored ? (JSON.parse(stored) as AppliedCoupon) : null;
+    } catch {
+      return null;
+    }
+  });
 
   const sync = useCallback(() => setItems(getCart()), []);
 
@@ -99,8 +109,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           }
         },
         coupon,
-        applyCoupon: (c) => setCoupon(c),
-        removeCoupon: () => setCoupon(null),
+        applyCoupon: (c) => {
+          setCoupon(c);
+          if (typeof window !== "undefined") {
+            localStorage.setItem(COUPON_STORAGE_KEY, JSON.stringify(c));
+          }
+        },
+        removeCoupon: () => {
+          setCoupon(null);
+          if (typeof window !== "undefined") {
+            localStorage.removeItem(COUPON_STORAGE_KEY);
+          }
+        },
       }}
     >
       {children}
