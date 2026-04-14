@@ -653,7 +653,10 @@ export default function CheckoutPage() {
         // Skip if already applied during preload; otherwise apply now and verify.
         if (coupon?.code && !couponAppliedInPreload.current) {
           const updatedCart = await medusa.cart.applyPromotion(cart_id!, coupon.code);
-          if (!updatedCart.discount_total || updatedCart.discount_total === 0) {
+          const promotionApplied = updatedCart.promotions?.some(
+            (p) => p.code.toUpperCase() === coupon.code.toUpperCase()
+          );
+          if (!promotionApplied) {
             setSubmitError("El cupón no pudo aplicarse. Verifica el código e intenta de nuevo.");
             setSubmitting(false);
             setPaymentStep(0);
@@ -690,6 +693,7 @@ export default function CheckoutPage() {
           setPreloadedCartId(null);
           preloadStarted.current = false;
           itemsPreloaded.current = false;
+          couponAppliedInPreload.current = false;
           return;
         }
       }
