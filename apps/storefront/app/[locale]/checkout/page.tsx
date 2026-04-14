@@ -493,6 +493,19 @@ export default function CheckoutPage() {
           }
         }
         itemsPreloaded.current = true;
+
+        // Apply coupon if present — so createPaymentSession sees the discounted total
+        if (coupon?.code) {
+          try {
+            const updatedCart = await medusa.cart.applyPromotion(cartId, coupon.code);
+            if (updatedCart.discount_total && updatedCart.discount_total > 0) {
+              setMedusaCartTotal(updatedCart.total);
+              couponAppliedInPreload.current = true;
+            }
+          } catch {
+            // Failed during preload — will retry on submit
+          }
+        }
       } catch { /* se creará en handleSubmit como fallback */ }
 
       console.timeEnd("[Checkout] preload");
