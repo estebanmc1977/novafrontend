@@ -320,9 +320,16 @@ export default function CheckoutPage() {
   const isSignedIn = !!user;
   const needsAuth = hasSubscriptions && !isSignedIn;
 
+  // ── Preload state (must be declared before totals calculations) ───
+  const [medusaCartTotal, setMedusaCartTotal] = useState<number | null>(null);
+
   const totals = cartTotals(items);
   const couponDiscount = coupon ? Math.round(totals.total * (coupon.discountPct / 100)) : 0;
-  const finalTotal = totals.total - couponDiscount;
+  // effectiveCouponDiscount: uses Medusa's confirmed discount once preload resolves;
+  // falls back to frontend estimate while preload is in flight.
+  const effectiveCouponDiscount =
+    medusaCartTotal !== null ? Math.max(0, totals.total - medusaCartTotal) : couponDiscount;
+  const finalTotal = medusaCartTotal ?? totals.total - couponDiscount;
 
   // ── form state ──────────────────────────────────────────────
   const [contact, setContact] = useState({ name: "", email: "", phone: "" });
@@ -360,6 +367,7 @@ export default function CheckoutPage() {
   const [preloadedCustomerId, setPreloadedCustomerId] = useState<string | undefined>();
   const preloadStarted = useRef(false);
   const itemsPreloaded = useRef(false);
+  const couponAppliedInPreload = useRef(false);
 
   // ── COPOMEX (CP → colonias/estado/ciudad) ──────────────────
   const { state: copomex, lookup: lookupCp, reset: resetCopomex } = useCopomex();
