@@ -99,7 +99,7 @@
   "checkout": {
     "paymentMethods": {
       "title": "Método de pago",
-      "description": "Paga con OXXO, SPEI o tarjeta de crédito/débito"
+      "description": "Paga con tarjeta de crédito o débito"
     }
   },
   "legal": {

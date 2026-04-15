@@ -493,7 +493,7 @@ export default function CartDrawer() {
 
                     {/* Trust badges */}
                     <div className="flex items-center justify-center gap-2 flex-wrap">
-                      {["🔒 Pago seguro", "Visa", "MC", "OXXO", "SPEI"].map((b) => (
+                      {["🔒 Pago seguro", "Visa", "MC"].map((b) => (
                         <span key={b} className="text-[10px] text-gray-400 font-medium bg-gray-100 px-2 py-0.5 rounded-md">
                           {b}
                         </span>
