@@ -7,7 +7,7 @@ const outfit = Outfit({
   subsets: ['latin'],
   variable: '--font-outfit',
   display: 'swap',
-  weight: ['400', '500', '600', '700', '800', '900'],
+  weight: ['400', '600', '700'],
 })
 
 export const metadata: Metadata = {
@@ -28,6 +28,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://api.clerk.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://us.i.posthog.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://js.openpay.mx" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://openpay.s3.amazonaws.com" />
+      </head>
       <body suppressHydrationWarning className={`${outfit.variable} min-h-screen`}>{children}</body>
     </html>
   )

@@ -215,6 +215,7 @@ function ProductCard({
             src={product.image}
             alt={`Novapatch ${product.title}`}
             fill
+            sizes="144px"
             loading="lazy"
             className="object-contain drop-shadow-md"
           />

@@ -3,6 +3,8 @@ import Navbar from "@/components/Navbar"
 import TiendaExperience from "@/components/store/TiendaExperience"
 import { getProducts, type Product } from "@/lib/commerce"
 
+export const revalidate = 3600 // ISR: revalida productos cada hora
+
 const PRODUCT_ORDER = ["shield", "glow", "sleep", "energy", "zen", "woman"] as const
 
 function getOrderedProducts(products: Product[]) {

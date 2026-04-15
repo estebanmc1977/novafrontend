@@ -111,6 +111,7 @@ function HeroProductCard({
               src={p.imgSrc}
               alt={`NovaPatch ${p.name}`}
               fill
+              sizes="(max-width: 640px) 180px, (max-width: 1280px) 22vw, 288px"
               className="object-contain group-hover:scale-[1.04] transition-transform duration-500"
             />
           </div>
@@ -222,6 +223,7 @@ function ProductCard({
               src={p.imgSrc}
               alt={`NovaPatch ${p.name}`}
               fill
+              sizes="144px"
               loading="lazy"
               className="object-contain group-hover:scale-[1.06] transition-transform duration-300"
             />
