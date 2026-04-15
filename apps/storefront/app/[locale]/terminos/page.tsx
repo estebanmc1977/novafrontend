@@ -16,7 +16,7 @@ const sections = [
   },
   {
     title: "4. Pagos",
-    content: `Los pagos son procesados de forma segura por Openpay. Al proporcionar sus datos de pago, usted garantiza que está autorizado a usar dicho método de pago.\n\nMétodos aceptados:\n• Tarjeta de crédito y débito (Visa, Mastercard, American Express)\n• SPEI (transferencia bancaria)\n• Efectivo en tiendas OXXO (solo compras únicas)`,
+    content: `Los pagos son procesados de forma segura por Openpay. Al proporcionar sus datos de pago, usted garantiza que está autorizado a usar dicho método de pago.\n\nMétodos aceptados:\n• Tarjeta de crédito y débito (Visa, Mastercard, American Express)`,
   },
   {
     title: "5. Envíos y Entregas",

@@ -111,7 +111,7 @@ export default function Footer() {
 }
 
 const PAYMENT_METHODS: Record<string, Array<'visa' | 'mastercard' | 'oxxo' | 'spei' | 'pix' | 'boleto'>> = {
-  mx: ['visa', 'mastercard', 'oxxo', 'spei'],
+  mx: ['visa', 'mastercard'],
   br: ['visa', 'mastercard', 'pix', 'boleto'],
   ar: ['visa', 'mastercard'],
   cl: ['visa', 'mastercard'],
