@@ -65,6 +65,14 @@ export type MedusaCart = {
   payment_sessions?: { provider_id: string; status: string }[];
 };
 
+export type MedusaShippingOption = {
+  id: string;
+  name: string;
+  amount: number;
+  price_type: "flat" | "calculated";
+  provider_id: string;
+};
+
 export type MedusaLineItem = {
   id: string;
   variant_id: string;
@@ -111,12 +119,20 @@ export type MedusaPaymentMethod = {
 
 // ─── Fetch helper ─────────────────────────────────────────────────────────────
 
+// Paths where retrying a failed POST could have side effects (double charge, etc.)
+const NO_RETRY_PATHS = ["/complete", "/payment-sessions"];
+
 async function medusaFetch<T>(
   path: string,
   options: RequestInit = {},
   token?: string | null
 ): Promise<T> {
   const url = `${MEDUSA_URL}${path}`;
+  const method = (options.method ?? "GET").toUpperCase();
+  const isGet = method === "GET";
+  const isSensitive = !isGet && NO_RETRY_PATHS.some((p) => path.endsWith(p));
+  const MAX_RETRIES = isSensitive ? 0 : 2;
+  const BASE_DELAY_MS = 300;
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -125,22 +141,51 @@ async function medusaFetch<T>(
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 
-  const res = await fetch(url, {
+  const fetchOptions: RequestInit = {
     ...options,
     headers: { ...headers, ...(options.headers as Record<string, string> ?? {}) },
-  });
+  };
 
-  if (!res.ok) {
-    let message = `Medusa HTTP ${res.status}`;
+  let lastError: Error = new Error(`[medusa] ${method} ${path} failed`);
+
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    if (attempt > 0) {
+      await new Promise<void>((r) => setTimeout(r, BASE_DELAY_MS * 2 ** (attempt - 1)));
+    }
+
     try {
-      const body = await res.json();
-      message = body?.message ?? body?.error ?? message;
-    } catch { /* empty */ }
-    console.error(`[medusa] ${options.method ?? "GET"} ${path} → ${res.status}: ${message}`);
-    throw new MedusaError(message, res.status);
+      const res = await fetch(url, fetchOptions);
+
+      if (!res.ok) {
+        let message = `Medusa HTTP ${res.status}`;
+        try {
+          const body = await res.json();
+          message = body?.message ?? body?.error ?? message;
+        } catch { /* empty */ }
+        console.error(`[medusa] ${method} ${path} → ${res.status}: ${message}`);
+
+        const err = new MedusaError(message, res.status);
+        // Retry 5xx on GET only; 4xx are permanent — never retry
+        if (isGet && res.status >= 500 && attempt < MAX_RETRIES) {
+          lastError = err;
+          continue;
+        }
+        throw err;
+      }
+
+      return res.json() as Promise<T>;
+    } catch (err) {
+      if (err instanceof MedusaError) throw err; // already logged above
+
+      // Network error — request never reached server, safe to retry all methods
+      const networkErr = err instanceof Error ? err : new Error(String(err));
+      console.warn(`[medusa] ${method} ${path} → network error (attempt ${attempt + 1}/${MAX_RETRIES + 1})`);
+      lastError = networkErr;
+      // Falls through to next iteration; throws lastError after exhausting retries
+    }
   }
 
-  return res.json() as Promise<T>;
+  throw lastError;
 }
 
 // ─── 1. Catálogo y Visualización ─────────────────────────────────────────────
@@ -314,6 +359,17 @@ const cart = {
       }
     );
     return data.cart;
+  },
+
+  /**
+   * GET /store/shipping-options?cart_id=:id
+   * Devuelve las opciones de envío disponibles para el carrito.
+   */
+  async getShippingOptions(cart_id: string): Promise<MedusaShippingOption[]> {
+    const data = await medusaFetch<{ shipping_options: MedusaShippingOption[] }>(
+      `/store/shipping-options?cart_id=${encodeURIComponent(cart_id)}`
+    );
+    return data.shipping_options ?? [];
   },
 
   /**

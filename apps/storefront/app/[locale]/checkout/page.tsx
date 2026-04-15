@@ -359,6 +359,8 @@ export default function CheckoutPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [paymentStep, setPaymentStep] = useState<number>(0); // 0=idle, 1-4=processing
+  // Total confirmed by Medusa after shipping is applied — authoritative for what gets charged
+  const [confirmedTotal, setConfirmedTotal] = useState<number | null>(null);
 
   // ── Pre-carga: carrito + catálogo + customer sync al montar ───
   const [preloadedCartId, setPreloadedCartId] = useState<string | null>(null);
@@ -568,6 +570,8 @@ export default function CheckoutPage() {
     setErrors({});
     setSubmitError(null);
     setSubmitting(true);
+    // Will be set to Medusa's authoritative cart total once shipping is applied
+    let chargedTotal = finalTotal + 85;
 
     try {
       console.time("[Checkout] total");
@@ -643,17 +647,29 @@ export default function CheckoutPage() {
         });
 
         // ── Paso 2b: Aplicar shipping method ───────────────────────────────
-        const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ?? "http://localhost:9000";
-        const shippingRes = await fetch(`${MEDUSA_URL}/shipping-options`).catch(() => null);
-        if (shippingRes?.ok) {
-          const { shipping_options } = await shippingRes.json();
-          if (shipping_options?.[0]?.id) {
-            await medusa.cart.addShippingMethod(cart_id!, shipping_options[0].id);
+        const shippingOptions = await medusa.cart.getShippingOptions(cart_id!).catch(() => []);
+        if (shippingOptions[0]?.id) {
+          const shippedCart = await medusa.cart.addShippingMethod(cart_id!, shippingOptions[0].id);
+          chargedTotal = shippedCart.total;
+          setConfirmedTotal(shippedCart.total);
+
+          // Coupon was applied during preload — verify it's still on the cart.
+          // Uses data already in shippedCart: zero extra API calls.
+          if (couponAppliedInPreload.current && coupon?.code) {
+            const stillApplied = shippedCart.promotions?.some(
+              (p) => p.code.toUpperCase() === coupon.code.toUpperCase()
+            );
+            if (!stillApplied) {
+              setSubmitError("Tu cupón de descuento ya no es válido. Intenta con otro código.");
+              setSubmitting(false);
+              setPaymentStep(0);
+              return;
+            }
           }
         }
 
         // ── Paso 2c: Aplicar cupón de descuento si existe ──────────────────
-        // Skip if already applied during preload; otherwise apply now and verify.
+        // Skip if already applied during preload (verified above); otherwise apply now and verify.
         if (coupon?.code && !couponAppliedInPreload.current) {
           const updatedCart = await medusa.cart.applyPromotion(cart_id!, coupon.code);
           const promotionApplied = updatedCart.promotions?.some(
@@ -665,6 +681,9 @@ export default function CheckoutPage() {
             setPaymentStep(0);
             return;
           }
+          // Coupon updated the cart total — capture it as the new authoritative amount
+          chargedTotal = updatedCart.total;
+          setConfirmedTotal(updatedCart.total);
         }
 
         // ── Paso 3: Preparando pago ─────────────────────────────────────────
@@ -679,7 +698,7 @@ export default function CheckoutPage() {
         if (result.type === "redirect") {
           // Guardar cart_id para que la página de retorno pueda recuperar el contexto
           sessionStorage.setItem("novapatch_3ds_cart_id", cart_id);
-          sessionStorage.setItem("novapatch_3ds_total", String(finalTotal + 85)); // includes shipping
+          sessionStorage.setItem("novapatch_3ds_total", String(chargedTotal));
           sessionStorage.setItem("novapatch_3ds_items", String(items.reduce((sum, i) => sum + i.quantity, 0)));
           window.location.href = result.redirect_url;
           return; // el flujo continúa en /checkout/3ds-return
@@ -705,7 +724,7 @@ export default function CheckoutPage() {
 
       // ── Éxito (cobro directo sin 3DS) ─────────────────────────────────────────
       posthog.capture("order_completed", {
-        cart_total: finalTotal + 85, // actual charge: discounted products + shipping
+        cart_total: chargedTotal,
         item_count: items.reduce((sum, i) => sum + i.quantity, 0),
       });
       clearCart();
@@ -1247,7 +1266,7 @@ export default function CheckoutPage() {
                       style={{ background: "#E8503A" }}
                     >
                       <Lock size={16} />
-                      Pagar {fmt(finalTotal + 85)}
+                      Pagar {fmt(confirmedTotal ?? (finalTotal + 85))}
                     </button>
                   )}
                 </motion.div>
@@ -1336,7 +1355,7 @@ export default function CheckoutPage() {
                 <div className="pt-2.5 border-t border-[#E5E7EB] flex justify-between">
                   <span className="text-[15px] font-black text-[#005088]">Total</span>
                   <div className="text-right">
-                    <p className="text-[18px] font-black text-[#005088]">{fmt(finalTotal + 85)}</p>
+                    <p className="text-[18px] font-black text-[#005088]">{fmt(confirmedTotal ?? (finalTotal + 85))}</p>
                     {(totals.savings > 0 || effectiveCouponDiscount > 0) && (
                       <p className="text-[11px] text-[#6B7280]">
                         antes {fmt(totals.subtotal + 85)}
