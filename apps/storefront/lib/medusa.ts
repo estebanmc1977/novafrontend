@@ -451,6 +451,23 @@ const checkout = {
     }
     return data;
   },
+
+  /**
+   * POST /store/carts/:id/complete-3ds
+   * Verifica el cobro en Openpay después del redirect 3DS y completa la orden.
+   */
+  async complete3DS(
+    cart_id: string,
+    openpay_transaction_id: string
+  ): Promise<Record<string, unknown>> {
+    return medusaFetch<Record<string, unknown>>(
+      `/store/carts/${cart_id}/complete-3ds`,
+      {
+        method: "POST",
+        body: JSON.stringify({ openpay_transaction_id }),
+      }
+    );
+  },
 };
 
 // ─── 4. Cliente — Sync Clerk → Medusa (requiere Clerk JWT) ──────────────────

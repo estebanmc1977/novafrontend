@@ -7,52 +7,66 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import posthog from "posthog-js";
 import { clearCart } from "@/lib/cart";
+import { medusa } from "@/lib/medusa";
 import { CheckCircle2, XCircle, Loader2, Lock } from "lucide-react";
 
-// Estados posibles del retorno 3DS
-type ReturnStatus = "loading" | "success" | "failed" | "cancelled";
+type ReturnStatus = "loading" | "success" | "failed";
 
 export default function ThreeDSReturnPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [status, setStatus] = useState<ReturnStatus>("loading");
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    // Openpay regresa con ?id=txn_xxx&status=completed (o failed, cancelled)
-    const openpayStatus = searchParams.get("status") ?? searchParams.get("Status");
+    // Openpay redirige con ?id=<charge_id>
     const transactionId = searchParams.get("id") ?? searchParams.get("Id");
 
-    // Recuperar contexto guardado antes del redirect
+    // El cart_id se guarda en sessionStorage antes del redirect 3DS
+    const cartId =
+      typeof window !== "undefined"
+        ? sessionStorage.getItem("novapatch_3ds_cart_id")
+        : null;
+
     const cartTotal = sessionStorage.getItem("novapatch_3ds_total");
     const itemCount = sessionStorage.getItem("novapatch_3ds_items");
 
-    if (openpayStatus === "completed" || openpayStatus === "charge.succeeded") {
-      // Limpiar cart y sessionStorage
-      clearCart();
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("novapatch_medusa_cart_id");
-        sessionStorage.removeItem("novapatch_3ds_cart_id");
-        sessionStorage.removeItem("novapatch_3ds_total");
-        sessionStorage.removeItem("novapatch_3ds_items");
-      }
-
-      posthog.capture("order_completed", {
-        cart_total: cartTotal ? Number(cartTotal) : undefined,
-        item_count: itemCount ? Number(itemCount) : undefined,
-        via_3ds: true,
-      });
-
-      setOrderId(transactionId);
-      setStatus("success");
-    } else if (openpayStatus === "failed" || openpayStatus === "charge.failed") {
-      setStatus("failed");
-    } else if (openpayStatus === "cancelled") {
-      setStatus("cancelled");
-    } else {
-      // Sin parámetros válidos → redirigir a checkout con error
+    if (!transactionId || !cartId) {
+      // Faltan parámetros necesarios para completar el cobro
       router.replace("/checkout?error=3ds_invalid");
+      return;
     }
+
+    // Verificar el cobro con el backend y completar la orden
+    medusa.cart
+      .complete3DS(cartId, transactionId)
+      .then(() => {
+        // Limpiar estado local
+        clearCart();
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("novapatch_medusa_cart_id");
+          sessionStorage.removeItem("novapatch_3ds_cart_id");
+          sessionStorage.removeItem("novapatch_3ds_total");
+          sessionStorage.removeItem("novapatch_3ds_items");
+        }
+
+        posthog.capture("order_completed", {
+          cart_total: cartTotal ? Number(cartTotal) : undefined,
+          item_count: itemCount ? Number(itemCount) : undefined,
+          via_3ds: true,
+        });
+
+        setOrderId(transactionId);
+        setStatus("success");
+      })
+      .catch((err: unknown) => {
+        const message =
+          err instanceof Error ? err.message : "El pago no pudo confirmarse";
+        console.error("[3ds-return] complete3DS failed:", message);
+        setErrorMessage(message);
+        setStatus("failed");
+      });
   }, [searchParams, router]);
 
   if (status === "loading") {
@@ -69,7 +83,6 @@ export default function ThreeDSReturnPage() {
   if (status === "success") {
     return (
       <div className="min-h-screen bg-[#FAF7F2] flex flex-col">
-        {/* Header mínimo */}
         <header className="sticky top-0 z-40 bg-[#FAF7F2]/95 backdrop-blur-xl border-b border-[#005088]/8">
           <div className="max-w-6xl mx-auto px-6 h-[64px] flex items-center justify-center">
             <Link href="/">
@@ -137,9 +150,7 @@ export default function ThreeDSReturnPage() {
     );
   }
 
-  // failed o cancelled
-  const isCancelled = status === "cancelled";
-
+  // status === "failed"
   return (
     <div className="min-h-screen bg-[#FAF7F2] flex flex-col">
       <header className="sticky top-0 z-40 bg-[#FAF7F2]/95 backdrop-blur-xl border-b border-[#005088]/8">
@@ -172,12 +183,11 @@ export default function ThreeDSReturnPage() {
           </div>
 
           <h1 className="text-[26px] font-black text-[#005088] mb-2 tracking-[-0.02em]">
-            {isCancelled ? "Autenticación cancelada" : "No pudimos procesar tu pago"}
+            No pudimos procesar tu pago
           </h1>
           <p className="text-[15px] text-[#6B7280] leading-[1.6] mb-8">
-            {isCancelled
-              ? "Cancelaste la autenticación con tu banco. Puedes intentarlo de nuevo cuando quieras."
-              : "Tu banco rechazó la autenticación 3D Secure. Intenta con otra tarjeta o contacta a tu banco."}
+            {errorMessage ??
+              "Tu banco rechazó la autenticación 3D Secure. Intenta con otra tarjeta o contacta a tu banco."}
           </p>
 
           <div className="flex flex-col gap-3">
