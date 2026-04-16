@@ -39,7 +39,7 @@ export default function ThreeDSReturnPage() {
     }
 
     // Verificar el cobro con el backend y completar la orden
-    medusa.cart
+    medusa.checkout
       .complete3DS(cartId, transactionId)
       .then(() => {
         // Limpiar estado local
