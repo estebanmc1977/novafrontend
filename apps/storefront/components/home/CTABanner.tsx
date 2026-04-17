@@ -1,8 +1,6 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
+import { FadeIn } from "@/components/ui/FadeIn";
 
 const plans = [
   {
@@ -51,8 +49,8 @@ const plans = [
   },
 ];
 
-export default function CTABanner() {
-  const t = useTranslations("home.cta");
+export default async function CTABanner() {
+  const t = await getTranslations("home.cta");
   return (
     <section
       id="suscripciones"
@@ -69,12 +67,7 @@ export default function CTABanner() {
       />
 
       <div className="relative z-[2]">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
+        <FadeIn>
           <h2
             className="font-black text-white tracking-[-0.02em] mb-3"
             style={{ fontSize: "clamp(28px,3.5vw,44px)" }}
@@ -87,17 +80,15 @@ export default function CTABanner() {
           >
             {t("subtitle")}
           </p>
-        </motion.div>
+        </FadeIn>
 
         {/* Plans grid */}
         <div className="max-w-[840px] mx-auto mt-14 grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
           {plans.map((plan, i) => (
-            <motion.div
+            <FadeIn
               key={plan.label}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
+              delay={i * 0.1}
+              duration={0.5}
               className={`rounded-[32px] text-center transition-all duration-200 ${
                 plan.best
                   ? "bg-white text-gray-900 shadow-[0_20px_60px_rgba(0,0,0,0.22)]"
@@ -181,7 +172,7 @@ export default function CTABanner() {
               >
                 {t("button")}
               </Link>
-            </motion.div>
+            </FadeIn>
           ))}
         </div>
       </div>
