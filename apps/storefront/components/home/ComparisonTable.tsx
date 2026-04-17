@@ -1,8 +1,6 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
+import { FadeIn } from "@/components/ui/FadeIn";
 
 const rows = [
   { feature: "Alta tasa de absorción",               nova: true,  caps: false, gummies: false },
@@ -29,32 +27,24 @@ function Check({ ok }: { ok: boolean }) {
   );
 }
 
-export default function ComparisonTable() {
-  const t = useTranslations("home.comparison");
+export default async function ComparisonTable() {
+  const t = await getTranslations("home.comparison");
   return (
     <section className="bg-gray-50 py-[72px] px-5 md:px-12">
       <div className="max-w-[1100px] mx-auto">
         {/* Header text */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
+        <FadeIn>
           <h2
             className="font-extrabold text-ocean leading-[1.15] tracking-[-0.02em]"
             style={{ fontSize: "clamp(26px,3vw,40px)" }}
           >
             {t("title")}
           </h2>
-        </motion.div>
+        </FadeIn>
 
         {/* Two-column layout: table left, image right */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1, duration: 0.6 }}
+        <FadeIn
+          delay={0.1}
           className="mt-14 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-14 items-start"
         >
           {/* Table */}
@@ -154,14 +144,13 @@ export default function ComparisonTable() {
               <span className="text-[12px] text-gray-500">Sin agua. Sin horarios. Sin pastillas.</span>
             </div>
           </div>
-        </motion.div>
+        </FadeIn>
 
         {/* Closing text */}
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2, duration: 0.5 }}
+        <FadeIn
+          y={16}
+          delay={0.2}
+          duration={0.5}
           className="text-center mt-12 text-[15px] text-gray-500 leading-[1.7]"
         >
           <em>Lo simple se repite. Lo complejo se abandona.</em>
@@ -169,7 +158,7 @@ export default function ComparisonTable() {
           <strong className="text-gray-900">
             Novapatch está diseñado para ser el hábito que sí se sostiene.
           </strong>
-        </motion.p>
+        </FadeIn>
       </div>
     </section>
   );
