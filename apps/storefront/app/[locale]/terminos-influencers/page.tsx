@@ -79,7 +79,7 @@ export default function TerminosInfluencersPage() {
               Términos de Colaboración
             </h1>
             <p style={{ color: "rgba(13,27,53,0.5)", lineHeight: 1.7 }}>
-              Versión 1.0 · Vigente desde mayo 2026 · México
+              Versión 1.0 · Vigente desde abril 2026 · México
             </p>
           </div>
         </section>
