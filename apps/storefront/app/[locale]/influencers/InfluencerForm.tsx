@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -33,50 +34,68 @@ const PATCHES = [
   {
     id: "energy",
     name: "Energy",
-    desc: "L-Carnitina · Cafeína · Ginseng",
-    sub: "Energía y rendimiento",
-    grad: "linear-gradient(135deg, #F59E0B 0%, #EA580C 100%)",
-    accent: "#F59E0B",
+    tagline: "Energía celular sostenida",
+    taglineColor: "#1A5C9A",
+    ingredients: ["Vitamina C", "L-Carnitina", "Extracto de Té Verde", "Extracto de Ginseng", "Vitamina B2", "Ácido Fólico", "Vitamina E"],
+    tags: ["Energía sostenida", "Sin picos ni caídas"],
+    color: "#2B7CC1",
+    bg: "#EBF4FB",
+    imgSrc: "/products/Energy_thumb.webp",
   },
   {
     id: "sleep",
     name: "Sleep",
-    desc: "Triptófano · Magnesio · Inositol",
-    sub: "Descanso profundo",
-    grad: "linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%)",
-    accent: "#7C3AED",
-  },
-  {
-    id: "zen",
-    name: "Zen",
-    desc: "Taurina · Manzanilla · Magnesio",
-    sub: "Calma y equilibrio mental",
-    grad: "linear-gradient(135deg, #10B981 0%, #047857 100%)",
-    accent: "#10B981",
-  },
-  {
-    id: "shield",
-    name: "Shield",
-    desc: "Vitamina C · Zinc · Vitamina D3",
-    sub: "Inmunidad activa",
-    grad: "linear-gradient(135deg, #0EA5E9 0%, #0369A1 100%)",
-    accent: "#0EA5E9",
+    tagline: "Sueño profundo y reparador",
+    taglineColor: "#0F6B5C",
+    ingredients: ["Triptófano", "Magnesio", "Inositol", "Vitamina B6", "Glicina"],
+    tags: ["Descanso nocturno", "Sin somníferos"],
+    color: "#138A75",
+    bg: "#EBF7F5",
+    imgSrc: "/products/Sleep_thumb.webp",
   },
   {
     id: "glow",
     name: "Glow",
-    desc: "Colágeno · Ác. Hialurónico · Biotina",
-    sub: "Piel luminosa y firme",
-    grad: "linear-gradient(135deg, #EC4899 0%, #BE185D 100%)",
-    accent: "#EC4899",
+    tagline: "Belleza y juventud para una piel visiblemente renovada",
+    taglineColor: "#B83525",
+    ingredients: ["Vitamina C", "Ácido Hialurónico", "Colágeno Hidrolizado", "Biotina", "Vitamina B3", "Extracto de Centella Asiática", "Vitamina E"],
+    tags: ["Bienestar desde adentro", "Constancia"],
+    color: "#C94030",
+    bg: "#FAF0EE",
+    imgSrc: "/products/Glow_thumb.webp",
+  },
+  {
+    id: "shield",
+    name: "Shield",
+    tagline: "Fortaleza inmune natural",
+    taglineColor: "#8C6000",
+    ingredients: ["Vitamina C", "Zinc", "Vitamina D3", "Vitamina E", "Niacinamida"],
+    tags: ["Cuidado preventivo", "Uso diario"],
+    color: "#A07000",
+    bg: "#FAF6E9",
+    imgSrc: "/products/Shield_thumb.webp",
+  },
+  {
+    id: "zen",
+    name: "Zen",
+    tagline: "Calma mental diaria",
+    taglineColor: "#2A5490",
+    ingredients: ["Triptófano", "Magnesio", "Taurina", "Extracto de Manzanilla", "Vitamina B6"],
+    tags: ["Calma funcional", "Días intensos"],
+    color: "#3A6FA8",
+    bg: "#EBF0F9",
+    imgSrc: "/products/Zen_thumb.webp",
   },
   {
     id: "woman",
     name: "Woman",
-    desc: "Ác. Fólico · Hierro · Extracto de Soja",
-    sub: "Balance hormonal femenino",
-    grad: "linear-gradient(135deg, #A855F7 0%, #C026D3 100%)",
-    accent: "#A855F7",
+    tagline: "Bienestar hormonal femenino",
+    taglineColor: "#6B3080",
+    ingredients: ["Extracto de Soya", "Vitamina B6", "Magnesio", "Ácido Fólico", "Hierro"],
+    tags: ["Bienestar femenino", "Ritmos naturales"],
+    color: "#8A3EBE",
+    bg: "#F3EBF9",
+    imgSrc: "/products/Woman_thumb.webp",
   },
 ];
 
@@ -581,29 +600,31 @@ function PatchCard({
     <motion.button
       type="button"
       onClick={onSelect}
-      whileHover={!disabled || selected ? { y: -3, scale: 1.02 } : {}}
+      whileHover={!disabled || selected ? { y: -4 } : {}}
       whileTap={!disabled || selected ? { scale: 0.97 } : {}}
-      className="relative flex flex-col items-start p-5 rounded-2xl text-left w-full overflow-hidden transition-all"
+      className="relative flex flex-col rounded-[20px] overflow-hidden border text-left w-full transition-all duration-300"
       style={{
-        background: patch.grad,
+        background: "white",
+        borderColor: selected ? patch.color : "rgba(0,0,0,0.06)",
         boxShadow: selected
-          ? `0 0 0 3px white, 0 0 0 5px ${patch.accent}, 0 12px 32px ${patch.accent}44`
-          : "0 4px 16px rgba(0,0,0,0.12)",
+          ? `0 0 0 2px ${patch.color}, 0 12px 32px rgba(0,0,0,0.10)`
+          : "0 4px 20px rgba(0,0,0,0.05)",
         cursor: disabled && !selected ? "not-allowed" : "pointer",
         opacity: disabled && !selected ? 0.45 : 1,
       }}
     >
+      {/* Selected checkmark */}
       {selected && (
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          className="absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center"
-          style={{ background: "rgba(255,255,255,0.9)" }}
+          className="absolute top-2.5 right-2.5 w-6 h-6 rounded-full flex items-center justify-center z-10"
+          style={{ background: patch.color }}
         >
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden>
             <path
-              d="M2 6L5 9L10 3"
-              stroke={patch.accent}
+              d="M2 5.5L4.5 8L9 3"
+              stroke="white"
               strokeWidth="1.75"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -611,26 +632,56 @@ function PatchCard({
           </svg>
         </motion.div>
       )}
-      <div className="mb-3">
-        <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center mb-2"
-          style={{ background: "rgba(255,255,255,0.2)" }}
-        >
-          <span className="text-xl" aria-hidden>
-            {patch.id === "energy" ? "⚡" :
-             patch.id === "sleep" ? "🌙" :
-             patch.id === "zen" ? "🍃" :
-             patch.id === "shield" ? "🛡️" :
-             patch.id === "glow" ? "✨" : "🌸"}
-          </span>
-        </div>
-        <div className="font-bold text-white text-lg leading-tight">
-          {patch.name}
+
+      {/* Image area */}
+      <div
+        className="relative flex items-center justify-center"
+        style={{ background: patch.bg, padding: "28px 20px" }}
+      >
+        <div className="relative w-24 h-24">
+          <Image
+            src={patch.imgSrc}
+            alt={`Novapatch ${patch.name}`}
+            fill
+            sizes="96px"
+            loading="lazy"
+            className="object-contain"
+          />
         </div>
       </div>
-      <div className="mt-auto">
-        <div className="text-xs font-semibold text-white/90">{patch.desc}</div>
-        <div className="text-xs text-white/60 mt-0.5">{patch.sub}</div>
+
+      {/* Body */}
+      <div className="p-4 flex flex-col gap-2 flex-1">
+        <div>
+          <p
+            className="text-[17px] font-black tracking-[-0.01em]"
+            style={{ color: patch.taglineColor }}
+          >
+            {patch.name}
+          </p>
+          <p
+            className="text-[11px] font-semibold leading-[1.4] mt-0.5 opacity-75"
+            style={{ color: patch.taglineColor }}
+          >
+            {patch.tagline}
+          </p>
+        </div>
+
+        <p className="text-[11px] text-gray-500 leading-[1.5]">
+          {patch.ingredients.join(" · ")}
+        </p>
+
+        <div className="flex flex-wrap gap-1 mt-auto pt-1">
+          {patch.tags.map((tag) => (
+            <span
+              key={tag}
+              className="text-[10px] font-bold px-2.5 py-0.5 rounded-full border-[1.5px]"
+              style={{ borderColor: patch.color, color: patch.color }}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
       </div>
     </motion.button>
   );
@@ -652,19 +703,19 @@ function Step3({
       <Field label="¿Con qué parches Novapatch te identificás?" required>
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs" style={{ color: "rgba(13,27,53,0.4)" }}>
-            Elegí hasta 3
+            Elegí hasta 6
           </span>
           <span
             className="text-xs font-semibold tabular-nums"
             style={{ color: data.parches.length > 0 ? CORAL : "rgba(13,27,53,0.3)" }}
           >
-            {data.parches.length}/3
+            {data.parches.length}/6
           </span>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {PATCHES.map((p) => {
             const selected = data.parches.includes(p.id);
-            const atLimit = data.parches.length >= 3;
+            const atLimit = data.parches.length >= 6;
             return (
               <PatchCard
                 key={p.id}
