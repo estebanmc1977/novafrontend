@@ -1,13 +1,13 @@
 import dynamic from "next/dynamic";
 import Navbar from "@/components/Navbar";
 import HeroWithBar from "@/components/home/HeroWithBar";
+import HowItWorks from "@/components/home/HowItWorks";
+import ComparisonTable from "@/components/home/ComparisonTable";
+import CTABanner from "@/components/home/CTABanner";
 
-// Below-the-fold sections: code-split and deferred to unblock LCP/FCP
-const HowItWorks      = dynamic(() => import("@/components/home/HowItWorks"));
+// Client Components: lazy-loaded to unblock LCP/FCP
 const AbsorptionSection = dynamic(() => import("@/components/home/AbsorptionSection"));
-const ComparisonTable = dynamic(() => import("@/components/home/ComparisonTable"));
 const ProductGrid     = dynamic(() => import("@/components/home/ProductGrid"));
-const CTABanner       = dynamic(() => import("@/components/home/CTABanner"));
 const Testimonials    = dynamic(() => import("@/components/home/Testimonials"));
 const HomeFAQ         = dynamic(() => import("@/components/home/HomeFAQ"));
 const Footer          = dynamic(() => import("@/components/Footer"));
