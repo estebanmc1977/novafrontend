@@ -696,6 +696,9 @@ export default function CheckoutPage() {
 
         // ── 3DS: el banco exige autenticación adicional ──────────────────────
         if (result.type === "redirect") {
+          // Mostrar paso 5 para evitar el flash de vuelta al formulario mientras el
+          // browser carga la página de Openpay
+          setPaymentStep(5);
           // Guardar cart_id para que la página de retorno pueda recuperar el contexto
           sessionStorage.setItem("novapatch_3ds_cart_id", cart_id);
           sessionStorage.setItem("novapatch_3ds_total", String(chargedTotal));
@@ -1221,6 +1224,14 @@ export default function CheckoutPage() {
                   {/* Submit + Progress Stepper */}
                   {submitting && paymentStep > 0 ? (
                     <div className="mt-6 space-y-3">
+                      {/* Overlay full-screen cuando estamos redirigiendo a 3DS */}
+                      {paymentStep === 5 && (
+                        <div className="fixed inset-0 z-50 bg-[#FAF7F2] flex flex-col items-center justify-center gap-4">
+                          <span className="h-10 w-10 border-4 border-[#005088] border-t-transparent rounded-full animate-spin" />
+                          <p className="text-[16px] font-semibold text-[#005088]">Redirigiendo a tu banco…</p>
+                          <p className="text-[13px] text-[#9CA3AF]">No cierres esta página</p>
+                        </div>
+                      )}
                       {[
                         { step: 1, label: "Verificando tarjeta" },
                         { step: 2, label: "Guardando dirección" },

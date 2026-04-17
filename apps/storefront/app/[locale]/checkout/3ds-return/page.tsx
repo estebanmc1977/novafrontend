@@ -126,17 +126,17 @@ export default function ThreeDSReturnPage() {
 
             <div className="flex flex-col gap-3">
               <Link
-                href="/cuenta/suscripciones"
+                href="/"
                 className="block w-full py-3.5 rounded-xl text-[15px] font-bold text-white text-center transition-all duration-200 active:scale-[0.97] hover:brightness-95"
                 style={{ background: "#E8503A" }}
               >
-                Ver mis suscripciones
+                Seguir comprando
               </Link>
               <Link
-                href="/"
+                href="/cuenta"
                 className="block w-full py-3.5 rounded-xl text-[15px] font-semibold text-center text-[#005088] border border-[#005088]/20 hover:border-[#005088]/40 transition-colors"
               >
-                Seguir comprando
+                Ver mi cuenta
               </Link>
             </div>
 
