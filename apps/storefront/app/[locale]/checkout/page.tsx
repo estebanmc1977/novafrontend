@@ -756,6 +756,15 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-[#FAF7F2]">
+      {/* ── Overlay 3DS: tapa la pantalla mientras el browser navega a Openpay ── */}
+      {paymentStep === 5 && (
+        <div className="fixed inset-0 z-[9999] bg-[#FAF7F2] flex flex-col items-center justify-center gap-4">
+          <span className="h-10 w-10 border-4 border-[#005088] border-t-transparent rounded-full animate-spin" />
+          <p className="text-[16px] font-semibold text-[#005088]">Redirigiendo a tu banco…</p>
+          <p className="text-[13px] text-[#9CA3AF]">No cierres esta página</p>
+        </div>
+      )}
+
       {/* ── Minimal Header ── */}
       <header className="sticky top-0 z-40 bg-[#FAF7F2]/95 backdrop-blur-xl border-b border-[#005088]/8">
         <div className="max-w-6xl mx-auto px-6 h-[64px] flex items-center justify-between">
@@ -1226,14 +1235,6 @@ export default function CheckoutPage() {
                   {/* Submit + Progress Stepper */}
                   {submitting && paymentStep > 0 ? (
                     <div className="mt-6 space-y-3">
-                      {/* Overlay full-screen cuando estamos redirigiendo a 3DS */}
-                      {paymentStep === 5 && (
-                        <div className="fixed inset-0 z-50 bg-[#FAF7F2] flex flex-col items-center justify-center gap-4">
-                          <span className="h-10 w-10 border-4 border-[#005088] border-t-transparent rounded-full animate-spin" />
-                          <p className="text-[16px] font-semibold text-[#005088]">Redirigiendo a tu banco…</p>
-                          <p className="text-[13px] text-[#9CA3AF]">No cierres esta página</p>
-                        </div>
-                      )}
                       {[
                         { step: 1, label: "Verificando tarjeta" },
                         { step: 2, label: "Guardando dirección" },
