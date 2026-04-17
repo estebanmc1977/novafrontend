@@ -132,12 +132,6 @@ export default function ThreeDSReturnPage() {
               >
                 Seguir comprando
               </Link>
-              <Link
-                href="/cuenta"
-                className="block w-full py-3.5 rounded-xl text-[15px] font-semibold text-center text-[#005088] border border-[#005088]/20 hover:border-[#005088]/40 transition-colors"
-              >
-                Ver mi cuenta
-              </Link>
             </div>
 
             <div className="mt-8 flex items-center justify-center gap-1.5 text-[12px] text-[#9CA3AF]">

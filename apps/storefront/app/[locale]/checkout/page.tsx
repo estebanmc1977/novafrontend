@@ -703,6 +703,8 @@ export default function CheckoutPage() {
           sessionStorage.setItem("novapatch_3ds_cart_id", cart_id);
           sessionStorage.setItem("novapatch_3ds_total", String(chargedTotal));
           sessionStorage.setItem("novapatch_3ds_items", String(items.reduce((sum, i) => sum + i.quantity, 0)));
+          // Esperar 2 frames para que React renderice el overlay antes de navegar
+          await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
           window.location.href = result.redirect_url;
           return; // el flujo continúa en /checkout/3ds-return
         }
