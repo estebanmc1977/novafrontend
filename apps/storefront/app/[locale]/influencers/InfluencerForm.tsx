@@ -1,0 +1,1179 @@
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface FormData {
+  nombre: string;
+  email: string;
+  pais: string;
+  red_principal: string;
+  handle: string;
+  handle_secundario: string;
+  link_perfil: string;
+  rango_seguidores: string;
+  nicho: string[];
+  tipo_contenido: string[];
+  genero_audiencia: string;
+  edad_audiencia: string;
+  tiene_contenido_bienestar: string;
+  marcas_previas: string;
+  parches: string[];
+  modalidad: string[];
+  media_kit: string;
+  media_kit_url: string;
+  mensaje_libre: string;
+}
+
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+const PATCHES = [
+  {
+    id: "energy",
+    name: "Energy",
+    desc: "L-Carnitina · Cafeína · Ginseng",
+    sub: "Energía y rendimiento",
+    grad: "linear-gradient(135deg, #F59E0B 0%, #EA580C 100%)",
+    accent: "#F59E0B",
+  },
+  {
+    id: "sleep",
+    name: "Sleep",
+    desc: "Triptófano · Magnesio · Inositol",
+    sub: "Descanso profundo",
+    grad: "linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%)",
+    accent: "#7C3AED",
+  },
+  {
+    id: "zen",
+    name: "Zen",
+    desc: "Taurina · Manzanilla · Magnesio",
+    sub: "Calma y equilibrio mental",
+    grad: "linear-gradient(135deg, #10B981 0%, #047857 100%)",
+    accent: "#10B981",
+  },
+  {
+    id: "shield",
+    name: "Shield",
+    desc: "Vitamina C · Zinc · Vitamina D3",
+    sub: "Inmunidad activa",
+    grad: "linear-gradient(135deg, #0EA5E9 0%, #0369A1 100%)",
+    accent: "#0EA5E9",
+  },
+  {
+    id: "glow",
+    name: "Glow",
+    desc: "Colágeno · Ác. Hialurónico · Biotina",
+    sub: "Piel luminosa y firme",
+    grad: "linear-gradient(135deg, #EC4899 0%, #BE185D 100%)",
+    accent: "#EC4899",
+  },
+  {
+    id: "woman",
+    name: "Woman",
+    desc: "Ác. Fólico · Hierro · Extracto de Soja",
+    sub: "Balance hormonal femenino",
+    grad: "linear-gradient(135deg, #A855F7 0%, #C026D3 100%)",
+    accent: "#A855F7",
+  },
+];
+
+const NICHES = [
+  "Wellness", "Fitness", "Lifestyle", "Belleza",
+  "Maternidad", "Productividad", "Nutrición", "Viajes", "Otro",
+];
+
+const CONTENT_TYPES = [
+  "Reels", "Reviews", "Rutinas", "Unboxing", "Educativo", "Vlogs", "Otro",
+];
+
+const MODALIDADES = [
+  "Producto a cambio de contenido",
+  "Colaboración paga",
+  "Embajador a largo plazo",
+];
+
+const FOLLOWER_RANGES = ["1k–5k", "5k–10k", "10k–50k", "50k–100k", "+100k"];
+
+const STEPS = [
+  { label: "Identidad", num: "01" },
+  { label: "Comunidad", num: "02" },
+  { label: "Fit", num: "03" },
+];
+
+// ─── Primitives ───────────────────────────────────────────────────────────────
+
+const NAVY = "#0D1B35";
+const CORAL = "#E8503A";
+const CREAM = "#FAF7F2";
+
+const inputBase: React.CSSProperties = {
+  width: "100%",
+  borderRadius: 12,
+  padding: "12px 16px",
+  fontSize: 14,
+  border: `1.5px solid rgba(13,27,53,0.14)`,
+  background: "white",
+  color: NAVY,
+  outline: "none",
+  transition: "border-color 0.2s, box-shadow 0.2s",
+  appearance: "none" as const,
+};
+
+function Input({
+  value,
+  onChange,
+  placeholder,
+  type = "text",
+  error,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  type?: string;
+  error?: string;
+}) {
+  const [focused, setFocused] = useState(false);
+  return (
+    <div>
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        style={{
+          ...inputBase,
+          borderColor: error
+            ? CORAL
+            : focused
+            ? CORAL
+            : "rgba(13,27,53,0.14)",
+          boxShadow: focused && !error
+            ? `0 0 0 3px rgba(232,80,58,0.1)`
+            : "none",
+        }}
+      />
+      {error && (
+        <p className="mt-1 text-xs" style={{ color: CORAL }}>
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function Select({
+  value,
+  onChange,
+  options,
+  placeholder,
+  error,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+  placeholder?: string;
+  error?: string;
+}) {
+  const [focused, setFocused] = useState(false);
+  return (
+    <div className="relative">
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        style={{
+          ...inputBase,
+          borderColor: error
+            ? CORAL
+            : focused
+            ? CORAL
+            : "rgba(13,27,53,0.14)",
+          boxShadow: focused && !error
+            ? `0 0 0 3px rgba(232,80,58,0.1)`
+            : "none",
+          color: value ? NAVY : "rgba(13,27,53,0.35)",
+          cursor: "pointer",
+          paddingRight: 40,
+        }}
+      >
+        {placeholder && (
+          <option value="" disabled>
+            {placeholder}
+          </option>
+        )}
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+      {/* custom caret */}
+      <svg
+        className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"
+        width="14"
+        height="14"
+        viewBox="0 0 14 14"
+        fill="none"
+        aria-hidden
+      >
+        <path
+          d="M2.5 5L7 9.5L11.5 5"
+          stroke="rgba(13,27,53,0.4)"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      {error && (
+        <p className="mt-1 text-xs" style={{ color: CORAL }}>
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function Field({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label
+        className="text-xs font-semibold tracking-widest uppercase"
+        style={{ color: "rgba(13,27,53,0.4)" }}
+      >
+        {label}
+        {required && (
+          <span style={{ color: CORAL, marginLeft: 3 }}>*</span>
+        )}
+      </label>
+      {children}
+    </div>
+  );
+}
+
+function ChipSelect({
+  options,
+  selected,
+  onChange,
+  error,
+}: {
+  options: string[];
+  selected: string[];
+  onChange: (v: string[]) => void;
+  error?: string;
+}) {
+  const toggle = (o: string) =>
+    onChange(
+      selected.includes(o)
+        ? selected.filter((x) => x !== o)
+        : [...selected, o]
+    );
+  return (
+    <div>
+      <div className="flex flex-wrap gap-2">
+        {options.map((o) => {
+          const active = selected.includes(o);
+          return (
+            <button
+              key={o}
+              type="button"
+              onClick={() => toggle(o)}
+              className="px-4 py-2 rounded-full text-sm font-medium transition-all"
+              style={{
+                border: `1.5px solid ${active ? CORAL : "rgba(13,27,53,0.14)"}`,
+                background: active ? "rgba(232,80,58,0.08)" : "transparent",
+                color: active ? CORAL : "rgba(13,27,53,0.5)",
+              }}
+            >
+              {o}
+            </button>
+          );
+        })}
+      </div>
+      {error && (
+        <p className="mt-1.5 text-xs" style={{ color: CORAL }}>
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function RadioGroup({
+  options,
+  value,
+  onChange,
+  error,
+}: {
+  options: { label: string; value: string }[];
+  value: string;
+  onChange: (v: string) => void;
+  error?: string;
+}) {
+  return (
+    <div>
+      <div className="flex flex-wrap gap-6">
+        {options.map((o) => {
+          const active = value === o.value;
+          return (
+            <label
+              key={o.value}
+              className="flex items-center gap-2.5 cursor-pointer"
+            >
+              <div
+                className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all"
+                style={{
+                  borderColor: active ? CORAL : "rgba(13,27,53,0.25)",
+                }}
+              >
+                {active && (
+                  <div
+                    className="w-2.5 h-2.5 rounded-full"
+                    style={{ background: CORAL }}
+                  />
+                )}
+              </div>
+              <input
+                type="radio"
+                value={o.value}
+                checked={active}
+                onChange={() => onChange(o.value)}
+                className="sr-only"
+              />
+              <span
+                className="text-sm"
+                style={{ color: "rgba(13,27,53,0.7)" }}
+              >
+                {o.label}
+              </span>
+            </label>
+          );
+        })}
+      </div>
+      {error && (
+        <p className="mt-1.5 text-xs" style={{ color: CORAL }}>
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ─── Step components ──────────────────────────────────────────────────────────
+
+function Step1({
+  data,
+  set,
+  errors,
+}: {
+  data: FormData;
+  set: (k: keyof FormData, v: string) => void;
+  errors: Record<string, string>;
+}) {
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="grid sm:grid-cols-2 gap-6">
+        <Field label="Nombre completo" required>
+          <Input
+            value={data.nombre}
+            onChange={(v) => set("nombre", v)}
+            placeholder="Tu nombre completo"
+            error={errors.nombre}
+          />
+        </Field>
+        <Field label="Email profesional" required>
+          <Input
+            type="email"
+            value={data.email}
+            onChange={(v) => set("email", v)}
+            placeholder="tu@email.com"
+            error={errors.email}
+          />
+        </Field>
+      </div>
+
+      <div className="grid sm:grid-cols-2 gap-6">
+        <Field label="País" required>
+          <Select
+            value={data.pais}
+            onChange={(v) => set("pais", v)}
+            placeholder="Seleccioná tu país"
+            error={errors.pais}
+            options={[
+              { value: "mx", label: "México" },
+              { value: "br", label: "Brasil" },
+              { value: "otro", label: "Otro" },
+            ]}
+          />
+        </Field>
+        <Field label="Red social principal" required>
+          <Select
+            value={data.red_principal}
+            onChange={(v) => set("red_principal", v)}
+            placeholder="¿Dónde vivís?"
+            error={errors.red_principal}
+            options={[
+              { value: "instagram", label: "Instagram" },
+              { value: "tiktok", label: "TikTok" },
+            ]}
+          />
+        </Field>
+      </div>
+
+      <div className="grid sm:grid-cols-2 gap-6">
+        <Field label="Tu handle / @" required>
+          <Input
+            value={data.handle}
+            onChange={(v) => set("handle", v)}
+            placeholder="Sin el @, ej: novapatch_mx"
+            error={errors.handle}
+          />
+        </Field>
+        <Field label="Handle secundario">
+          <Input
+            value={data.handle_secundario}
+            onChange={(v) => set("handle_secundario", v)}
+            placeholder="Segunda red activa (opcional)"
+          />
+        </Field>
+      </div>
+
+      <Field label="Link a tu perfil público" required>
+        <Input
+          type="url"
+          value={data.link_perfil}
+          onChange={(v) => set("link_perfil", v)}
+          placeholder="https://instagram.com/tu_usuario"
+          error={errors.link_perfil}
+        />
+      </Field>
+    </div>
+  );
+}
+
+function Step2({
+  data,
+  set,
+  setArr,
+  errors,
+}: {
+  data: FormData;
+  set: (k: keyof FormData, v: string) => void;
+  setArr: (k: keyof FormData, v: string[]) => void;
+  errors: Record<string, string>;
+}) {
+  return (
+    <div className="flex flex-col gap-6">
+      <Field label="Rango de seguidores" required>
+        <Select
+          value={data.rango_seguidores}
+          onChange={(v) => set("rango_seguidores", v)}
+          placeholder="¿Cuántos seguidores tenés?"
+          error={errors.rango_seguidores}
+          options={FOLLOWER_RANGES.map((r) => ({ value: r, label: r }))}
+        />
+      </Field>
+
+      <Field label="Nicho principal" required>
+        <ChipSelect
+          options={NICHES}
+          selected={data.nicho}
+          onChange={(v) => setArr("nicho", v)}
+          error={errors.nicho}
+        />
+      </Field>
+
+      <Field label="Tipo de contenido que hacés" required>
+        <ChipSelect
+          options={CONTENT_TYPES}
+          selected={data.tipo_contenido}
+          onChange={(v) => setArr("tipo_contenido", v)}
+          error={errors.tipo_contenido}
+        />
+      </Field>
+
+      <div className="grid sm:grid-cols-2 gap-6 items-end">
+        <Field label="Género mayoritario de tu audiencia" required>
+          <Select
+            value={data.genero_audiencia}
+            onChange={(v) => set("genero_audiencia", v)}
+            placeholder="Género predominante"
+            error={errors.genero_audiencia}
+            options={[
+              { value: "femenino", label: "Mayormente femenino" },
+              { value: "masculino", label: "Mayormente masculino" },
+              { value: "mixto", label: "Mixto" },
+            ]}
+          />
+        </Field>
+        <Field label="Rango etario de tu audiencia" required>
+          <Select
+            value={data.edad_audiencia}
+            onChange={(v) => set("edad_audiencia", v)}
+            placeholder="Edad predominante"
+            error={errors.edad_audiencia}
+            options={[
+              { value: "18-24", label: "18–24" },
+              { value: "25-34", label: "25–34" },
+              { value: "35-44", label: "35–44" },
+              { value: "45+", label: "45+" },
+            ]}
+          />
+        </Field>
+      </div>
+
+      <Field label="¿Ya creás contenido de bienestar o suplementos?" required>
+        <RadioGroup
+          value={data.tiene_contenido_bienestar}
+          onChange={(v) => set("tiene_contenido_bienestar", v)}
+          error={errors.tiene_contenido_bienestar}
+          options={[
+            { value: "si", label: "Sí" },
+            { value: "no", label: "No" },
+          ]}
+        />
+      </Field>
+
+      {data.tiene_contenido_bienestar === "si" && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+        >
+          <Field label="¿Qué marcas o productos mencionaste?">
+            <Input
+              value={data.marcas_previas}
+              onChange={(v) => set("marcas_previas", v)}
+              placeholder="Ej: Vital Proteins, GNC, Herbalife..."
+            />
+          </Field>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
+function PatchCard({
+  patch,
+  selected,
+  disabled,
+  onSelect,
+}: {
+  patch: (typeof PATCHES)[number];
+  selected: boolean;
+  disabled: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <motion.button
+      type="button"
+      onClick={onSelect}
+      whileHover={!disabled || selected ? { y: -3, scale: 1.02 } : {}}
+      whileTap={!disabled || selected ? { scale: 0.97 } : {}}
+      className="relative flex flex-col items-start p-5 rounded-2xl text-left w-full overflow-hidden transition-all"
+      style={{
+        background: patch.grad,
+        boxShadow: selected
+          ? `0 0 0 3px white, 0 0 0 5px ${patch.accent}, 0 12px 32px ${patch.accent}44`
+          : "0 4px 16px rgba(0,0,0,0.12)",
+        cursor: disabled && !selected ? "not-allowed" : "pointer",
+        opacity: disabled && !selected ? 0.45 : 1,
+      }}
+    >
+      {selected && (
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center"
+          style={{ background: "rgba(255,255,255,0.9)" }}
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+            <path
+              d="M2 6L5 9L10 3"
+              stroke={patch.accent}
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </motion.div>
+      )}
+      <div className="mb-3">
+        <div
+          className="w-10 h-10 rounded-xl flex items-center justify-center mb-2"
+          style={{ background: "rgba(255,255,255,0.2)" }}
+        >
+          <span className="text-xl" aria-hidden>
+            {patch.id === "energy" ? "⚡" :
+             patch.id === "sleep" ? "🌙" :
+             patch.id === "zen" ? "🍃" :
+             patch.id === "shield" ? "🛡️" :
+             patch.id === "glow" ? "✨" : "🌸"}
+          </span>
+        </div>
+        <div className="font-bold text-white text-lg leading-tight">
+          {patch.name}
+        </div>
+      </div>
+      <div className="mt-auto">
+        <div className="text-xs font-semibold text-white/90">{patch.desc}</div>
+        <div className="text-xs text-white/60 mt-0.5">{patch.sub}</div>
+      </div>
+    </motion.button>
+  );
+}
+
+function Step3({
+  data,
+  set,
+  setArr,
+  errors,
+}: {
+  data: FormData;
+  set: (k: keyof FormData, v: string) => void;
+  setArr: (k: keyof FormData, v: string[]) => void;
+  errors: Record<string, string>;
+}) {
+  return (
+    <div className="flex flex-col gap-7">
+      <Field label="¿Con qué parches Novapatch te identificás?" required>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs" style={{ color: "rgba(13,27,53,0.4)" }}>
+            Elegí hasta 3
+          </span>
+          <span
+            className="text-xs font-semibold tabular-nums"
+            style={{ color: data.parches.length > 0 ? CORAL : "rgba(13,27,53,0.3)" }}
+          >
+            {data.parches.length}/3
+          </span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {PATCHES.map((p) => {
+            const selected = data.parches.includes(p.id);
+            const atLimit = data.parches.length >= 3;
+            return (
+              <PatchCard
+                key={p.id}
+                patch={p}
+                selected={selected}
+                disabled={atLimit && !selected}
+                onSelect={() => {
+                  if (selected) {
+                    setArr("parches", data.parches.filter((x) => x !== p.id));
+                  } else if (!atLimit) {
+                    setArr("parches", [...data.parches, p.id]);
+                  }
+                }}
+              />
+            );
+          })}
+        </div>
+        {errors.parches && (
+          <p className="mt-2 text-xs" style={{ color: CORAL }}>
+            {errors.parches}
+          </p>
+        )}
+      </Field>
+
+      <Field label="¿Cómo te gustaría colaborar?" required>
+        <ChipSelect
+          options={MODALIDADES}
+          selected={data.modalidad}
+          onChange={(v) => setArr("modalidad", v)}
+          error={errors.modalidad}
+        />
+      </Field>
+
+      <Field label="¿Tenés media kit?">
+        <RadioGroup
+          value={data.media_kit}
+          onChange={(v) => set("media_kit", v)}
+          options={[
+            { value: "si", label: "Sí, tengo link" },
+            { value: "no", label: "No por ahora" },
+            { value: "email", label: "Lo envío por email" },
+          ]}
+        />
+      </Field>
+
+      {data.media_kit === "si" && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+        >
+          <Field label="Link a tu media kit">
+            <Input
+              type="url"
+              value={data.media_kit_url}
+              onChange={(v) => set("media_kit_url", v)}
+              placeholder="https://drive.google.com/..."
+            />
+          </Field>
+        </motion.div>
+      )}
+
+      <Field label="¿Algo más que quieras contarnos?">
+        <div>
+          <textarea
+            value={data.mensaje_libre}
+            onChange={(e) => set("mensaje_libre", e.target.value)}
+            maxLength={300}
+            rows={4}
+            placeholder="Contanos algo sobre vos o tu comunidad..."
+            style={{
+              ...inputBase,
+              resize: "vertical",
+              fontFamily: "inherit",
+              lineHeight: 1.6,
+            }}
+          />
+          <p
+            className="mt-1 text-xs text-right"
+            style={{ color: "rgba(13,27,53,0.3)" }}
+          >
+            {data.mensaje_libre.length}/300
+          </p>
+        </div>
+      </Field>
+    </div>
+  );
+}
+
+// ─── Progress indicator ───────────────────────────────────────────────────────
+
+function StepProgress({ current }: { current: number }) {
+  return (
+    <div className="flex items-center gap-0 mb-10">
+      {STEPS.map((s, i) => {
+        const done = i < current;
+        const active = i === current;
+        return (
+          <div key={s.label} className="flex items-center flex-1 last:flex-none">
+            <div className="flex flex-col items-center gap-1.5">
+              <div
+                className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300"
+                style={{
+                  background: done
+                    ? CORAL
+                    : active
+                    ? NAVY
+                    : "rgba(13,27,53,0.08)",
+                  color: done || active ? "white" : "rgba(13,27,53,0.3)",
+                  boxShadow: active ? `0 0 0 4px rgba(232,80,58,0.15)` : "none",
+                }}
+              >
+                {done ? (
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+                    <path
+                      d="M2.5 7L5.5 10L11.5 4"
+                      stroke="white"
+                      strokeWidth="1.75"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                ) : (
+                  s.num
+                )}
+              </div>
+              <span
+                className="text-xs font-medium whitespace-nowrap"
+                style={{
+                  color: active ? NAVY : done ? CORAL : "rgba(13,27,53,0.3)",
+                }}
+              >
+                {s.label}
+              </span>
+            </div>
+            {i < STEPS.length - 1 && (
+              <div
+                className="h-px flex-1 mx-3 mt-[-10px] transition-all duration-300"
+                style={{
+                  background: i < current
+                    ? CORAL
+                    : "rgba(13,27,53,0.1)",
+                }}
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── Success screen ───────────────────────────────────────────────────────────
+
+function SuccessScreen({ nombre }: { nombre: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.96 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="text-center py-10 flex flex-col items-center gap-6"
+    >
+      <div
+        className="w-20 h-20 rounded-full flex items-center justify-center"
+        style={{ background: "rgba(232,80,58,0.1)" }}
+      >
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden>
+          <path
+            d="M7 18L14 25L29 10"
+            stroke={CORAL}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+      <div>
+        <h3
+          className="text-2xl font-bold mb-2"
+          style={{ color: NAVY }}
+        >
+          ¡Gracias, {nombre}!
+        </h3>
+        <p
+          className="text-base leading-relaxed"
+          style={{ color: "rgba(13,27,53,0.55)", maxWidth: 380, margin: "0 auto" }}
+        >
+          Recibimos tu postulación. Nuestro equipo la revisará en los próximos 7 días hábiles y te contactaremos por email.
+        </p>
+      </div>
+      <div
+        className="px-6 py-4 rounded-2xl text-sm"
+        style={{
+          background: "rgba(13,27,53,0.04)",
+          color: "rgba(13,27,53,0.5)",
+          maxWidth: 360,
+        }}
+      >
+        Mientras tanto, seguinos en{" "}
+        <a
+          href="https://instagram.com/novapatch.mx"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: CORAL, fontWeight: 600 }}
+        >
+          @novapatch.mx
+        </a>{" "}
+        para estar al tanto de novedades.
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
+
+const EMPTY: FormData = {
+  nombre: "", email: "", pais: "", red_principal: "", handle: "",
+  handle_secundario: "", link_perfil: "",
+  rango_seguidores: "", nicho: [], tipo_contenido: [],
+  genero_audiencia: "", edad_audiencia: "",
+  tiene_contenido_bienestar: "", marcas_previas: "",
+  parches: [], modalidad: [], media_kit: "", media_kit_url: "",
+  mensaje_libre: "",
+};
+
+const slideVariants = {
+  enter: (dir: number) => ({
+    x: dir > 0 ? 40 : -40,
+    opacity: 0,
+  }),
+  center: { x: 0, opacity: 1 },
+  exit: (dir: number) => ({
+    x: dir > 0 ? -40 : 40,
+    opacity: 0,
+  }),
+};
+
+export default function InfluencerForm() {
+  const [step, setStep] = useState(0);
+  const [dir, setDir] = useState(1);
+  const [data, setData] = useState<FormData>(EMPTY);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  const set = (k: keyof FormData, v: string) =>
+    setData((d) => ({ ...d, [k]: v }));
+
+  const setArr = (k: keyof FormData, v: string[]) =>
+    setData((d) => ({ ...d, [k]: v }));
+
+  const validate = (s: number): Record<string, string> => {
+    const e: Record<string, string> = {};
+    if (s === 0) {
+      if (!data.nombre.trim()) e.nombre = "Requerido";
+      if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
+        e.email = "Ingresá un email válido";
+      if (!data.pais) e.pais = "Requerido";
+      if (!data.red_principal) e.red_principal = "Requerido";
+      if (!data.handle.trim()) e.handle = "Requerido";
+      if (!data.link_perfil.trim()) e.link_perfil = "Requerido";
+    }
+    if (s === 1) {
+      if (!data.rango_seguidores) e.rango_seguidores = "Requerido";
+      if (!data.nicho.length) e.nicho = "Elegí al menos un nicho";
+      if (!data.tipo_contenido.length)
+        e.tipo_contenido = "Elegí al menos un tipo";
+      if (!data.genero_audiencia) e.genero_audiencia = "Requerido";
+      if (!data.edad_audiencia) e.edad_audiencia = "Requerido";
+      if (!data.tiene_contenido_bienestar)
+        e.tiene_contenido_bienestar = "Requerido";
+    }
+    if (s === 2) {
+      if (!data.parches.length)
+        e.parches = "Elegí al menos un parche";
+      if (!data.modalidad.length)
+        e.modalidad = "Elegí al menos una modalidad";
+    }
+    return e;
+  };
+
+  const next = () => {
+    const e = validate(step);
+    setErrors(e);
+    if (Object.keys(e).length) return;
+    setDir(1);
+    setStep((s) => s + 1);
+  };
+
+  const back = () => {
+    setDir(-1);
+    setStep((s) => s - 1);
+    setErrors({});
+  };
+
+  const submit = async () => {
+    const e = validate(2);
+    setErrors(e);
+    if (Object.keys(e).length) return;
+    setSubmitting(true);
+    setSubmitError("");
+    try {
+      const res = await fetch("/api/influencers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error("Error del servidor");
+      setSubmitted(true);
+    } catch {
+      setSubmitError("No se pudo enviar la postulación. Por favor intentá de nuevo.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <section
+      id="aplicar"
+      style={{ background: CREAM }}
+      className="py-24 px-6"
+    >
+      <div className="max-w-2xl mx-auto">
+        {/* Section header */}
+        {!submitted && (
+          <div className="text-center mb-14">
+            <p
+              className="text-xs font-semibold tracking-widest uppercase mb-3"
+              style={{ color: CORAL }}
+            >
+              Postulación
+            </p>
+            <h2
+              className="text-4xl font-bold mb-3"
+              style={{ color: NAVY, letterSpacing: "-0.02em" }}
+            >
+              Aplicá al programa
+            </h2>
+            <p
+              className="text-base"
+              style={{ color: "rgba(13,27,53,0.45)", maxWidth: 380, margin: "0 auto" }}
+            >
+              3 pasos · menos de 4 minutos · sin crear una cuenta
+            </p>
+          </div>
+        )}
+
+        {/* Form card */}
+        <div
+          className="rounded-3xl p-8 sm:p-10"
+          style={{
+            background: "white",
+            boxShadow:
+              "0 4px 6px rgba(13,27,53,0.04), 0 20px 60px rgba(13,27,53,0.08)",
+          }}
+        >
+          {submitted ? (
+            <SuccessScreen nombre={data.nombre.split(" ")[0]} />
+          ) : (
+            <>
+              <StepProgress current={step} />
+
+              {/* Step title */}
+              <div className="mb-8">
+                <h3
+                  className="text-xl font-bold"
+                  style={{ color: NAVY }}
+                >
+                  {step === 0 && "Cuéntanos quién sos"}
+                  {step === 1 && "Tu comunidad y contenido"}
+                  {step === 2 && "Tu fit con Novapatch"}
+                </h3>
+                <p
+                  className="text-sm mt-1"
+                  style={{ color: "rgba(13,27,53,0.4)" }}
+                >
+                  {step === 0 && "Datos básicos para conocerte"}
+                  {step === 1 && "Cuéntanos sobre tu audiencia y lo que creás"}
+                  {step === 2 && "El paso final para completar tu postulación"}
+                </p>
+              </div>
+
+              {/* Animated step content */}
+              <AnimatePresence mode="wait" custom={dir}>
+                <motion.div
+                  key={step}
+                  custom={dir}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {step === 0 && (
+                    <Step1 data={data} set={set} errors={errors} />
+                  )}
+                  {step === 1 && (
+                    <Step2
+                      data={data}
+                      set={set}
+                      setArr={setArr}
+                      errors={errors}
+                    />
+                  )}
+                  {step === 2 && (
+                    <Step3
+                      data={data}
+                      set={set}
+                      setArr={setArr}
+                      errors={errors}
+                    />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Submit error */}
+              {submitError && (
+                <p
+                  className="mt-4 text-sm text-center"
+                  style={{ color: CORAL }}
+                >
+                  {submitError}
+                </p>
+              )}
+
+              {/* Navigation */}
+              <div
+                className="flex items-center justify-between mt-10 pt-8"
+                style={{ borderTop: "1px solid rgba(13,27,53,0.07)" }}
+              >
+                {step > 0 ? (
+                  <button
+                    type="button"
+                    onClick={back}
+                    className="flex items-center gap-2 text-sm font-medium transition-all hover:gap-3"
+                    style={{ color: "rgba(13,27,53,0.45)" }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+                      <path
+                        d="M10 3L5 8L10 13"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    Atrás
+                  </button>
+                ) : (
+                  <span />
+                )}
+
+                {step < 2 ? (
+                  <button
+                    type="button"
+                    onClick={next}
+                    className="flex items-center gap-2.5 px-7 py-3.5 rounded-full font-semibold text-sm text-white transition-all hover:shadow-lg"
+                    style={{ background: NAVY }}
+                  >
+                    Continuar
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+                      <path
+                        d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={submit}
+                    disabled={submitting}
+                    className="flex items-center gap-2.5 px-7 py-3.5 rounded-full font-semibold text-sm text-white transition-all hover:shadow-xl disabled:opacity-60"
+                    style={{ background: CORAL }}
+                  >
+                    {submitting ? "Enviando..." : "Enviar postulación"}
+                    {!submitting && (
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+                        <path
+                          d="M2.5 7H11.5M11.5 7L7 2.5M11.5 7L7 11.5"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </button>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+
+        <p
+          className="text-center text-xs mt-6 leading-relaxed"
+          style={{ color: "rgba(13,27,53,0.3)" }}
+        >
+          Al enviar esta postulación confirmás que leíste y aceptás los{" "}
+          <a href="/terminos-influencers" target="_blank" rel="noopener noreferrer" style={{ color: CORAL, fontWeight: 500 }}>
+            Términos de Colaboración para Influencers
+          </a>
+          {" "}de Novapatch.
+        </p>
+      </div>
+    </section>
+  );
+}
