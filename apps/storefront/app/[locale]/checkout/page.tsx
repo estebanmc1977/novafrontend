@@ -333,6 +333,8 @@ export default function CheckoutPage() {
     city: "",
     state: "",
     zip: "",
+    interior: "",
+    instructions: "",
   });
   const [card, setCard] = useState({
     number: "",
@@ -956,6 +958,38 @@ export default function CheckoutPage() {
                         </motion.p>
                       )}
                     </AnimatePresence>
+                  </div>
+
+                  {/* Número interior — opcional */}
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="interior" className="text-[12px] font-bold text-[#005088] uppercase tracking-[0.06em]">
+                      Número interior <span className="text-[#9CA3AF] font-normal normal-case">(opcional)</span>
+                    </label>
+                    <input
+                      id="interior"
+                      type="text"
+                      placeholder="Ej. 4B, Depto 3"
+                      value={address.interior}
+                      onChange={(e) => setAddress((a) => ({ ...a, interior: e.target.value.slice(0, 20) }))}
+                      autoComplete="address-line3"
+                      className="w-full px-4 py-3 rounded-xl text-[14px] text-[#005088] placeholder-[#9CA3AF] border border-[#E5E7EB] bg-white transition-all duration-200 outline-none focus:ring-2 focus:ring-[#005088]/20 focus:border-[#005088]"
+                    />
+                  </div>
+
+                  {/* Indicaciones de entrega — opcional */}
+                  <div className="sm:col-span-2 flex flex-col gap-1.5">
+                    <label htmlFor="instructions" className="text-[12px] font-bold text-[#005088] uppercase tracking-[0.06em]">
+                      Indicaciones de entrega <span className="text-[#9CA3AF] font-normal normal-case">(opcional)</span>
+                    </label>
+                    <textarea
+                      id="instructions"
+                      placeholder="Ej. Edificio azul, no llamar por teléfono"
+                      value={address.instructions}
+                      onChange={(e) => setAddress((a) => ({ ...a, instructions: e.target.value.slice(0, 200) }))}
+                      rows={3}
+                      className="w-full px-4 py-3 rounded-xl text-[14px] text-[#005088] placeholder-[#9CA3AF] border border-[#E5E7EB] bg-white transition-all duration-200 outline-none focus:ring-2 focus:ring-[#005088]/20 focus:border-[#005088] resize-none"
+                    />
+                    <p className="text-[10px] text-[#9CA3AF] text-right">{address.instructions.length}/200</p>
                   </div>
 
                   {/* CP — dispara COPOMEX */}
