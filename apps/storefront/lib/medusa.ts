@@ -321,6 +321,7 @@ const cart = {
         country_code?: string;
         phone?: string;
       };
+      metadata?: Record<string, unknown>;
     }
   ): Promise<MedusaCart> {
     const data = await medusaFetch<{ cart: MedusaCart }>(
