@@ -94,16 +94,11 @@ function OrderItem({ item }: { item: CartItem }) {
         )}
       </div>
 
-      {/* price */}
+      {/* price — always original so it matches the subtotal line */}
       <div className="text-right flex-shrink-0">
         <p className="text-[14px] font-black text-[#005088]">
-          {fmt(price * item.quantity)}
+          {fmt(item.price * item.quantity)}
         </p>
-        {isSub && item.price !== price && (
-          <p className="text-[11px] text-[#6B7280] line-through">
-            {fmt(item.price * item.quantity)}
-          </p>
-        )}
       </div>
     </div>
   );
