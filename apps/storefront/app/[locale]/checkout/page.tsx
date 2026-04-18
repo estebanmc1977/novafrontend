@@ -633,11 +633,11 @@ export default function CheckoutPage() {
           shipping_address: {
             first_name: contact.name.split(" ")[0],
             last_name: contact.name.split(" ").slice(1).join(" ") || "",
-            address_1: address.interior
-              ? `${address.street} Int ${address.interior}`
+            address_1: address.interior.trim()
+              ? `${address.street} Int ${address.interior.trim()}`
               : address.street,
-            address_2: address.instructions
-              ? `${address.colonia} | ${address.instructions}`
+            address_2: address.instructions.trim()
+              ? `${address.colonia} | ${address.instructions.trim()}`
               : address.colonia,
             city: resolvedCity,
             province: resolvedState,
@@ -646,8 +646,8 @@ export default function CheckoutPage() {
             phone: contact.phone,
           },
           metadata: {
-            numero_interior: address.interior || null,
-            indicaciones_entrega: address.instructions || null,
+            numero_interior: address.interior.trim() || null,
+            indicaciones_entrega: address.instructions.trim() || null,
           },
         });
 
