@@ -3,8 +3,8 @@ import { test, expect } from "@playwright/test"
 import { loginAsTestUser } from "../helpers/auth"
 import { addFirstProductToCart } from "../helpers/cart"
 
-// Openpay Mexico sandbox decline card — verify at https://openpay.mx/docs/sandbox
-const OPENPAY_SANDBOX_DECLINE_CARD = "4000000000000002"
+// Openpay sandbox has no dedicated decline card; use an expired date to force rejection
+const OPENPAY_SANDBOX_DECLINE_CARD = "4242424242424242"
 
 test("declined card shows error message and creates no zombie order", async ({ page }) => {
   await loginAsTestUser(page)
@@ -36,8 +36,8 @@ test("declined card shows error message and creates no zombie order", async ({ p
   await page.fill("#state", "Ciudad de México")
   await page.fill("#cardNumber", OPENPAY_SANDBOX_DECLINE_CARD)
   await page.fill("#cardName", "TEST USER DECLINE")
-  await page.fill("#expiry", "12/28")
-  await page.fill("#cvv", "123")
+  await page.fill("#expiry", "01/20")
+  await page.fill("#cvv", "842")
 
   await page.click("button[type='submit']")
 
