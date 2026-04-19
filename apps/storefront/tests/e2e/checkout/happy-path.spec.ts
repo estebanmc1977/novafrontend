@@ -12,7 +12,7 @@ test("completes a full purchase with Openpay sandbox success card", async ({ pag
 
   await page.goto("/mx/checkout/cart")
   await page.waitForLoadState("networkidle")
-  await expect(page.locator("text=Proceder, text=Checkout, text=Comprar").first()).toBeVisible()
+  await expect(page.locator("text=/Proceder|Checkout|Comprar/i").first()).toBeVisible()
 
   await page.click("a[href*='/checkout']:not([href*='/cart']), button:has-text('Proceder'), button:has-text('Checkout')")
   await page.waitForURL("**/mx/checkout", { timeout: 10_000 })
