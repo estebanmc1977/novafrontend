@@ -17,7 +17,7 @@ export const options = {
 }
 
 const BASE_URL = __ENV.BASE_URL || "https://www.novapatch.care"
-const BACKEND_URL = __ENV.BACKEND_URL || "https://novapatch.care"
+const BACKEND_URL = __ENV.BACKEND_URL  // required: pass --env BACKEND_URL=https://your-backend.railway.app
 const PUBLISHABLE_KEY = __ENV.PUBLISHABLE_KEY || ""
 
 export default function () {
