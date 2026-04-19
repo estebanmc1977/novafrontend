@@ -1,0 +1,70 @@
+<h2>Email de pago pendiente</h2>
+<p class="subtitle">Template React Email enviado via Resend — se adapta según OXXO o SPEI</p>
+
+<div class="mockup">
+  <div class="mockup-header">emails/PendingPaymentEmail.tsx — Vista previa OXXO</div>
+  <div class="mockup-body" style="font-family:system-ui; background:#f1f5f9; padding:24px; border-radius:8px;">
+    <div style="max-width:480px; margin:0 auto; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+
+      <!-- Header -->
+      <div style="background:#0D1B35; padding:24px 28px; text-align:center;">
+        <p style="color:#FAF7F2; font-size:22px; font-weight:800; margin:0; letter-spacing:-0.02em;">NOVAPATCH</p>
+        <p style="color:#5BA8D5; font-size:13px; margin:6px 0 0;">Tu pedido está listo para pagar</p>
+      </div>
+
+      <!-- Body -->
+      <div style="padding:28px;">
+        <p style="color:#0D1B35; font-size:15px; margin:0 0 20px;">Hola <strong>María</strong>, generamos tu referencia de pago. Tienes <strong>72 horas</strong> para completar tu compra en cualquier tienda OXXO.</p>
+
+        <!-- Referencia -->
+        <div style="background:#FAF7F2; border-radius:10px; padding:20px; text-align:center; margin-bottom:20px;">
+          <p style="font-size:11px; color:#64748b; margin:0 0 8px; text-transform:uppercase; letter-spacing:0.08em;">Referencia OXXO</p>
+          <p style="font-size:30px; font-weight:900; color:#0D1B35; letter-spacing:0.14em; margin:0;">9282 3390 0870 0003</p>
+        </div>
+
+        <!-- Monto -->
+        <div style="display:flex; justify-content:space-between; padding:12px 16px; background:#FEF3C7; border-radius:8px; margin-bottom:20px;">
+          <span style="font-size:14px; color:#92400E; font-weight:600;">Monto a pagar</span>
+          <span style="font-size:14px; color:#92400E; font-weight:800;">$1,249.00 MXN</span>
+        </div>
+
+        <!-- Instrucciones -->
+        <div style="margin-bottom:20px;">
+          <p style="font-size:13px; font-weight:700; color:#0D1B35; margin:0 0 10px;">¿Cómo pagar?</p>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; gap:10px; align-items:flex-start; font-size:13px; color:#475569;">
+              <span style="background:#E8503A; color:#fff; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0; font-size:11px;">1</span>
+              Ve a cualquier tienda OXXO en México
+            </div>
+            <div style="display:flex; gap:10px; align-items:flex-start; font-size:13px; color:#475569;">
+              <span style="background:#E8503A; color:#fff; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0; font-size:11px;">2</span>
+              Dile al cajero "pago de servicio" y da la referencia
+            </div>
+            <div style="display:flex; gap:10px; align-items:flex-start; font-size:13px; color:#475569;">
+              <span style="background:#E8503A; color:#fff; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0; font-size:11px;">3</span>
+              Conserva tu ticket — te confirmaremos el pedido por email
+            </div>
+          </div>
+        </div>
+
+        <!-- Resumen del pedido -->
+        <div style="border-top:1px solid #e2e8f0; padding-top:16px; margin-bottom:20px;">
+          <p style="font-size:12px; color:#64748b; margin:0 0 10px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em;">Tu pedido</p>
+          <div style="display:flex; justify-content:space-between; font-size:13px; color:#475569; margin-bottom:6px;">
+            <span>NovaPatch Pro × 2</span><span>$998.00</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:13px; color:#475569; margin-bottom:6px;">
+            <span>Envío</span><span>$251.00</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:700; color:#0D1B35; border-top:1px solid #e2e8f0; padding-top:8px; margin-top:8px;">
+            <span>Total</span><span>$1,249.00 MXN</span>
+          </div>
+        </div>
+
+        <p style="font-size:12px; color:#94a3b8; text-align:center; margin:0;">¿Dudas? Escríbenos a hola@novapatch.mx</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:16px">Para SPEI se usa el mismo template reemplazando la referencia por CLABE + banco + beneficiario. Un solo componente con prop <code>method: "oxxo" | "spei"</code>.</p>

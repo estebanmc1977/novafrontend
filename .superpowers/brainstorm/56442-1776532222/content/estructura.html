@@ -1,0 +1,119 @@
+<h2>¿Cómo organizamos la página de Influencers?</h2>
+<p class="subtitle">Elige la estructura que mejor se adapte al flujo de trabajo</p>
+
+<div class="options">
+
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Dos tabs en la misma página</h3>
+      <p>Tab "Postulaciones" para revisar nuevos aplicantes · Tab "Códigos" para los influencers ya activos con su promo code</p>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">Influencers</div>
+        <div class="mockup-body" style="padding:0">
+          <div style="display:flex;border-bottom:1px solid #e5e7eb;background:#f9fafb;">
+            <div style="padding:10px 20px;border-bottom:2px solid #6366f1;font-weight:600;font-size:13px;color:#6366f1;">Postulaciones <span style="background:#ef4444;color:white;border-radius:99px;padding:1px 7px;font-size:11px;margin-left:4px;">3</span></div>
+            <div style="padding:10px 20px;font-size:13px;color:#6b7280;">Códigos activos</div>
+          </div>
+          <div style="padding:12px 16px;font-size:12px;color:#6b7280;">
+            <div style="display:grid;grid-template-columns:1fr 1fr 80px 90px;gap:8px;font-weight:600;padding-bottom:6px;border-bottom:1px solid #f3f4f6;margin-bottom:8px;">
+              <span>Nombre</span><span>Handle</span><span>Red</span><span>Estado</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 80px 90px;gap:8px;padding:5px 0;border-bottom:1px solid #f9fafb;align-items:center;">
+              <span>Ana García</span><span style="color:#9ca3af">@anafit</span><span>Instagram</span>
+              <span style="background:#fef3c7;color:#d97706;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;">pendiente</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 80px 90px;gap:8px;padding:5px 0;align-items:center;">
+              <span>Carlos R.</span><span style="color:#9ca3af">@carloszen</span><span>TikTok</span>
+              <span style="background:#fef3c7;color:#d97706;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;">pendiente</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>Pro</h4><ul><li>Separación clara entre revisar y gestionar</li><li>Badge con conteo de pendientes visible siempre</li></ul></div>
+        <div class="cons"><h4>Contra</h4><ul><li>El historial de un influencer está dividido en dos tabs</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Tabla unificada con estados</h3>
+      <p>Una sola tabla con todos los influencers (postulaciones + activos). Columna de estado y código. Clic → drawer para cambiar estado y asignar código.</p>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">Influencers</div>
+        <div class="mockup-body" style="padding:0">
+          <div style="padding:12px 16px;font-size:12px;color:#6b7280;">
+            <div style="display:grid;grid-template-columns:1fr 1fr 80px 90px 100px;gap:8px;font-weight:600;padding-bottom:6px;border-bottom:1px solid #f3f4f6;margin-bottom:8px;">
+              <span>Nombre</span><span>Handle</span><span>Red</span><span>Estado</span><span>Código</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 80px 90px 100px;gap:8px;padding:5px 0;border-bottom:1px solid #f9fafb;align-items:center;">
+              <span>Ana García</span><span style="color:#9ca3af">@anafit</span><span>Instagram</span>
+              <span style="background:#fef3c7;color:#d97706;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;">pendiente</span>
+              <span style="color:#9ca3af">—</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 80px 90px 100px;gap:8px;padding:5px 0;border-bottom:1px solid #f9fafb;align-items:center;">
+              <span>María L.</span><span style="color:#9ca3af">@marialife</span><span>Instagram</span>
+              <span style="background:#d1fae5;color:#065f46;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;">aprobado</span>
+              <span style="font-family:monospace;font-weight:600;">MARIA15</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 80px 90px 100px;gap:8px;padding:5px 0;align-items:center;">
+              <span>Luis P.</span><span style="color:#9ca3af">@luispatch</span><span>TikTok</span>
+              <span style="background:#d1fae5;color:#065f46;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;">aprobado</span>
+              <span style="font-family:monospace;font-weight:600;">LUIS20</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>Pro</h4><ul><li>Vista completa de todos los influencers en un lugar</li><li>Fácil ver quién no tiene código aún</li></ul></div>
+        <div class="cons"><h4>Contra</h4><ul><li>Los pendientes se mezclan con los activos</li><li>Requiere filtrar para ver solo pendientes</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Cola de revisión + tabla de activos</h3>
+      <p>Arriba: sección compacta de postulaciones pendientes (tipo inbox). Abajo: tabla actual de códigos activos. Los pendientes son lo primero que ves.</p>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">Influencers</div>
+        <div class="mockup-body" style="padding:12px 16px;font-size:12px;color:#6b7280;">
+          <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;margin-bottom:14px;">
+            <div style="font-weight:700;color:#92400e;margin-bottom:8px;">Postulaciones pendientes (2)</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #fde68a;">
+              <span><b>Ana García</b> · <span style="color:#9ca3af">@anafit</span> · Instagram</span>
+              <div style="display:flex;gap:6px;">
+                <span style="background:#d1fae5;color:#065f46;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;">✓ Aceptar</span>
+                <span style="background:#fee2e2;color:#991b1b;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;">✗ Rechazar</span>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;">
+              <span><b>Carlos R.</b> · <span style="color:#9ca3af">@carloszen</span> · TikTok</span>
+              <div style="display:flex;gap:6px;">
+                <span style="background:#d1fae5;color:#065f46;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;">✓ Aceptar</span>
+                <span style="background:#fee2e2;color:#991b1b;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;">✗ Rechazar</span>
+              </div>
+            </div>
+          </div>
+          <div style="font-weight:600;color:#374151;margin-bottom:8px;">Códigos activos</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 100px 80px;gap:8px;font-weight:600;padding-bottom:6px;border-bottom:1px solid #f3f4f6;margin-bottom:6px;">
+            <span>Nombre</span><span>Handle</span><span>Código</span><span>Usos</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 100px 80px;gap:8px;padding:4px 0;align-items:center;">
+            <span>María López</span><span style="color:#9ca3af">@marialife</span>
+            <span style="font-family:monospace;font-weight:600;">MARIA15</span><span>12</span>
+          </div>
+        </div>
+      </div>
+      <div class="pros-cons" style="margin-top:10px">
+        <div class="pros"><h4>Pro</h4><ul><li>Los pendientes son visibles de inmediato sin navegar</li><li>Flujo de revisión rápido desde la misma pantalla</li></ul></div>
+        <div class="cons"><h4>Contra</h4><ul><li>Página más larga · menos limpia visualmente</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+</div>

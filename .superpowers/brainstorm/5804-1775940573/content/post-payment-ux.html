@@ -1,0 +1,30 @@
+<h2>¿Qué ve el usuario después de elegir OXXO/SPEI?</h2>
+<p class="subtitle">Selecciona el flujo que prefieras</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Página de confirmación separada</h3>
+      <p>Checkout → redirige a <code>/checkout/pendiente?ref=XXX</code> con la referencia OXXO o CLABE SPEI grande y visible, instrucciones de pago, y botón "Ir a mis pedidos". El usuario puede guardar o imprimir la página.</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>Pros</h4><ul><li>URL compartible / guardable</li><li>Fácil de regresar si cierra el browser</li></ul></div>
+        <div class="cons"><h4>Contras</h4><ul><li>Una página extra que mantener</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Modal/overlay sobre el mismo checkout</h3>
+      <p>Al confirmar, el checkout se "congela" y aparece un modal encima con la referencia OXXO o CLABE SPEI, instrucciones y botón de cerrar. Si el usuario cierra la ventana, pierde la referencia (salvo email).</p>
+      <div class="pros-cons" style="margin-top:12px">
+        <div class="pros"><h4>Pros</h4><ul><li>Menos páginas, más simple</li><li>Implementación más rápida</li></ul></div>
+        <div class="cons"><h4>Contras</h4><ul><li>Si cierra el modal, perdió la referencia</li><li>No hay URL para regresar</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:24px">En ambos casos se envía un email con la referencia/CLABE al correo del cliente.</p>

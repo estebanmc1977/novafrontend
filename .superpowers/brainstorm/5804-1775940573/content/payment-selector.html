@@ -1,0 +1,59 @@
+<h2>Selector de método de pago en checkout</h2>
+<p class="subtitle">Así quedaría la sección de pago dentro del formulario actual</p>
+
+<div class="mockup">
+  <div class="mockup-header">Checkout → Sección "Método de pago"</div>
+  <div class="mockup-body" style="font-family: system-ui; background: #FAF7F2; padding: 24px; border-radius: 8px;">
+
+    <!-- Selector de método -->
+    <p style="font-size:13px; font-weight:600; color:#0D1B35; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:12px;">Método de pago</p>
+    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+
+      <!-- Tarjeta (selected) -->
+      <label style="display:flex; align-items:center; gap:12px; padding:14px 16px; background:#fff; border:2px solid #E8503A; border-radius:10px; cursor:pointer;">
+        <input type="radio" name="method" checked style="accent-color:#E8503A; width:18px; height:18px;">
+        <span style="font-weight:600; color:#0D1B35; flex:1;">💳 Tarjeta de crédito / débito</span>
+        <span style="display:flex; gap:6px; font-size:11px;">
+          <span style="background:#1A1F71; color:#fff; padding:2px 6px; border-radius:3px; font-weight:700;">VISA</span>
+          <span style="background:#EB001B; color:#fff; padding:2px 6px; border-radius:3px; font-weight:700;">MC</span>
+          <span style="background:#2E77BC; color:#fff; padding:2px 6px; border-radius:3px; font-weight:700;">AMEX</span>
+        </span>
+      </label>
+
+      <!-- OXXO -->
+      <label style="display:flex; align-items:center; gap:12px; padding:14px 16px; background:#fff; border:2px solid #e2e8f0; border-radius:10px; cursor:pointer;">
+        <input type="radio" name="method" style="accent-color:#E8503A; width:18px; height:18px;">
+        <span style="font-weight:600; color:#0D1B35; flex:1;">🏪 Efectivo en OXXO</span>
+        <span style="font-size:12px; color:#64748b;">Solo compras únicas</span>
+      </label>
+
+      <!-- SPEI -->
+      <label style="display:flex; align-items:center; gap:12px; padding:14px 16px; background:#fff; border:2px solid #e2e8f0; border-radius:10px; cursor:pointer;">
+        <input type="radio" name="method" style="accent-color:#E8503A; width:18px; height:18px;">
+        <span style="font-weight:600; color:#0D1B35; flex:1;">🏦 Transferencia SPEI</span>
+        <span style="font-size:12px; color:#64748b;">Solo compras únicas</span>
+      </label>
+    </div>
+
+    <!-- Campos de tarjeta (se muestran solo con tarjeta seleccionada) -->
+    <div style="display:flex; flex-direction:column; gap:12px; padding:16px; background:#fff; border-radius:10px; border:1px solid #e2e8f0;">
+      <input class="mock-input" placeholder="Número de tarjeta" style="font-size:15px;">
+      <input class="mock-input" placeholder="Nombre en la tarjeta" style="font-size:15px;">
+      <div style="display:flex; gap:12px;">
+        <input class="mock-input" placeholder="MM/AA" style="flex:1; font-size:15px;">
+        <input class="mock-input" placeholder="CVV" style="flex:1; font-size:15px;">
+      </div>
+    </div>
+
+    <!-- Aviso suscripción (aparece si hay items de suscripción en el carrito) -->
+    <div style="display:none; margin-top:12px; padding:12px 16px; background:#FFF3CD; border:1px solid #F59E0B; border-radius:8px; font-size:13px; color:#92400E;">
+      ⚠️ Tu pedido incluye una suscripción. OXXO y SPEI solo están disponibles para compras únicas. Selecciona tarjeta para continuar.
+    </div>
+
+    <button class="mock-button" style="margin-top:20px; width:100%; background:#E8503A; color:#fff; font-weight:700; border:none; padding:16px; border-radius:10px; font-size:16px; cursor:pointer;">
+      Confirmar pedido →
+    </button>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:16px">Si el carrito tiene ítems de suscripción, OXXO y SPEI se deshabilitan con un aviso explicativo.</p>

@@ -9,6 +9,8 @@
 
 # testing
 /coverage
+/playwright-report
+/test-results
 
 # next.js
 /.next/
@@ -28,6 +30,7 @@ yarn-error.log*
 
 # env files — NEVER commit secrets
 .env
+.env.test
 .env*.local
 .env.development.local
 .env.test.local
