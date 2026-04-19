@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test"
 import { loginAsTestUser } from "../helpers/auth"
 
 const TEST_COUPON_CODE = process.env.TEST_COUPON_CODE || "TESTDESC10"
-const OPENPAY_SANDBOX_SUCCESS_CARD = "4111111111111111"
+const OPENPAY_SANDBOX_SUCCESS_CARD = "4242424242424242"
 
 test("coupon applies to first cycle only on a subscription order", async ({ page }) => {
   await loginAsTestUser(page)
@@ -52,8 +52,8 @@ test("coupon applies to first cycle only on a subscription order", async ({ page
   await page.fill("#state", "Ciudad de México")
   await page.fill("#cardNumber", OPENPAY_SANDBOX_SUCCESS_CARD)
   await page.fill("#cardName", "TEST COUPON USER")
-  await page.fill("#expiry", "12/28")
-  await page.fill("#cvv", "123")
+  await page.fill("#expiry", "12/30")
+  await page.fill("#cvv", "842")
   await page.click("button[type='submit']")
 
   await page.waitForURL((url) => url.pathname.includes("confirm") || url.pathname.includes("gracias"), { timeout: 30_000 })

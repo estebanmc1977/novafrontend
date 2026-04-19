@@ -3,8 +3,7 @@ import { test, expect } from "@playwright/test"
 import { loginAsTestUser } from "../helpers/auth"
 import { addFirstProductToCart } from "../helpers/cart"
 
-// Openpay Mexico sandbox test cards — verify at https://openpay.mx/docs/sandbox
-const OPENPAY_SANDBOX_SUCCESS_CARD = "4111111111111111"
+const OPENPAY_SANDBOX_SUCCESS_CARD = "4242424242424242"
 
 test("completes a full purchase with Openpay sandbox success card", async ({ page }) => {
   await loginAsTestUser(page)
@@ -40,8 +39,8 @@ test("completes a full purchase with Openpay sandbox success card", async ({ pag
 
   await page.fill("#cardNumber", OPENPAY_SANDBOX_SUCCESS_CARD)
   await page.fill("#cardName", "TEST USER NOVAPATCH")
-  await page.fill("#expiry", "12/28")
-  await page.fill("#cvv", "123")
+  await page.fill("#expiry", "12/30")
+  await page.fill("#cvv", "842")
 
   await page.click("button[type='submit']")
 
