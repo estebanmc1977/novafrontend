@@ -17,7 +17,7 @@ jobs:
         env:
           PROD_URL: https://www.novapatch.care
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$PROD_URL")
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" -L --max-time 10 "$PROD_URL")
           echo "status=$STATUS" >> "$GITHUB_OUTPUT"
           if [ "$STATUS" != "200" ]; then
             echo "Homepage returned $STATUS"
@@ -29,7 +29,7 @@ jobs:
         env:
           PROD_URL: https://www.novapatch.care/tienda
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$PROD_URL")
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" -L --max-time 10 "$PROD_URL")
           echo "status=$STATUS" >> "$GITHUB_OUTPUT"
           if [ "$STATUS" != "200" ]; then
             echo "/tienda returned $STATUS"
@@ -41,7 +41,7 @@ jobs:
         env:
           PROD_URL: https://www.novapatch.care
         run: |
-          TTFB=$(curl -s -o /dev/null -w "%{time_starttransfer}" --max-time 10 "$PROD_URL")
+          TTFB=$(curl -s -o /dev/null -w "%{time_starttransfer}" -L --max-time 10 "$PROD_URL")
           echo "ttfb=$TTFB" >> "$GITHUB_OUTPUT"
           python3 -c "import sys; sys.exit(1 if float('$TTFB') > 3.0 else 0)"
 
