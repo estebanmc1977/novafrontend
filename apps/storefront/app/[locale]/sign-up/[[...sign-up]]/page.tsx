@@ -181,6 +181,10 @@ export default function SignUpPage() {
             signInUrl="/sign-in"
             fallbackRedirectUrl="/"
           />
+          <p className="mt-4 text-center text-[12px]" style={{ color: "#9CA3AF" }}>
+            ¿No ves el email de verificación? Revisa tu carpeta de{" "}
+            <strong style={{ color: "#6B7280" }}>spam o no deseados</strong>.
+          </p>
         </div>
 
         <p
