@@ -1,0 +1,47 @@
+# novafrontend/.github/workflows/smoke.yml
+name: Smoke Tests
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: apps/storefront
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install chromium --with-deps
+        working-directory: apps/storefront
+
+      - name: Run smoke tests
+        run: pnpm test:e2e:smoke
+        working-directory: apps/storefront
+        env:
+          BASE_URL: https://www.novapatch.care
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${{ secrets.MEDUSA_PUBLISHABLE_KEY }}
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-smoke-report
+          path: apps/storefront/playwright-report/
