@@ -10,21 +10,22 @@ Frontend de e-commerce de Novapatch — plataforma de parches vitamínicos por s
 2. [Estructura del proyecto](#estructura-del-proyecto)
 3. [Variables de entorno](#variables-de-entorno)
 4. [Comandos de desarrollo](#comandos-de-desarrollo)
-5. [Multi-mercado e internacionalización](#multi-mercado-e-internacionalización)
-6. [Sistema de diseño](#sistema-de-diseño)
-7. [Arquitectura](#arquitectura)
-8. [Módulos y librerías](#módulos-y-librerías)
-9. [Hooks](#hooks)
-10. [Contextos](#contextos)
-11. [Rutas API (proxy server-side)](#rutas-api-proxy-server-side)
-12. [Páginas y rutas](#páginas-y-rutas)
-13. [Componentes](#componentes)
-14. [Integraciones externas](#integraciones-externas)
-15. [Flujo de checkout y pagos](#flujo-de-checkout-y-pagos)
-16. [Observabilidad — Sentry y PostHog](#observabilidad--sentry-y-posthog)
-17. [Seguridad](#seguridad)
-18. [Despliegue en Vercel](#despliegue-en-vercel)
-19. [Estado de la integración con Medusa](#estado-de-la-integración-con-medusa)
+5. [Testing](#testing)
+6. [Multi-mercado e internacionalización](#multi-mercado-e-internacionalización)
+7. [Sistema de diseño](#sistema-de-diseño)
+8. [Arquitectura](#arquitectura)
+9. [Módulos y librerías](#módulos-y-librerías)
+10. [Hooks](#hooks)
+11. [Contextos](#contextos)
+12. [Rutas API (proxy server-side)](#rutas-api-proxy-server-side)
+13. [Páginas y rutas](#páginas-y-rutas)
+14. [Componentes](#componentes)
+15. [Integraciones externas](#integraciones-externas)
+16. [Flujo de checkout y pagos](#flujo-de-checkout-y-pagos)
+17. [Observabilidad — Sentry y PostHog](#observabilidad--sentry-y-posthog)
+18. [Seguridad](#seguridad)
+19. [Despliegue en Vercel](#despliegue-en-vercel)
+20. [Estado de la integración con Medusa](#estado-de-la-integración-con-medusa)
 
 ---
 
@@ -204,6 +205,119 @@ pnpm lint
 ```
 
 > El proyecto usa `pnpm` como package manager. No usar `npm` ni `yarn`.
+
+---
+
+## Testing
+
+### E2E con Playwright
+
+Los tests E2E corren contra `https://www.novapatch.care` (producción con Openpay sandbox). Requieren un archivo `.env.test` en `apps/storefront/` — ver `.env.test.example`.
+
+```bash
+# Instalar browsers (primera vez)
+pnpm exec playwright install chromium --with-deps
+
+# Todos los tests
+pnpm test:e2e
+
+# Solo smoke tests (los más rápidos, ~15s)
+pnpm test:e2e:smoke
+
+# Con UI interactiva
+pnpm test:e2e:ui
+```
+
+**Estructura de tests:**
+
+```
+tests/e2e/
+├── helpers/
+│   ├── auth.ts          # loginAsTestUser(), logout()
+│   └── cart.ts          # addFirstProductToCart()
+├── smoke/
+│   └── critical-paths.spec.ts   # 4 checks: home, tienda, carrito, Medusa API
+├── auth/
+│   ├── login.spec.ts            # Login con cuenta existente, recuperación de contraseña
+│   └── cart-persistence.spec.ts # Carrito persiste en localStorage entre sesiones
+└── checkout/
+    ├── happy-path.spec.ts       # Compra completa con tarjeta sandbox 4242424242424242
+    ├── declined-card.spec.ts    # Tarjeta expirada → error visible, sin orden zombie
+    └── coupon.spec.ts           # Cupón en orden de suscripción → descuento solo primer ciclo
+```
+
+**Variables de entorno para tests:**
+
+```bash
+BASE_URL=https://www.novapatch.care
+BACKEND_URL=https://novabackend-production-7977.up.railway.app
+NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_...
+TEST_USER_EMAIL=tu-email-de-prueba@example.com
+TEST_USER_PASSWORD=tu-contraseña
+MEDUSA_ADMIN_EMAIL=admin@novapatch.care
+MEDUSA_ADMIN_PASSWORD=...
+TEST_COUPON_CODE=TESTDESC10   # opcional, default: TESTDESC10
+```
+
+**Tarjeta Openpay sandbox:**
+- Éxito: `4242424242424242`, exp `12/30`, CVV `842`
+- Rechazo: `4242424242424242`, exp `01/20` (fecha expirada fuerza rechazo), CVV `842`
+
+---
+
+### CI — GitHub Actions
+
+El workflow `.github/workflows/smoke.yml` corre los smoke tests en cada PR a `main`.
+
+**Secrets requeridos en GitHub → Settings → Actions → Repository secrets:**
+- `BACKEND_URL` — URL completa del backend Railway (con `https://`)
+- `MEDUSA_PUBLISHABLE_KEY` — publishable key de Medusa
+
+---
+
+### Lighthouse CI
+
+Evalúa Core Web Vitals en `/mx` y `/mx/tienda` (3 runs cada una).
+
+```bash
+# Requiere @lhci/cli instalado globalmente
+npm install -g @lhci/cli
+
+bash scripts/run-lighthouse.sh
+```
+
+**Thresholds configurados en `lighthouserc.js`:**
+
+| Métrica | Umbral |
+|---------|--------|
+| Performance score | ≥ 0.50 (warn) |
+| Accessibility score | ≥ 0.70 (warn) |
+| LCP | ≤ 10 000 ms |
+| FCP | ≤ 5 000 ms |
+| TTI | ≤ 12 000 ms |
+| CLS | ≤ 0.25 |
+
+> Resultados reales (abril 2026): Performance ~0.65, LCP ~7-8s. Optimización de performance es trabajo post-lanzamiento.
+
+---
+
+### k6 — Load Test
+
+Simula 50 usuarios concurrentes durante 60 segundos contra el backend.
+
+```bash
+# Requiere k6 instalado: brew install k6
+k6 run scripts/load-test.js \
+  --env BASE_URL=https://www.novapatch.care \
+  --env BACKEND_URL=https://novabackend-production-7977.up.railway.app \
+  --env PUBLISHABLE_KEY=pk_...
+```
+
+**Flujo por VU:** `GET /mx/tienda` → `GET /store/products` → `GET /store/regions` → `POST /store/carts` → `POST /store/carts/:id/line-items`
+
+**Thresholds:** `p(95) < 3 000ms`, error rate `< 1%`
+
+> Resultado baseline (abril 2026, Railway): p95 = 2.33s, 0% errores con 50 VUs.
 
 ---
 
