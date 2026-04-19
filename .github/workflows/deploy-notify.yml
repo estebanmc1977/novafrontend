@@ -1,0 +1,130 @@
+# Notifica a Slack cuando un deploy a producción termina (éxito o fallo).
+name: Deploy Notify
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  notify:
+    name: Wait for Vercel & Notify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wait for Vercel deployment
+        id: vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          echo "Waiting for Vercel deployment for commit $COMMIT_SHA..."
+          ATTEMPTS=0
+          MAX_ATTEMPTS=20
+
+          while [ $ATTEMPTS -lt $MAX_ATTEMPTS ]; do
+            RESPONSE=$(curl -s \
+              -H "Authorization: Bearer $VERCEL_TOKEN" \
+              "https://api.vercel.com/v6/deployments?teamId=$VERCEL_TEAM_ID&meta-githubCommitSha=$COMMIT_SHA&limit=1")
+
+            STATE=$(echo "$RESPONSE" | jq -r '.deployments[0].state // "NOT_FOUND"')
+            URL=$(echo "$RESPONSE" | jq -r '.deployments[0].url // ""')
+
+            echo "State: $STATE"
+
+            if [ "$STATE" = "READY" ]; then
+              echo "state=success" >> "$GITHUB_OUTPUT"
+              echo "url=https://$URL" >> "$GITHUB_OUTPUT"
+              exit 0
+            elif [ "$STATE" = "ERROR" ] || [ "$STATE" = "CANCELED" ]; then
+              echo "state=failure" >> "$GITHUB_OUTPUT"
+              echo "url=https://vercel.com" >> "$GITHUB_OUTPUT"
+              exit 1
+            fi
+
+            ATTEMPTS=$((ATTEMPTS + 1))
+            sleep 15
+          done
+
+          echo "state=timeout" >> "$GITHUB_OUTPUT"
+          exit 1
+
+      - name: Notify Slack — deploy exitoso
+        if: success()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          DEPLOY_URL: ${{ steps.vercel.outputs.url }}
+          ACTOR: ${{ github.actor }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          COMMIT_MSG=$(git log -1 --format='%s' | cut -c1-80)
+          jq -n \
+            --arg deploy_url "$DEPLOY_URL" \
+            --arg actor "$ACTOR" \
+            --arg run_url "$RUN_URL" \
+            --arg msg "$COMMIT_MSG" \
+            '{
+              text: ":rocket: *Deploy exitoso a producción*",
+              blocks: [
+                {
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text: (":rocket: *Deploy exitoso a producción*\n*Por:* " + $actor + "\n*Commit:* " + $msg + "\n*URL:* <" + $deploy_url + "|Ver sitio>")
+                  }
+                },
+                {
+                  type: "actions",
+                  elements: [
+                    {
+                      type: "button",
+                      text: { type: "plain_text", text: "Ver deploy" },
+                      url: $deploy_url,
+                      style: "primary"
+                    }
+                  ]
+                }
+              ]
+            }' \
+          | curl -s -X POST "$SLACK_WEBHOOK_URL" \
+              -H "Content-Type: application/json" \
+              -d @-
+
+      - name: Notify Slack — deploy fallido
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          ACTOR: ${{ github.actor }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          jq -n \
+            --arg actor "$ACTOR" \
+            --arg run_url "$RUN_URL" \
+            '{
+              text: ":boom: *Deploy a producción falló*",
+              blocks: [
+                {
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text: (":boom: *Deploy a producción falló*\n*Por:* " + $actor + "\n<" + $run_url + "|Ver logs>")
+                  }
+                },
+                {
+                  type: "actions",
+                  elements: [
+                    {
+                      type: "button",
+                      text: { type: "plain_text", text: "Ver logs" },
+                      url: $run_url,
+                      style: "danger"
+                    }
+                  ]
+                }
+              ]
+            }' \
+          | curl -s -X POST "$SLACK_WEBHOOK_URL" \
+              -H "Content-Type: application/json" \
+              -d @-
