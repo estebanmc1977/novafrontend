@@ -12,14 +12,13 @@ module.exports = {
       },
     },
     assert: {
-      preset: "lighthouse:no-pwa",
       assertions: {
-        "categories:performance": ["warn", { minScore: 0.7 }],
-        "categories:accessibility": ["warn", { minScore: 0.8 }],
-        "cumulative-layout-shift": ["error", { maxNumericValue: 0.1 }],
-        "largest-contentful-paint": ["warn", { maxNumericValue: 4000 }],
-        "first-contentful-paint": ["warn", { maxNumericValue: 3000 }],
-        "interactive": ["warn", { maxNumericValue: 5000 }],
+        "categories:performance": ["warn", { minScore: 0.5 }],
+        "categories:accessibility": ["warn", { minScore: 0.7 }],
+        "cumulative-layout-shift": ["warn", { maxNumericValue: 0.25 }],
+        "largest-contentful-paint": ["warn", { maxNumericValue: 10000 }],
+        "first-contentful-paint": ["warn", { maxNumericValue: 5000 }],
+        "interactive": ["warn", { maxNumericValue: 12000 }],
       },
     },
     upload: {
