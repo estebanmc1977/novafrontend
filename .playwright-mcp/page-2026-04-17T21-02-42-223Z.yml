@@ -1,0 +1,226 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - navigation [ref=e4]:
+        - link "Tienda" [ref=e5] [cursor=pointer]:
+          - /url: /mx/tienda
+          - text: Tienda
+        - link "Suscripciones" [ref=e6] [cursor=pointer]:
+          - /url: /mx/suscripciones
+          - text: Suscripciones
+        - link "Nosotros" [ref=e7] [cursor=pointer]:
+          - /url: /mx/nosotros
+          - text: Nosotros
+      - link "NovaPatch" [ref=e8] [cursor=pointer]:
+        - /url: /mx
+        - img "NovaPatch" [ref=e9]
+      - generic [ref=e10]:
+        - button "Carrito" [ref=e11]:
+          - img [ref=e12]
+        - button "Iniciar sesión" [ref=e16]:
+          - img [ref=e17]
+  - main [ref=e20]:
+    - generic [ref=e23]:
+      - generic [ref=e25]: Programa de Embajadores · México 2026
+      - heading "Crea contenido que transforma vidas." [level=1] [ref=e27]:
+        - text: Crea contenido
+        - text: que
+        - emphasis [ref=e28]: transforma
+        - text: vidas.
+      - paragraph [ref=e29]: Únete a la red de embajadores de Novapatch. Gana acceso anticipado a nuevos parches, colaboraciones pagadas y una comunidad que apuesta por el bienestar real.
+      - generic [ref=e30]:
+        - generic [ref=e33]:
+          - generic [ref=e34]: Productos gratis
+          - generic [ref=e35]: a cambio de contenido auténtico
+        - generic [ref=e38]:
+          - generic [ref=e39]: Colaboraciones pagas
+          - generic [ref=e40]: para perfiles seleccionados
+        - generic [ref=e43]:
+          - generic [ref=e44]: Comunidad real
+          - generic [ref=e45]: de creadores de bienestar en LATAM
+      - link "Quiero aplicar" [ref=e46] [cursor=pointer]:
+        - /url: "#aplicar"
+        - text: Quiero aplicar
+        - img [ref=e47]
+    - generic [ref=e50]:
+      - generic [ref=e51]:
+        - paragraph [ref=e52]: Postulación
+        - heading "Aplicá al programa" [level=2] [ref=e53]
+        - paragraph [ref=e54]: 3 pasos · menos de 4 minutos · sin crear una cuenta
+      - generic [ref=e55]:
+        - generic [ref=e56]:
+          - generic [ref=e58]:
+            - img [ref=e212]
+            - generic [ref=e60]: Identidad
+          - generic [ref=e63]:
+            - generic [ref=e64]: "02"
+            - generic [ref=e65]: Comunidad
+          - generic [ref=e68]:
+            - generic [ref=e69]: "03"
+            - generic [ref=e70]: Fit
+        - generic [ref=e71]:
+          - heading "Tu comunidad y contenido" [level=3] [ref=e214]
+          - paragraph [ref=e73]: Cuéntanos sobre tu audiencia y lo que creás
+        - generic [ref=e216]:
+          - generic [ref=e217]:
+            - generic [ref=e218]: Rango de seguidores*
+            - generic [ref=e219]:
+              - combobox [ref=e220] [cursor=pointer]:
+                - option "¿Cuántos seguidores tenés?" [disabled] [selected]
+                - option "1k–5k"
+                - option "5k–10k"
+                - option "10k–50k"
+                - option "50k–100k"
+                - option "+100k"
+              - img
+          - generic [ref=e221]:
+            - generic [ref=e222]: Nicho principal*
+            - generic [ref=e224]:
+              - button "Wellness" [ref=e225]
+              - button "Fitness" [ref=e226]
+              - button "Lifestyle" [ref=e227]
+              - button "Belleza" [ref=e228]
+              - button "Maternidad" [ref=e229]
+              - button "Productividad" [ref=e230]
+              - button "Nutrición" [ref=e231]
+              - button "Viajes" [ref=e232]
+              - button "Otro" [ref=e233]
+          - generic [ref=e234]:
+            - generic [ref=e235]: Tipo de contenido que hacés*
+            - generic [ref=e237]:
+              - button "Reels" [ref=e238]
+              - button "Reviews" [ref=e239]
+              - button "Rutinas" [ref=e240]
+              - button "Unboxing" [ref=e241]
+              - button "Educativo" [ref=e242]
+              - button "Vlogs" [ref=e243]
+              - button "Otro" [ref=e244]
+          - generic [ref=e245]:
+            - generic [ref=e246]:
+              - generic [ref=e247]: Género mayoritario de tu audiencia*
+              - generic [ref=e248]:
+                - combobox [ref=e249] [cursor=pointer]:
+                  - option "Género predominante" [disabled] [selected]
+                  - option "Mayormente femenino"
+                  - option "Mayormente masculino"
+                  - option "Mixto"
+                - img
+            - generic [ref=e250]:
+              - generic [ref=e251]: Rango etario de tu audiencia*
+              - generic [ref=e252]:
+                - combobox [ref=e253] [cursor=pointer]:
+                  - option "Edad predominante" [disabled] [selected]
+                  - option "18–24"
+                  - option "25–34"
+                  - option "35–44"
+                  - option "45+"
+                - img
+          - generic [ref=e254]:
+            - generic [ref=e255]: ¿Ya creás contenido de bienestar o suplementos?*
+            - generic [ref=e257]:
+              - generic [ref=e258] [cursor=pointer]:
+                - radio "Sí" [ref=e260]
+                - generic [ref=e261]: Sí
+              - generic [ref=e262] [cursor=pointer]:
+                - radio "No" [ref=e264]
+                - generic [ref=e265]: "No"
+        - generic [ref=e107]:
+          - button "Atrás" [ref=e266]:
+            - img [ref=e267]
+            - text: Atrás
+          - button "Continuar" [active] [ref=e108]:
+            - text: Continuar
+            - img [ref=e109]
+      - paragraph [ref=e111]:
+        - text: Al enviar esta postulación confirmás que leíste y aceptás los
+        - link "Términos de Colaboración para Influencers" [ref=e112] [cursor=pointer]:
+          - /url: /terminos-influencers
+        - text: de Novapatch.
+  - contentinfo [ref=e113]:
+    - generic [ref=e115]:
+      - generic [ref=e116]:
+        - heading "Comprar" [level=4] [ref=e117]
+        - list [ref=e118]:
+          - listitem [ref=e119]:
+            - link "Tienda" [ref=e120] [cursor=pointer]:
+              - /url: /mx/tienda
+          - listitem [ref=e121]:
+            - link "Suscripciones" [ref=e122] [cursor=pointer]:
+              - /url: /mx/suscripciones
+          - listitem [ref=e123]:
+            - link "Garantía" [ref=e124] [cursor=pointer]:
+              - /url: /mx/garantia
+      - generic [ref=e125]:
+        - heading "Ayuda" [level=4] [ref=e126]
+        - list [ref=e127]:
+          - listitem [ref=e128]:
+            - link "Contáctanos" [ref=e129] [cursor=pointer]:
+              - /url: /mx/contacto
+          - listitem [ref=e130]:
+            - link "Preguntas frecuentes" [ref=e131] [cursor=pointer]:
+              - /url: /mx/faq
+          - listitem [ref=e132]:
+            - link "Solicitar reembolso" [ref=e133] [cursor=pointer]:
+              - /url: /mx/reembolso
+      - generic [ref=e134]:
+        - heading "Nosotros" [level=4] [ref=e135]
+        - list [ref=e136]:
+          - listitem [ref=e137]:
+            - link "Nosotros" [ref=e138] [cursor=pointer]:
+              - /url: /mx/nosotros
+          - listitem [ref=e139]:
+            - link "¿Por qué parches?" [ref=e140] [cursor=pointer]:
+              - /url: /mx/nosotros#por-que
+          - listitem [ref=e141]:
+            - link "Suscríbete y ahorra" [ref=e142] [cursor=pointer]:
+              - /url: /mx/suscripciones
+      - generic [ref=e143]:
+        - heading "Legal" [level=4] [ref=e144]
+        - list [ref=e145]:
+          - listitem [ref=e146]:
+            - link "Aviso de Privacidad" [ref=e147] [cursor=pointer]:
+              - /url: /mx/privacidad
+          - listitem [ref=e148]:
+            - link "Términos y Condiciones" [ref=e149] [cursor=pointer]:
+              - /url: /mx/terminos
+      - generic [ref=e150]:
+        - heading "Newsletter" [level=4] [ref=e151]
+        - paragraph [ref=e152]: Novedades y ofertas
+        - generic [ref=e153]:
+          - textbox "tu@correo.com" [ref=e154]
+          - button "Suscribirse" [ref=e155]
+        - generic [ref=e156]:
+          - link "Instagram" [ref=e157] [cursor=pointer]:
+            - /url: https://www.instagram.com/novapatch.mx?igsh=dGZ4cGNoNjluc3Vl
+            - img [ref=e158]
+          - link "TikTok" [ref=e162] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@novapatch.mx?_r=1&_t=ZS-95C7N0OkUke
+            - img [ref=e163]
+    - generic [ref=e166]:
+      - img "Novapatch" [ref=e167]
+      - 'button "Seleccionar región: México" [ref=e169]':
+        - img [ref=e170]
+        - generic [ref=e175]: México
+        - img [ref=e176]
+      - paragraph [ref=e178]: © 2026 Novapatch. Todos los derechos reservados.
+      - generic [ref=e179]:
+        - generic [ref=e180]: Visa
+        - generic [ref=e181]: Mastercard
+  - button "Open Next.js Dev Tools" [ref=e188] [cursor=pointer]:
+    - img [ref=e189]
+  - alert [ref=e192]
+  - generic [ref=e193]:
+    - button "Keyless prompt" [expanded] [ref=e194] [cursor=pointer]:
+      - img [ref=e195]
+      - generic [ref=e199]: Configure your application
+      - img [ref=e200]
+    - generic [ref=e203]:
+      - generic [ref=e204]:
+        - paragraph [ref=e205]: Temporary API keys are enabled so you can get started immediately.
+        - list [ref=e206]:
+          - listitem [ref=e207]: Add SSO connections (eg. GitHub)
+          - listitem [ref=e208]: Set up B2B authentication
+          - listitem [ref=e209]: Enable MFA
+        - paragraph [ref=e210]: Access the dashboard to customize auth settings and explore Clerk features.
+      - link "Configure your application" [ref=e211] [cursor=pointer]:
+        - /url: https://dashboard.clerk.com/apps/claim?token=uzcsk7so0ld0ey03p6dr7vxw1xiscd6b33wfru9z&return_url=http%3A%2F%2Flocalhost%3A3001%2Fmx%2Finfluencers

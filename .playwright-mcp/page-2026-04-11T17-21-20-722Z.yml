@@ -1,0 +1,506 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - link "NovaPatch" [ref=e4] [cursor=pointer]:
+        - /url: /mx
+        - img "NovaPatch" [ref=e5]
+      - generic [ref=e6]:
+        - button "Carrito" [ref=e7]:
+          - img [ref=e8]
+        - button "Menú" [ref=e11]:
+          - img [ref=e12]
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - img "Novapatch Glow" [ref=e17]
+        - img "Novapatch Shield" [ref=e19]
+        - img "Novapatch Energy" [ref=e21]
+        - img "Novapatch Sleep" [ref=e23]
+        - img "Novapatch Woman" [ref=e25]
+        - img "Novapatch Zen" [ref=e27]
+      - generic [ref=e31]:
+        - generic [ref=e32]: Parches de bienestar
+        - heading "Bienestar que no interrumpe tu día." [level=1] [ref=e34]
+        - paragraph [ref=e35]: Sin cápsulas. Sin horarios. Sin agua. Un solo parche y listo — el resto del día es tuyo.
+        - generic [ref=e36]:
+          - link "Conoce los parches" [ref=e37] [cursor=pointer]:
+            - /url: "#productos"
+            - text: Conoce los parches
+            - img [ref=e38]
+          - link "¿Cómo funciona?" [ref=e40] [cursor=pointer]:
+            - /url: "#como-funciona"
+      - generic [ref=e41]:
+        - button "Slide 1" [ref=e42]
+        - button "Slide 2" [ref=e44]
+        - button "Slide 3" [ref=e46]
+        - button "Slide 4" [ref=e48]
+        - button "Slide 5" [ref=e50]
+        - button "Slide 6" [ref=e52]
+    - generic [ref=e56]:
+      - generic [ref=e57]:
+        - img "Sin azúcar" [ref=e59]
+        - generic [ref=e60]: Sin azúcar
+      - generic [ref=e61]:
+        - img "100% Vegano" [ref=e63]
+        - generic [ref=e64]: 100% Vegano
+      - generic [ref=e65]:
+        - img "Libre de gluten" [ref=e67]
+        - generic [ref=e68]: Libre de gluten
+      - generic [ref=e69]:
+        - img "Resistente al agua" [ref=e71]
+        - generic [ref=e72]: Resistente al agua
+      - generic [ref=e73]:
+        - img "Sin látex" [ref=e75]
+        - generic [ref=e76]: Sin látex
+    - generic [ref=e78]:
+      - generic [ref=e79]:
+        - img "Cómo usar Novapatch" [ref=e81]
+        - generic [ref=e82]:
+          - generic [ref=e115]: "30"
+          - generic [ref=e116]: un día · un parche
+      - generic [ref=e117]:
+        - paragraph [ref=e118]: Uso diario
+        - heading "Así de simple." [level=2] [ref=e119]
+        - generic [ref=e120]:
+          - generic [ref=e121]:
+            - generic [ref=e122]: "1"
+            - generic [ref=e123]:
+              - heading "Eliges tu parche" [level=3] [ref=e124]
+              - paragraph [ref=e125]: Energy, Sleep, Zen, Shield, Glow o Woman. Uno solo, según lo que necesitas hoy.
+          - generic [ref=e126]:
+            - generic [ref=e127]: "2"
+            - generic [ref=e128]:
+              - heading "Lo pones en segundos" [level=3] [ref=e129]
+              - paragraph [ref=e130]: En piel limpia, donde te sea cómodo. Sin agua, sin planificación, sin ritual.
+          - generic [ref=e131]:
+            - generic [ref=e132]: "3"
+            - generic [ref=e133]:
+              - heading "Listo. Ya está." [level=3] [ref=e134]
+              - paragraph [ref=e135]: Durante las próximas horas el parche trabaja mientras tú vives tu día normal.
+    - generic [ref=e137]:
+      - generic [ref=e138]:
+        - paragraph [ref=e141]: La ciencia
+        - heading "No cualquier ingrediente funciona en un parche." [level=2] [ref=e142]
+        - paragraph [ref=e143]: "Para atravesar la piel, un ingrediente necesita tener menos de 500 Daltons de masa molecular. El resultado: absorción directa al torrente sanguíneo, sin pasar por el sistema digestivo, durante entre 10 y 12 horas continuas."
+        - generic [ref=e144]:
+          - generic [ref=e145]:
+            - generic [ref=e146]: <500Da
+            - generic [ref=e147]: Tamaño molecular
+          - generic [ref=e148]:
+            - generic [ref=e149]: 10–12h
+            - generic [ref=e150]: Absorción sostenida
+          - generic [ref=e151]:
+            - generic [ref=e152]: 0×
+            - generic [ref=e153]: Digestión requerida
+        - link "Encuentra tu parche" [ref=e154] [cursor=pointer]:
+          - /url: "#productos"
+          - text: Encuentra tu parche
+          - img [ref=e155]
+      - img [ref=e159]:
+        - generic [ref=e180]: NOVAPATCH
+        - generic [ref=e181]: Liberación controlada · 10–12 horas
+        - generic [ref=e183]: ESTRATO CÓRNEO
+        - generic [ref=e185]: EPIDERMIS
+        - generic [ref=e192]: DERMIS
+        - generic [ref=e196]: TORRENTE SANGUÍNEO
+        - generic [ref=e198]: < 500 Daltons
+    - generic [ref=e208]:
+      - heading "¿Pastillas, gomitas o parches?" [level=2] [ref=e210]
+      - generic [ref=e211]:
+        - generic [ref=e212]:
+          - generic [ref=e213]:
+            - generic [ref=e214]: Características
+            - generic [ref=e215]:
+              - img "Novapatch" [ref=e216]
+              - generic [ref=e217]: Novapatch
+            - generic [ref=e218]:
+              - img [ref=e219]
+              - generic [ref=e221]: Cápsulas
+            - generic [ref=e222]:
+              - img "Gomitas" [ref=e223]
+              - generic [ref=e224]: Gomitas
+          - generic [ref=e225]:
+            - generic [ref=e226]: Alta tasa de absorción
+            - img [ref=e228]
+            - img [ref=e232]
+            - img [ref=e236]
+          - generic [ref=e239]:
+            - generic [ref=e240]: Sin pastillas difíciles de tragar
+            - img [ref=e242]
+            - img [ref=e246]
+            - img [ref=e250]
+          - generic [ref=e253]:
+            - generic [ref=e254]: Sin azúcar ni calorías
+            - img [ref=e256]
+            - img [ref=e260]
+            - img [ref=e264]
+          - generic [ref=e267]:
+            - generic [ref=e268]: Sin colorantes ni rellenos artificiales
+            - img [ref=e270]
+            - img [ref=e274]
+            - img [ref=e278]
+          - generic [ref=e281]:
+            - generic [ref=e282]: No afecta tu sistema digestivo
+            - img [ref=e284]
+            - img [ref=e288]
+            - img [ref=e292]
+        - generic [ref=e295]:
+          - img "Novapatch en uso" [ref=e298]
+          - generic [ref=e299]:
+            - strong [ref=e300]: Un parche, todo el día.
+            - text: Sin agua. Sin horarios. Sin pastillas.
+      - paragraph [ref=e301]:
+        - emphasis [ref=e302]: Lo simple se repite. Lo complejo se abandona.
+        - strong [ref=e303]: Novapatch está diseñado para ser el hábito que sí se sostiene.
+    - generic [ref=e305]:
+      - generic [ref=e306]:
+        - heading "Elige el parche que tu cuerpo necesita" [level=2] [ref=e307]
+        - paragraph [ref=e308]: "Seis fórmulas, seis objetivos. Un solo formato: pega, olvida y deja que trabaje."
+      - generic [ref=e310]:
+        - generic [ref=e311]:
+          - img "NovaPatch Glow" [ref=e313]
+          - generic [ref=e314]: Más popular
+        - generic [ref=e315]:
+          - paragraph [ref=e316]: Glow
+          - paragraph [ref=e317]: Belleza y juventud para una piel visiblemente renovada
+          - paragraph [ref=e318]: Pack de 30 parches
+          - list [ref=e319]:
+            - listitem [ref=e320]: Vitamina C
+            - listitem [ref=e322]: Ácido Hialurónico
+            - listitem [ref=e324]: Colágeno Hidrolizado
+            - listitem [ref=e326]: Biotina
+            - listitem [ref=e328]: Vitamina B3
+            - listitem [ref=e330]: Extracto de Centella Asiática
+            - listitem [ref=e332]: Vitamina E
+          - generic [ref=e334]:
+            - generic [ref=e335]: Bienestar desde adentro
+            - generic [ref=e336]: Constancia
+          - generic [ref=e337]:
+            - generic [ref=e338]: $750MXN
+            - generic [ref=e339]: Desde $600 con suscripción
+          - button "Agregar al carrito" [ref=e340]
+      - generic [ref=e341]:
+        - generic [ref=e343]:
+          - img "NovaPatch Energy" [ref=e346]
+          - generic [ref=e347]:
+            - generic [ref=e348]:
+              - paragraph [ref=e349]: Energy
+              - paragraph [ref=e350]: Energía celular sostenida
+            - generic [ref=e351]:
+              - paragraph [ref=e352]: Pack de 30 parches
+              - paragraph [ref=e353]: Vitamina C · L-Carnitina · Extracto de Té Verde · Extracto de Ginseng · Vitamina B2 · Ácido Fólico · Vitamina E
+            - generic [ref=e354]:
+              - generic [ref=e355]: Energía sostenida
+              - generic [ref=e356]: Sin picos ni caídas
+            - generic [ref=e357]:
+              - generic [ref=e358]: $750
+              - generic [ref=e359]: MXN
+            - paragraph [ref=e360]: Desde $600/caja con suscripción
+            - button "Agregar al carrito" [ref=e361]
+        - generic [ref=e363]:
+          - img "NovaPatch Sleep" [ref=e366]
+          - generic [ref=e367]:
+            - generic [ref=e368]:
+              - paragraph [ref=e369]: Sleep
+              - paragraph [ref=e370]: Sueño profundo y reparador
+            - generic [ref=e371]:
+              - paragraph [ref=e372]: Pack de 30 parches
+              - paragraph [ref=e373]: Triptófano · Magnesio · Inositol · Vitamina B6 · Glicina
+            - generic [ref=e374]:
+              - generic [ref=e375]: Descanso nocturno
+              - generic [ref=e376]: Sin somníferos
+            - generic [ref=e377]:
+              - generic [ref=e378]: $750
+              - generic [ref=e379]: MXN
+            - paragraph [ref=e380]: Desde $600/caja con suscripción
+            - button "Agregar al carrito" [ref=e381]
+        - generic [ref=e383]:
+          - img "NovaPatch Shield" [ref=e386]
+          - generic [ref=e387]:
+            - generic [ref=e388]:
+              - paragraph [ref=e389]: Shield
+              - paragraph [ref=e390]: Fortaleza inmune natural
+            - generic [ref=e391]:
+              - paragraph [ref=e392]: Pack de 30 parches
+              - paragraph [ref=e393]: Vitamina C · Zinc · Vitamina D3 · Vitamina E · Niacinamida
+            - generic [ref=e394]:
+              - generic [ref=e395]: Cuidado preventivo
+              - generic [ref=e396]: Uso diario
+            - generic [ref=e397]:
+              - generic [ref=e398]: $750
+              - generic [ref=e399]: MXN
+            - paragraph [ref=e400]: Desde $600/caja con suscripción
+            - button "Agregar al carrito" [ref=e401]
+        - generic [ref=e403]:
+          - img "NovaPatch Zen" [ref=e406]
+          - generic [ref=e407]:
+            - generic [ref=e408]:
+              - paragraph [ref=e409]: Zen
+              - paragraph [ref=e410]: Calma mental diaria
+            - generic [ref=e411]:
+              - paragraph [ref=e412]: Pack de 30 parches
+              - paragraph [ref=e413]: Triptófano · Magnesio · Taurina · Extracto de Manzanilla · Vitamina B6
+            - generic [ref=e414]:
+              - generic [ref=e415]: Calma funcional
+              - generic [ref=e416]: Días intensos
+            - generic [ref=e417]:
+              - generic [ref=e418]: $750
+              - generic [ref=e419]: MXN
+            - paragraph [ref=e420]: Desde $600/caja con suscripción
+            - button "Agregar al carrito" [ref=e421]
+        - generic [ref=e423]:
+          - img "NovaPatch Woman" [ref=e426]
+          - generic [ref=e427]:
+            - generic [ref=e428]:
+              - paragraph [ref=e429]: Woman
+              - paragraph [ref=e430]: Bienestar hormonal femenino
+            - generic [ref=e431]:
+              - paragraph [ref=e432]: Pack de 30 parches
+              - paragraph [ref=e433]: Extracto de Soya · Vitamina B6 · Magnesio · Ácido Fólico · Hierro
+            - generic [ref=e434]:
+              - generic [ref=e435]: Bienestar femenino
+              - generic [ref=e436]: Ritmos naturales
+            - generic [ref=e437]:
+              - generic [ref=e438]: $750
+              - generic [ref=e439]: MXN
+            - paragraph [ref=e440]: Desde $600/caja con suscripción
+            - button "Agregar al carrito" [ref=e441]
+    - generic [ref=e443]:
+      - generic [ref=e444]:
+        - heading "Tu rutina de bienestar, sin interrupciones" [level=2] [ref=e445]
+        - paragraph [ref=e446]: Elige la frecuencia que mejor se adapte a tu ritmo. Pausa, cambia o cancela cuando quieras.
+      - generic [ref=e447]:
+        - generic [ref=e448]:
+          - generic [ref=e449]: Más popular
+          - paragraph [ref=e450]: Frecuencia Mensual
+          - paragraph [ref=e451]: Cada 30
+          - generic [ref=e452]: días
+          - paragraph [ref=e453]: −20%
+          - paragraph [ref=e454]: "Antes: MX$750"
+          - paragraph [ref=e455]: MX$600 / caja
+          - list [ref=e456]:
+            - listitem [ref=e457]:
+              - generic [ref=e458]: ✓
+              - text: Recibe tus parches cada 30 días
+            - listitem [ref=e459]:
+              - generic [ref=e460]: ✓
+              - text: Pausa o cancela cuando quieras
+            - listitem [ref=e461]:
+              - generic [ref=e462]: ✓
+              - text: Envío automático
+            - listitem [ref=e463]:
+              - generic [ref=e464]: ✓
+              - text: Garantía de 30 días
+          - link "Elegir plan" [ref=e465] [cursor=pointer]:
+            - /url: /suscripciones
+        - generic [ref=e466]:
+          - paragraph [ref=e467]: Frecuencia Bimestral
+          - paragraph [ref=e468]: Cada 60
+          - generic [ref=e469]: días
+          - paragraph [ref=e470]: −15%
+          - paragraph [ref=e471]: "Antes: MX$750"
+          - paragraph [ref=e472]: MX$638 / caja
+          - list [ref=e473]:
+            - listitem [ref=e474]:
+              - generic [ref=e475]: ✓
+              - text: Recibe tus parches cada 60 días
+            - listitem [ref=e476]:
+              - generic [ref=e477]: ✓
+              - text: Pausa o cancela cuando quieras
+            - listitem [ref=e478]:
+              - generic [ref=e479]: ✓
+              - text: Envío automático
+          - link "Elegir plan" [ref=e480] [cursor=pointer]:
+            - /url: /suscripciones
+        - generic [ref=e481]:
+          - paragraph [ref=e482]: Frecuencia Trimestral
+          - paragraph [ref=e483]: Cada 90
+          - generic [ref=e484]: días
+          - paragraph [ref=e485]: −10%
+          - paragraph [ref=e486]: "Antes: MX$750"
+          - paragraph [ref=e487]: MX$675 / caja
+          - list [ref=e488]:
+            - listitem [ref=e489]:
+              - generic [ref=e490]: ✓
+              - text: Recibe tus parches cada 90 días
+            - listitem [ref=e491]:
+              - generic [ref=e492]: ✓
+              - text: Pausa o cancela cuando quieras
+            - listitem [ref=e493]:
+              - generic [ref=e494]: ✓
+              - text: Envío automático
+          - link "Elegir plan" [ref=e495] [cursor=pointer]:
+            - /url: /suscripciones
+    - generic [ref=e496]:
+      - img [ref=e497]
+      - generic [ref=e499]:
+        - generic [ref=e500]:
+          - generic [ref=e501]:
+            - img [ref=e502]
+            - img [ref=e504]
+            - img [ref=e506]
+            - img [ref=e508]
+            - img [ref=e510]
+          - heading "Lo que dicen quienes ya lo usan." [level=2] [ref=e512]
+          - paragraph [ref=e513]: 4.8 de 5 estrellas en promedio
+        - region "Testimonios de clientes" [ref=e514]:
+          - generic [ref=e515]:
+            - group "Testimonio de Carlos M." [ref=e516]:
+              - 'img "Calificación: 5 de 5 estrellas" [ref=e517]':
+                - img [ref=e518]
+                - img [ref=e520]
+                - img [ref=e522]
+                - img [ref=e524]
+                - img [ref=e526]
+              - paragraph [ref=e528]: “Lo pongo en la mañana y siento que llego al final del día sin ese bajón de siempre. Ya no dependo del tercer café.”
+              - generic [ref=e529]:
+                - img "Foto de Carlos M." [ref=e531]
+                - generic [ref=e532]:
+                  - paragraph [ref=e533]: Carlos M.
+                  - generic [ref=e536]: Novapatch Energy
+            - group "Testimonio de Sofía R." [ref=e537]:
+              - 'img "Calificación: 5 de 5 estrellas" [ref=e538]':
+                - img [ref=e539]
+                - img [ref=e541]
+                - img [ref=e543]
+                - img [ref=e545]
+                - img [ref=e547]
+              - paragraph [ref=e549]: “Me ayuda a desconectar antes de dormir. Llego a la cama más tranquila y eso lo cambia todo.”
+              - generic [ref=e550]:
+                - img "Foto de Sofía R." [ref=e552]
+                - generic [ref=e553]:
+                  - paragraph [ref=e554]: Sofía R.
+                  - generic [ref=e557]: Novapatch Sleep
+            - group "Testimonio de Diego T." [ref=e558]:
+              - 'img "Calificación: 5 de 5 estrellas" [ref=e559]':
+                - img [ref=e560]
+                - img [ref=e562]
+                - img [ref=e564]
+                - img [ref=e566]
+                - img [ref=e568]
+              - paragraph [ref=e570]: “Días de reuniones seguidas y lo noto. No es que el estrés desaparezca, pero lo manejo diferente.”
+              - generic [ref=e571]:
+                - img "Foto de Diego T." [ref=e573]
+                - generic [ref=e574]:
+                  - paragraph [ref=e575]: Diego T.
+                  - generic [ref=e578]: Novapatch Zen
+        - generic [ref=e579]:
+          - button "Anterior" [ref=e580] [cursor=pointer]:
+            - img [ref=e581]
+          - generic [ref=e583]:
+            - button "Página 1" [ref=e584] [cursor=pointer]
+            - button "Página 2" [ref=e586] [cursor=pointer]
+          - button "Siguiente" [ref=e588] [cursor=pointer]:
+            - img [ref=e589]
+      - img [ref=e591]
+    - generic [ref=e593]:
+      - generic [ref=e595]:
+        - paragraph [ref=e596]: Resolvemos tus dudas
+        - heading "¿Tienes dudas?" [level=2] [ref=e597]
+      - generic [ref=e598]:
+        - generic [ref=e599]:
+          - button "¿Cómo funcionan los parches Novapatch?" [expanded] [ref=e600]:
+            - generic [ref=e601]: ¿Cómo funcionan los parches Novapatch?
+            - generic [ref=e602]: +
+          - region "¿Cómo funcionan los parches Novapatch?" [ref=e603]:
+            - paragraph [ref=e605]: Los parches Novapatch liberan sus ingredientes activos directamente a través de la piel hacia el torrente sanguíneo. A diferencia de las cápsulas orales, la absorción es gradual y constante durante 10 a 12 horas, evitando los picos y caídas de concentración.
+        - generic [ref=e606]:
+          - button "¿Cuánto tiempo tarda en hacer efecto?" [ref=e607]:
+            - generic [ref=e608]: ¿Cuánto tiempo tarda en hacer efecto?
+            - generic [ref=e609]: +
+          - region "¿Cuánto tiempo tarda en hacer efecto?":
+            - paragraph [ref=e610]: La absorción comienza en los primeros 30–60 minutos tras la aplicación. Para resultados óptimos recomendamos el uso constante durante al menos 2–3 semanas. Algunos usuarios reportan mejoras notables desde el primer día.
+        - generic [ref=e611]:
+          - button "¿Puedo usar más de un parche a la vez?" [ref=e612]:
+            - generic [ref=e613]: ¿Puedo usar más de un parche a la vez?
+            - generic [ref=e614]: +
+          - region "¿Puedo usar más de un parche a la vez?":
+            - paragraph [ref=e615]: Sí, puedes usar más de un parche simultáneamente siempre que sean de fórmulas diferentes. Los ingredientes de cada parche son complementarios y han sido formulados para usarse de forma segura en combinación. Consulta con tu médico si tienes condiciones específicas.
+        - generic [ref=e616]:
+          - button "¿Cómo funciona la suscripción?" [ref=e617]:
+            - generic [ref=e618]: ¿Cómo funciona la suscripción?
+            - generic [ref=e619]: +
+          - region "¿Cómo funciona la suscripción?":
+            - paragraph [ref=e620]: Elige la frecuencia (30, 60 o 90 días) y recibe tu caja automáticamente con hasta un 20% de descuento. Puedes pausar, cambiar de plan o cancelar en cualquier momento desde tu cuenta, sin penalizaciones ni contratos.
+        - generic [ref=e621]:
+          - button "¿Qué pasa si no estoy satisfecho con mi compra?" [ref=e622]:
+            - generic [ref=e623]: ¿Qué pasa si no estoy satisfecho con mi compra?
+            - generic [ref=e624]: +
+          - region "¿Qué pasa si no estoy satisfecho con mi compra?":
+            - paragraph [ref=e625]: Ofrecemos una garantía de satisfacción de 30 días. Si no estás conforme, completa el formulario de reembolso en novapatch.care/reembolso — es rápido y nuestro equipo revisará tu caso en 2 a 5 días hábiles. Te devolvemos el 100% del valor del primer pedido, sin complicaciones.
+        - generic [ref=e626]:
+          - paragraph [ref=e627]: ¿No encontraste lo que buscabas?
+          - link "Contactar soporte" [ref=e628] [cursor=pointer]:
+            - /url: /contacto
+  - contentinfo [ref=e629]:
+    - generic [ref=e631]:
+      - generic [ref=e632]:
+        - heading "Comprar" [level=4] [ref=e633]
+        - list [ref=e634]:
+          - listitem [ref=e635]:
+            - link "Tienda" [ref=e636] [cursor=pointer]:
+              - /url: /mx/tienda
+          - listitem [ref=e637]:
+            - link "Suscripciones" [ref=e638] [cursor=pointer]:
+              - /url: /mx/suscripciones
+          - listitem [ref=e639]:
+            - link "Garantía" [ref=e640] [cursor=pointer]:
+              - /url: /mx/garantia
+      - generic [ref=e641]:
+        - heading "Ayuda" [level=4] [ref=e642]
+        - list [ref=e643]:
+          - listitem [ref=e644]:
+            - link "Contáctanos" [ref=e645] [cursor=pointer]:
+              - /url: /mx/contacto
+          - listitem [ref=e646]:
+            - link "Preguntas frecuentes" [ref=e647] [cursor=pointer]:
+              - /url: /mx/faq
+          - listitem [ref=e648]:
+            - link "Solicitar reembolso" [ref=e649] [cursor=pointer]:
+              - /url: /mx/reembolso
+      - generic [ref=e650]:
+        - heading "Nosotros" [level=4] [ref=e651]
+        - list [ref=e652]:
+          - listitem [ref=e653]:
+            - link "Nosotros" [ref=e654] [cursor=pointer]:
+              - /url: /mx/nosotros
+          - listitem [ref=e655]:
+            - link "¿Por qué parches?" [ref=e656] [cursor=pointer]:
+              - /url: /mx/nosotros#por-que
+          - listitem [ref=e657]:
+            - link "Suscríbete y ahorra" [ref=e658] [cursor=pointer]:
+              - /url: /mx/suscripciones
+      - generic [ref=e659]:
+        - heading "Legal" [level=4] [ref=e660]
+        - list [ref=e661]:
+          - listitem [ref=e662]:
+            - link "Aviso de Privacidad" [ref=e663] [cursor=pointer]:
+              - /url: /mx/privacidad
+          - listitem [ref=e664]:
+            - link "Términos y Condiciones" [ref=e665] [cursor=pointer]:
+              - /url: /mx/terminos
+      - generic [ref=e666]:
+        - heading "Newsletter" [level=4] [ref=e667]
+        - paragraph [ref=e668]: Novedades y ofertas
+        - generic [ref=e669]:
+          - textbox "tu@correo.com" [ref=e670]
+          - button "Suscribirse" [ref=e671]
+        - generic [ref=e672]:
+          - link "Instagram" [ref=e673] [cursor=pointer]:
+            - /url: https://www.instagram.com/novapatch.mx?igsh=dGZ4cGNoNjluc3Vl
+            - img [ref=e674]
+          - link "TikTok" [ref=e678] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@novapatch.mx?_r=1&_t=ZS-95C7N0OkUke
+            - img [ref=e679]
+    - generic [ref=e682]:
+      - img "Novapatch" [ref=e683]
+      - 'button "Seleccionar región: México" [ref=e685]':
+        - img [ref=e686]
+        - generic [ref=e691]: México
+        - img [ref=e692]
+      - paragraph [ref=e694]: © 2026 Novapatch. Todos los derechos reservados.
+      - generic [ref=e695]:
+        - generic [ref=e696]: Visa
+        - generic [ref=e697]: Mastercard
+        - generic [ref=e698]: OXXO
+        - generic [ref=e699]: SPEI

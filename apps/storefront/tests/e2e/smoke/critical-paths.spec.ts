@@ -20,6 +20,7 @@ test("cart drawer opens", async ({ page }) => {
   await page.waitForLoadState("networkidle")
   const cartButton = page.locator("button[aria-label*='arrito'], button[aria-label*='cart'], button svg").first()
   await cartButton.click()
+  await page.waitForTimeout(500)
   await expect(page.locator("[class*='cart'], [class*='Cart'], aside, [role='dialog']").first()).toBeVisible({ timeout: 5_000 })
 })
 

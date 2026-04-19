@@ -19,6 +19,6 @@ export async function logout(page: Page) {
   await page.goto("/mx")
   const userButton = page.locator("[data-clerk-component='UserButton'], button[aria-label*='Account'], button[aria-label*='cuenta']")
   await userButton.click()
-  await page.click("text=Cerrar sesión, text=Sign out, [data-localization-key='userButton.action__signOut']")
+  await page.click('text=/Cerrar sesión|Sign out/i, [data-localization-key="userButton.action__signOut"]')
   await page.waitForURL((url) => !url.pathname.includes("dashboard"), { timeout: 10_000 })
 }

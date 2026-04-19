@@ -1,0 +1,137 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3]:
+      - navigation [ref=e4]:
+        - link "Tienda" [ref=e5] [cursor=pointer]:
+          - /url: /mx/tienda
+          - text: Tienda
+        - link "Suscripciones" [ref=e6] [cursor=pointer]:
+          - /url: /mx/suscripciones
+          - text: Suscripciones
+        - link "Nosotros" [ref=e7] [cursor=pointer]:
+          - /url: /mx/nosotros
+          - text: Nosotros
+      - link "NovaPatch" [ref=e8] [cursor=pointer]:
+        - /url: /mx
+        - img "NovaPatch" [ref=e9]
+      - generic [ref=e10]:
+        - button "Carrito" [ref=e11]:
+          - img [ref=e12]
+        - button "Iniciar sesión" [ref=e16]:
+          - img [ref=e17]
+  - main [ref=e20]:
+    - generic [ref=e22]:
+      - paragraph [ref=e23]: Legal · Programa de Influencers
+      - heading "Términos de Colaboración" [level=1] [ref=e24]
+      - paragraph [ref=e25]: Versión 1.0 · Vigente desde mayo 2026 · México
+    - paragraph [ref=e29]: Este documento describe cómo funciona la relación entre Novapatch y los creadores de contenido que forman parte de nuestro programa de embajadores. Lo escribimos en lenguaje claro para que sepas exactamente qué podés esperar de nosotros y qué esperamos de vos.
+    - generic [ref=e31]:
+      - generic [ref=e32]:
+        - heading "1. Partes del acuerdo" [level=2] [ref=e33]
+        - generic [ref=e34]: Este documento establece los términos de colaboración entre Novapatch México ("la Marca") y el creador de contenido que completa el formulario de postulación ("el Influencer"). La relación que se origina no es laboral ni de exclusividad, salvo que se acuerde expresamente por escrito.
+      - generic [ref=e35]:
+        - heading "2. Proceso de postulación y selección" [level=2] [ref=e36]
+        - generic [ref=e37]: "El envío del formulario de postulación no garantiza la aceptación en el programa. Novapatch evaluará cada perfil de forma interna y notificará la decisión dentro de los 7 días hábiles posteriores al envío. Los criterios de selección incluyen, de forma no exhaustiva: nicho de contenido, tamaño y calidad de audiencia, alineación con los valores de la marca y tipo de colaboración solicitado."
+      - generic [ref=e38]:
+        - heading "3. Modalidades de colaboración" [level=2] [ref=e39]
+        - generic [ref=e40]: "Las colaboraciones pueden ser de tres tipos: • Producto a cambio de contenido: el Influencer recibe productos Novapatch sin costo a cambio de publicar contenido acordado. • Colaboración paga: el Influencer recibe una compensación económica acordada previamente por la creación y publicación de contenido específico. • Embajador a largo plazo: relación continua con beneficios exclusivos y compensación recurrente, sujeta a contrato separado. En todos los casos, los términos específicos (piezas requeridas, plazos, formatos) se confirmarán por escrito antes del inicio de la colaboración."
+      - generic [ref=e41]:
+        - heading "4. Obligaciones del Influencer" [level=2] [ref=e42]
+        - generic [ref=e43]: "Al participar en el programa, el Influencer se compromete a: • Publicar el contenido acordado dentro del plazo establecido. • Declarar explícitamente la relación comercial con Novapatch en cada publicación patrocinada, conforme a las normas de la FTC y la legislación mexicana vigente (uso de etiquetas como #Publicidad, #Ad o equivalentes). • No realizar afirmaciones médicas o de salud no autorizadas sobre los productos. • No colaborar con marcas directamente competidoras durante la vigencia activa de la colaboración, salvo acuerdo en contrario. • Compartir métricas de las publicaciones (alcance, impresiones, interacciones) dentro de los 7 días posteriores a cada publicación."
+      - generic [ref=e44]:
+        - heading "5. Obligaciones de Novapatch" [level=2] [ref=e45]
+        - generic [ref=e46]: "Novapatch se compromete a: • Proveer los productos y/o compensación acordados dentro de los plazos estipulados. • Dar feedback sobre el contenido propuesto en un plazo máximo de 48 horas hábiles. • Respetar la voz y estilo creativo del Influencer, sin exigir alteraciones que comprometan su autenticidad. • Mantener la confidencialidad de la información personal y métricas compartidas por el Influencer."
+      - generic [ref=e47]:
+        - heading "6. Derechos de contenido" [level=2] [ref=e48]
+        - generic [ref=e49]: El Influencer conserva la propiedad intelectual del contenido que crea. Al publicarlo, otorga a Novapatch una licencia no exclusiva para republicarlo en los canales propios de la marca (redes sociales, sitio web, newsletters) con atribución al creador. Novapatch no podrá modificar el contenido de forma sustancial ni utilizarlo en campañas de pago (meta ads, Google Ads, etc.) sin consentimiento escrito adicional del Influencer.
+      - generic [ref=e50]:
+        - heading "7. Productos y envíos" [level=2] [ref=e51]
+        - generic [ref=e52]: Los productos enviados como parte de una colaboración son un beneficio asociado al programa y no constituyen pago por servicios. En caso de no publicarse el contenido acordado en el plazo establecido sin causa justificada, Novapatch podrá solicitar la devolución del producto o su equivalente en valor. Los envíos se realizan únicamente dentro del territorio mexicano en la Fase 1.
+      - generic [ref=e53]:
+        - heading "8. Privacidad de datos" [level=2] [ref=e54]
+        - generic [ref=e55]: Los datos personales recopilados mediante el formulario de postulación (nombre, email, handles, métricas) se utilizan exclusivamente para evaluar y gestionar la relación de colaboración. No se comparten con terceros sin consentimiento, salvo obligación legal. Para más detalle, consultá nuestra Política de Privacidad en novapatch.care/privacidad.
+      - generic [ref=e56]:
+        - heading "9. Modificaciones y terminación" [level=2] [ref=e57]
+        - generic [ref=e58]: Novapatch se reserva el derecho de modificar estos términos con previo aviso de 15 días. Cualquiera de las partes puede dar por finalizada la colaboración en cualquier momento, respetando los compromisos ya acordados y en curso. En caso de incumplimiento grave por parte del Influencer, Novapatch podrá suspender la relación de forma inmediata.
+      - generic [ref=e59]:
+        - heading "10. Jurisdicción" [level=2] [ref=e60]
+        - generic [ref=e61]: Este acuerdo se rige por las leyes de los Estados Unidos Mexicanos. Cualquier disputa que no pueda resolverse de forma amigable será sometida a la jurisdicción de los tribunales competentes de la Ciudad de México.
+      - generic [ref=e62]:
+        - link "Volver a postularme" [ref=e63] [cursor=pointer]:
+          - /url: /influencers#aplicar
+          - text: Volver a postularme
+          - img [ref=e64]
+        - paragraph [ref=e66]:
+          - text: ¿Tenés preguntas? Escribinos a
+          - link "hola@novapatch.care" [ref=e67] [cursor=pointer]:
+            - /url: mailto:hola@novapatch.care
+  - contentinfo [ref=e68]:
+    - generic [ref=e70]:
+      - generic [ref=e71]:
+        - heading "Comprar" [level=4] [ref=e72]
+        - list [ref=e73]:
+          - listitem [ref=e74]:
+            - link "Tienda" [ref=e75] [cursor=pointer]:
+              - /url: /mx/tienda
+          - listitem [ref=e76]:
+            - link "Suscripciones" [ref=e77] [cursor=pointer]:
+              - /url: /mx/suscripciones
+          - listitem [ref=e78]:
+            - link "Garantía" [ref=e79] [cursor=pointer]:
+              - /url: /mx/garantia
+      - generic [ref=e80]:
+        - heading "Ayuda" [level=4] [ref=e81]
+        - list [ref=e82]:
+          - listitem [ref=e83]:
+            - link "Contáctanos" [ref=e84] [cursor=pointer]:
+              - /url: /mx/contacto
+          - listitem [ref=e85]:
+            - link "Preguntas frecuentes" [ref=e86] [cursor=pointer]:
+              - /url: /mx/faq
+          - listitem [ref=e87]:
+            - link "Solicitar reembolso" [ref=e88] [cursor=pointer]:
+              - /url: /mx/reembolso
+      - generic [ref=e89]:
+        - heading "Nosotros" [level=4] [ref=e90]
+        - list [ref=e91]:
+          - listitem [ref=e92]:
+            - link "Nosotros" [ref=e93] [cursor=pointer]:
+              - /url: /mx/nosotros
+          - listitem [ref=e94]:
+            - link "¿Por qué parches?" [ref=e95] [cursor=pointer]:
+              - /url: /mx/nosotros#por-que
+          - listitem [ref=e96]:
+            - link "Suscríbete y ahorra" [ref=e97] [cursor=pointer]:
+              - /url: /mx/suscripciones
+      - generic [ref=e98]:
+        - heading "Legal" [level=4] [ref=e99]
+        - list [ref=e100]:
+          - listitem [ref=e101]:
+            - link "Aviso de Privacidad" [ref=e102] [cursor=pointer]:
+              - /url: /mx/privacidad
+          - listitem [ref=e103]:
+            - link "Términos y Condiciones" [ref=e104] [cursor=pointer]:
+              - /url: /mx/terminos
+      - generic [ref=e105]:
+        - heading "Newsletter" [level=4] [ref=e106]
+        - paragraph [ref=e107]: Novedades y ofertas
+        - generic [ref=e108]:
+          - textbox "tu@correo.com" [ref=e109]
+          - button "Suscribirse" [ref=e110]
+        - generic [ref=e111]:
+          - link "Instagram" [ref=e112] [cursor=pointer]:
+            - /url: https://www.instagram.com/novapatch.mx?igsh=dGZ4cGNoNjluc3Vl
+            - img [ref=e113]
+          - link "TikTok" [ref=e117] [cursor=pointer]:
+            - /url: https://www.tiktok.com/@novapatch.mx?_r=1&_t=ZS-95C7N0OkUke
+            - img [ref=e118]
+    - generic [ref=e121]:
+      - img "Novapatch" [ref=e122]
+      - 'button "Seleccionar región: México" [ref=e124]':
+        - img [ref=e125]
+        - generic [ref=e130]: México
+        - img [ref=e131]
+      - paragraph [ref=e133]: © 2026 Novapatch. Todos los derechos reservados.
+      - generic [ref=e134]:
+        - generic [ref=e135]: Visa
+        - generic [ref=e136]: Mastercard

@@ -1,0 +1,9 @@
+{"type":"server-started","port":61424,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:61424","screen_dir":"/Users/dlucca/Projects/Novapatch/novafrontend/.superpowers/brainstorm/5804-1775940573/content","state_dir":"/Users/dlucca/Projects/Novapatch/novafrontend/.superpowers/brainstorm/5804-1775940573/state"}
+{"type":"screen-added","file":"/Users/dlucca/Projects/Novapatch/novafrontend/.superpowers/brainstorm/5804-1775940573/content/post-payment-ux.html"}
+{"type":"screen-added","file":"/Users/dlucca/Projects/Novapatch/novafrontend/.superpowers/brainstorm/5804-1775940573/content/waiting.html"}
+{"type":"screen-added","file":"/Users/dlucca/Projects/Novapatch/novafrontend/.superpowers/brainstorm/5804-1775940573/content/payment-selector.html"}
+{"type":"screen-added","file":"/Users/dlucca/Projects/Novapatch/novafrontend/.superpowers/brainstorm/5804-1775940573/content/pending-modal.html"}
+{"type":"screen-added","file":"/Users/dlucca/Projects/Novapatch/novafrontend/.superpowers/brainstorm/5804-1775940573/content/email-template.html"}
+{"type":"screen-added","file":"/Users/dlucca/Projects/Novapatch/novafrontend/.superpowers/brainstorm/5804-1775940573/content/email-template-v2.html"}
+{"type":"screen-added","file":"/Users/dlucca/Projects/Novapatch/novafrontend/.superpowers/brainstorm/5804-1775940573/content/waiting-2.html"}
+{"type":"server-stopped","reason":"idle timeout"}

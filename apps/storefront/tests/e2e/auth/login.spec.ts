@@ -14,7 +14,8 @@ test.describe("Clerk auth flows", () => {
     await page.click("button[type='submit']")
 
     await page.waitForURL((url) => !url.pathname.includes("sign-in"), { timeout: 15_000 })
-    await expect(page.locator("[data-clerk-component='UserButton'], button[aria-label*='Account']").first()).toBeVisible()
+    await page.waitForLoadState("networkidle")
+    await expect(page.locator("[data-clerk-component='UserButton'], button[aria-label*='Account']").first()).toBeVisible({ timeout: 5_000 })
   })
 
   test("password recovery sends email", async ({ page }) => {
@@ -27,6 +28,6 @@ test.describe("Clerk auth flows", () => {
     await page.fill("input[type='email']", process.env.TEST_USER_EMAIL!)
     await page.click("button[type='submit']")
 
-    await expect(page.locator("text=correo, text=email, text=code").first()).toBeVisible({ timeout: 10_000 })
+    await expect(page.locator("text=/correo|email|code/i").first()).toBeVisible({ timeout: 10_000 })
   })
 })
