@@ -37,18 +37,20 @@ const FALLBACK_PRODUCTS: Product[] = PRODUCT_ORDER.map((slug) => {
 
 // ─── Mapeo Medusa → Product local ─────────────────────────────────────────────
 
-function medusaToProduct(p: Awaited<ReturnType<typeof medusa.catalog.getProducts>>[0]): Product {
+function medusaToProduct(p: Awaited<ReturnType<typeof medusa.catalog.getProducts>>[0], currencyCode = "mxn"): Product {
   const slug = p.handle ?? p.id;
   const meta = PRODUCT_META[slug];
   const variant = p.variants?.[0];
-  const mxnPrice = variant?.prices?.find((pr) => pr.currency_code === "mxn");
+  const calculatedAmount = (variant as any)?.calculated_price?.calculated_amount;
+  const fallbackPrice = variant?.prices?.find((pr) => pr.currency_code === currencyCode);
+  const rawAmount = calculatedAmount ?? fallbackPrice?.amount;
 
   return {
     id: p.id,
     slug,
     title: p.title,
     description: meta?.description ?? p.description ?? "",
-    price: mxnPrice ? Math.round(mxnPrice.amount / 100) : 750,
+    price: rawAmount ? Math.round(rawAmount / 100) : 750,
     image: p.thumbnail ?? meta?.imgSrc ?? `/products/${slug}_thumb.webp`,
     variantId: variant?.id,
   };
@@ -62,7 +64,7 @@ const REGION_ID = process.env.NEXT_PUBLIC_MEDUSA_REGION_ID ?? "";
  * Obtiene el catálogo de productos.
  * Intenta Medusa primero; si falla, usa fallback hardcodeado.
  */
-export async function getProducts(regionId?: string): Promise<Product[]> {
+export async function getProducts(regionId?: string, currencyCode?: string): Promise<Product[]> {
   const resolvedRegionId = regionId || REGION_ID;
   try {
     const medusaProducts = await medusa.catalog.getProducts(
@@ -71,8 +73,9 @@ export async function getProducts(regionId?: string): Promise<Product[]> {
 
     if (medusaProducts.length === 0) return FALLBACK_PRODUCTS;
 
+    const currency = (currencyCode ?? "mxn").toLowerCase();
     // Reordenar según PRODUCT_ORDER cuando sea posible
-    const mapped = medusaProducts.map(medusaToProduct);
+    const mapped = medusaProducts.map((p) => medusaToProduct(p, currency));
     const ordered = PRODUCT_ORDER
       .map((slug) => mapped.find((p) => p.slug === slug))
       .filter((p): p is Product => Boolean(p));
