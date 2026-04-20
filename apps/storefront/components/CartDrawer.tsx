@@ -8,6 +8,8 @@ import { useCart, type AppliedCoupon } from "@/contexts/CartContext";
 import { cartTotals, itemDisplayPrice, FREQ_LABELS, type CartItem } from "@/lib/cart";
 import { useState, useCallback, useEffect } from "react";
 import { medusa } from "@/lib/medusa";
+import { useMarket } from "@/lib/useMarket";
+import { formatPrice } from "@/lib/format";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -139,6 +141,7 @@ function CouponInput({ onApply, onRemove, status, applied }: CouponInputProps) {
 
 function CartItemRow({ item }: { item: CartItem }) {
   const { updateQty, removeItem } = useCart();
+  const market = useMarket();
   const displayPrice = itemDisplayPrice(item);
   const isSub = item.mode === "sub";
 
@@ -215,11 +218,10 @@ function CartItemRow({ item }: { item: CartItem }) {
 
           <div className="text-right">
             <p className="text-[15px] font-black text-navy-light">
-              ${displayPrice * item.quantity}
-              <span className="text-[11px] font-normal text-gray-400 ml-0.5">MXN</span>
+              {formatPrice(displayPrice * item.quantity, market.currency)}
             </p>
             {isSub && item.quantity === 1 && (
-              <p className="text-[10px] text-gray-400 line-through">${item.price}</p>
+              <p className="text-[10px] text-gray-400 line-through">{formatPrice(item.price, market.currency)}</p>
             )}
           </div>
         </div>
@@ -283,6 +285,7 @@ async function applyDiscountCode(code: string): Promise<AppliedCoupon> {
 
 export default function CartDrawer() {
   const { items, isOpen, closeCart, coupon: appliedCoupon, applyCoupon, removeCoupon } = useCart();
+  const market = useMarket();
   const { savings, total } = cartTotals(items);
   const count = items.reduce((s, i) => s + i.quantity, 0);
   const hasSubs = items.some((i) => i.mode === "sub");
@@ -418,7 +421,7 @@ export default function CartDrawer() {
                         <p className="text-[12px] font-semibold text-green-600">
                           🎉 Ahorro con suscripción
                         </p>
-                        <p className="text-[13px] font-black text-green-600">−${savings} MXN</p>
+                        <p className="text-[13px] font-black text-green-600">−{formatPrice(savings, market.currency)}</p>
                       </div>
                     )}
 
@@ -436,7 +439,7 @@ export default function CartDrawer() {
                     <div className="flex flex-col gap-1.5">
                       <div className="flex justify-between text-[13px]">
                         <span className="text-gray-500">Subtotal</span>
-                        <span className="font-semibold text-navy-light">${total} MXN</span>
+                        <span className="font-semibold text-navy-light">{formatPrice(total, market.currency)}</span>
                       </div>
 
                       {/* Línea de descuento — aparece cuando hay cupón */}
@@ -455,7 +458,7 @@ export default function CartDrawer() {
                                 <Tag size={11} />
                                 {appliedCoupon.code}
                               </span>
-                              <span className="font-bold text-green-600">−${discountAmount} MXN</span>
+                              <span className="font-bold text-green-600">−{formatPrice(discountAmount, market.currency)}</span>
                             </div>
                           </motion.div>
                         )}
@@ -463,7 +466,7 @@ export default function CartDrawer() {
 
                       <div className="flex justify-between text-[13px]">
                         <span className="text-gray-500">Envío</span>
-                        <span className="font-semibold text-gray-700">${shippingCost} MXN</span>
+                        <span className="font-semibold text-gray-700">{formatPrice(shippingCost, market.currency)}</span>
                       </div>
 
                       <div className="flex justify-between text-[16px] font-black text-ocean pt-1 border-t border-black/[0.06]">
@@ -474,7 +477,7 @@ export default function CartDrawer() {
                           animate={{ scale: 1, color: "var(--color-ocean)" }}
                           transition={{ duration: 0.3 }}
                         >
-                          ${finalTotal} MXN
+                          {formatPrice(finalTotal, market.currency)}
                         </motion.span>
                       </div>
                     </div>

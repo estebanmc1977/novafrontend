@@ -9,6 +9,7 @@ import { useUser, useClerk, useAuth } from "@clerk/nextjs";
 import posthog from "posthog-js";
 import { useCart } from "@/contexts/CartContext";
 import { medusa } from "@/lib/medusa";
+import { formatPrice } from "@/lib/format";
 import { tokenizeCard, parseCardForm, getDeviceSessionId } from "@/lib/openpay";
 import { tokenizeCardMP, parseCardFormMP } from "@/lib/mercadopago";
 import { useCopomex } from "@/hooks/useCopomex";
@@ -40,18 +41,13 @@ import {
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
-function fmt(n: number, region: "mxn" | "ars" = "mxn") {
-  const isAR = region === "ars";
-  return new Intl.NumberFormat(isAR ? "es-AR" : "es-MX", {
-    style: "currency",
-    currency: isAR ? "ARS" : "MXN",
-    minimumFractionDigits: 0,
-  }).format(n);
+function fmt(n: number, region: string = "mxn") {
+  return formatPrice(n, region.toUpperCase());
 }
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-function OrderItem({ item, region }: { item: CartItem; region: "mxn" | "ars" }) {
+function OrderItem({ item, region }: { item: CartItem; region: string }) {
   const price = itemDisplayPrice(item);
   const isSub = item.mode === "sub";
 
@@ -315,7 +311,7 @@ export default function CheckoutPage() {
 
   const params = useParams();
   const localeParam = typeof params?.locale === "string" ? params.locale : "";
-  const [cartRegion, setCartRegion] = useState<"mxn" | "ars">(
+  const [cartRegion, setCartRegion] = useState<string>(
     localeParam === "ar" ? "ars" : "mxn"
   );
 
@@ -499,7 +495,7 @@ export default function CheckoutPage() {
         const cart = await medusa.cart.create(REGION_ID, customerId);
         const cartId = cart.id;
         setPreloadedCartId(cartId);
-        const region = (cart.currency_code ?? "mxn").toLowerCase() === "ars" ? "ars" : "mxn";
+        const region = (cart.currency_code ?? "mxn").toLowerCase();
         setCartRegion(region);
 
         // 4. Pre-agregar items al carrito mientras el usuario llena el formulario
@@ -1582,7 +1578,7 @@ export default function CheckoutPage() {
                 <div className="pt-2.5 border-t border-[#E5E7EB] flex justify-between">
                   <span className="text-[15px] font-black text-[#005088]">Total</span>
                   <div className="text-right">
-                    <p className="text-[18px] font-black text-[#005088]">{fmt(confirmedTotal ?? (finalTotal + 85))}</p>
+                    <p className="text-[18px] font-black text-[#005088]">{fmt(confirmedTotal ?? (finalTotal + 85), cartRegion)}</p>
                     {(totals.savings > 0 || effectiveCouponDiscount > 0) && (
                       <p className="text-[11px] text-[#6B7280]">
                         antes {fmt(totals.subtotal + 85, cartRegion)}

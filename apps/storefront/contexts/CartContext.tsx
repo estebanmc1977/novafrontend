@@ -1,12 +1,14 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { useParams } from "next/navigation";
 import posthog from "posthog-js";
 import {
   getCart,
   addToCart as cartAdd,
   updateQuantity as cartUpdateQty,
   removeFromCart as cartRemove,
+  clearCart as cartClear,
   CART_UPDATED_EVENT,
   type CartItem,
 } from "@/lib/cart";
@@ -33,6 +35,7 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | null>(null);
 
 const COUPON_STORAGE_KEY = "novapatch_coupon";
+const CART_LOCALE_KEY = "novapatch_cart_locale";
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -58,6 +61,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       window.removeEventListener("storage", sync);
     };
   }, [sync]);
+
+  // Clear cart on locale change: cart items are priced in the market they were
+  // added in; switching markets would show wrong currency labels.
+  const params = useParams();
+  const currentLocale = typeof params?.locale === "string" ? params.locale : "mx";
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const stored = localStorage.getItem(CART_LOCALE_KEY);
+    if (stored && stored !== currentLocale) {
+      cartClear();
+      setCoupon(null);
+      localStorage.removeItem(COUPON_STORAGE_KEY);
+      sync();
+    }
+    localStorage.setItem(CART_LOCALE_KEY, currentLocale);
+  }, [currentLocale, sync]);
 
   // Cerrar con Escape
   useEffect(() => {
