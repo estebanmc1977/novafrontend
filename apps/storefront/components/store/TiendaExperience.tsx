@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import type { Product } from "@/lib/commerce";
 import { useCart } from "@/contexts/CartContext";
+import { formatPrice } from "@/lib/format";
 
 // ─── UI metadata por producto ───────────────────────────────────────────────
 
@@ -283,8 +284,7 @@ function ProductCard({
         <div className="mt-auto pt-3 border-t border-black/[0.05]">
           <div className="flex items-baseline gap-2 mb-3">
             <span className="text-[26px] font-black tracking-tight text-navy-light">
-              ${displayPrice}
-              <span className="text-[14px] font-semibold text-[#9CA3AF] ml-1">{currency}</span>
+              {formatPrice(displayPrice, currency)}
             </span>
             <AnimatePresence>
               {mode === "sub" && (
@@ -295,7 +295,7 @@ function ProductCard({
                   exit={{ opacity: 0, x: -4 }}
                   className="text-[14px] text-[#C0C0C0] line-through"
                 >
-                  ${product.price}
+                  {formatPrice(product.price, currency)}
                 </motion.span>
               )}
             </AnimatePresence>
