@@ -136,7 +136,8 @@ function parseAddressComponents(
 
 export function useGooglePlaces(
   inputRef: React.RefObject<HTMLInputElement | null>,
-  onPlace: (parts: PlaceAddressParts) => void
+  onPlace: (parts: PlaceAddressParts) => void,
+  country: string = "mx"
 ) {
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -187,7 +188,7 @@ export function useGooglePlaces(
           autocompleteRef.current = new window.google.maps.places.Autocomplete(
             inputRef.current,
             {
-              componentRestrictions: { country: "mx" },
+              componentRestrictions: { country: country.toLowerCase() },
               fields: ["address_components"],
               types: ["address"],
             }
@@ -226,9 +227,9 @@ export function useGooglePlaces(
         autocompleteRef.current = null;
       }
     };
-    // Solo re-ejecutar si cambia el inputRef — onPlace se maneja vía onPlaceRef
+    // Re-ejecutar si cambia el inputRef o el país — onPlace se maneja vía onPlaceRef
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inputRef]);
+  }, [inputRef, country]);
 
   return { ready, error };
 }

@@ -386,19 +386,34 @@ export default function CheckoutPage() {
 
   // ── Google Places (street autocomplete) ────────────────────
   const streetInputRef = useRef<HTMLInputElement>(null);
-  const { ready: placesReady } = useGooglePlaces(streetInputRef, (parts) => {
-    setAddress((a) => ({
-      ...a,
-      // street: si Places lo devuelve lo usamos; si no, mantener lo que el usuario escribió
-      ...(parts.street ? { street: parts.street } : {}),
-      ...(parts.colonia ? { colonia: parts.colonia } : {}),
-      ...(parts.city    ? { city: parts.city }    : {}),
-      ...(parts.state   ? { state: parts.state }  : {}),
-      ...(parts.zip     ? { zip: parts.zip }      : {}),
-    }));
-    // Si Places nos dio un CP, lanzar COPOMEX también
-    if (parts.zip?.length === 5) lookupCp(parts.zip);
-  });
+  const placesCountry = cartRegion === "ars" ? "ar" : "mx";
+  const { ready: placesReady } = useGooglePlaces(
+    streetInputRef,
+    (parts) => {
+      if (cartRegion === "ars") {
+        setAddressAR((a) => ({
+          ...a,
+          ...(parts.street ? { street: parts.street } : {}),
+          ...(parts.city ? { city: parts.city } : {}),
+          ...(parts.state ? { province: parts.state } : {}),
+          ...(parts.zip ? { zip: parts.zip } : {}),
+        }));
+        return;
+      }
+      setAddress((a) => ({
+        ...a,
+        // street: si Places lo devuelve lo usamos; si no, mantener lo que el usuario escribió
+        ...(parts.street ? { street: parts.street } : {}),
+        ...(parts.colonia ? { colonia: parts.colonia } : {}),
+        ...(parts.city    ? { city: parts.city }    : {}),
+        ...(parts.state   ? { state: parts.state }  : {}),
+        ...(parts.zip     ? { zip: parts.zip }      : {}),
+      }));
+      // Si Places nos dio un CP, lanzar COPOMEX también
+      if (parts.zip?.length === 5) lookupCp(parts.zip);
+    },
+    placesCountry
+  );
 
   // Limpiar errores de ciudad/estado/CP cuando COPOMEX resuelve con éxito
   useEffect(() => {
