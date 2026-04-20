@@ -10,6 +10,8 @@ import posthog from "posthog-js";
 import { useCart } from "@/contexts/CartContext";
 import { medusa } from "@/lib/medusa";
 import { formatPrice } from "@/lib/format";
+import { MARKETS } from "@/lib/markets";
+import type { Locale } from "@/i18n/routing";
 import { tokenizeCard, parseCardForm, getDeviceSessionId } from "@/lib/openpay";
 import { tokenizeCardMP, parseCardFormMP } from "@/lib/mercadopago";
 import { useCopomex } from "@/hooks/useCopomex";
@@ -307,10 +309,10 @@ export default function CheckoutPage() {
   const { getToken } = useAuth();
   const router = useRouter();
 
-  const REGION_ID = process.env.NEXT_PUBLIC_MEDUSA_REGION_ID ?? "reg_mx";
-
   const params = useParams();
   const localeParam = typeof params?.locale === "string" ? params.locale : "";
+  const market = MARKETS[localeParam as Locale] ?? MARKETS.mx;
+  const REGION_ID = market.medusaRegionId || process.env.NEXT_PUBLIC_MEDUSA_REGION_ID || "reg_mx";
   const [cartRegion, setCartRegion] = useState<string>(
     localeParam === "ar" ? "ars" : "mxn"
   );
