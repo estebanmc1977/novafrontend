@@ -27,14 +27,20 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const products = await getProducts(regionId, currency);
   const basePrice = products[0]?.price ?? 750;
 
-  // Raw fetch to inspect Medusa response shape
+  // Raw fetch directly via global fetch to isolate SDK vs network
   let rawDebug = "no-raw";
+  const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ?? "MISSING";
+  const pubKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY ?? "MISSING";
   try {
-    const raw = await medusa.catalog.getProducts(regionId ? { region_id: regionId } : undefined);
-    const v = (raw as any)[0]?.variants?.[0];
-    rawDebug = `keys=${Object.keys(v ?? {}).join("|")} calc=${JSON.stringify(v?.calculated_price ?? null)} prices=${JSON.stringify(v?.prices ?? null)}`;
+    const r = await fetch(`${backendUrl}/store/products?region_id=${regionId}&limit=1`, {
+      headers: { "x-publishable-api-key": pubKey },
+      cache: "no-store",
+    });
+    const body = await r.text();
+    rawDebug = `url=${backendUrl} status=${r.status} keyPrefix=${pubKey.slice(0, 8)} bodyLen=${body.length} bodyHead=${body.slice(0, 120)}`;
   } catch (e) {
-    rawDebug = `err=${(e as Error).message}`;
+    const err = e as Error;
+    rawDebug = `url=${backendUrl} keyPrefix=${pubKey.slice(0, 8)} errName=${err.name} errMsg=${err.message} cause=${JSON.stringify((err as any).cause ?? null)}`;
   }
 
   const debugMarker = `locale=${locale} regionId=${regionId ?? "undefined"} currency=${currency} productsCount=${products.length} firstPrice=${products[0]?.price ?? "none"} | RAW: ${rawDebug}`;
