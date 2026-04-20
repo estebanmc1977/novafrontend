@@ -155,11 +155,13 @@ function ProductCard({
   mode,
   freq,
   onFreqChange,
+  currency = "MXN",
 }: {
   product: Product;
   mode: Mode;
   freq: Freq;
   onFreqChange: (f: Freq) => void;
+  currency?: string;
 }) {
   const meta = META[product.slug];
   const { addToCart } = useCart();
@@ -402,6 +404,7 @@ export default function TiendaExperience({ products, currency = "MXN" }: { produ
                 mode={mode}
                 freq={getFreq(product.slug)}
                 onFreqChange={(f) => setFreq(product.slug, f)}
+                currency={currency}
               />
             </motion.div>
           ))}
