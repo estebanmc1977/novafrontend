@@ -3,10 +3,9 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useCart } from "@/contexts/CartContext";
+import { formatPrice } from "@/lib/format";
 
-const RETAIL_PRICE = 750;
 const SUB_DISCOUNT = 0.2;
-const SUB_PRICE = Math.round(RETAIL_PRICE * (1 - SUB_DISCOUNT));
 
 const products = [
   {
@@ -88,10 +87,15 @@ const products = [
 function HeroProductCard({
   product,
   onAdd,
+  basePrice,
+  currency,
 }: {
   product: (typeof products)[0];
   onAdd: () => void;
+  basePrice: number;
+  currency: string;
 }) {
+  const subPrice = Math.round(basePrice * (1 - SUB_DISCOUNT));
   const p = product;
   return (
     <motion.div
@@ -167,11 +171,10 @@ function HeroProductCard({
               className="text-[28px] font-black"
               style={{ color: p.taglineColor }}
             >
-              ${RETAIL_PRICE}
-              <span className="text-[14px] font-medium text-gray-400 ml-1">MXN</span>
+              {formatPrice(basePrice, currency)}
             </span>
             <span className="text-[13px] text-green-600 font-bold bg-green-50 px-2.5 py-1 rounded-lg">
-              Desde ${SUB_PRICE} con suscripción
+              Desde {formatPrice(subPrice, currency)} con suscripción
             </span>
           </div>
 
@@ -194,11 +197,16 @@ function ProductCard({
   product,
   index,
   onAdd,
+  basePrice,
+  currency,
 }: {
   product: (typeof products)[0];
   index: number;
   onAdd: () => void;
+  basePrice: number;
+  currency: string;
 }) {
+  const subPrice = Math.round(basePrice * (1 - SUB_DISCOUNT));
   const p = product;
   return (
     <motion.div
@@ -274,12 +282,11 @@ function ProductCard({
               className="text-[22px] font-black"
               style={{ color: p.taglineColor }}
             >
-              ${RETAIL_PRICE}
+              {formatPrice(basePrice, currency)}
             </span>
-            <span className="text-[12px] font-medium text-gray-400">MXN</span>
           </div>
           <p className="text-[11px] text-green-600 font-semibold -mt-1">
-            Desde ${SUB_PRICE}/caja con suscripción
+            Desde {formatPrice(subPrice, currency)}/caja con suscripción
           </p>
 
           <button
@@ -302,7 +309,7 @@ function ProductCard({
 
 /* ── Main grid ────────────────────────────────────────────────────────── */
 
-export default function ProductGrid() {
+export default function ProductGrid({ basePrice = 750, currency = "MXN" }: { basePrice?: number; currency?: string }) {
   const { addToCart } = useCart();
 
   const heroProduct = products.find((p) => p.popular)!;
@@ -313,7 +320,7 @@ export default function ProductGrid() {
       slug: p.slug,
       title: p.name,
       image: p.imgSrc,
-      price: RETAIL_PRICE,
+      price: basePrice,
       color: p.color,
       bg: p.bg,
       mode: "once",
@@ -347,6 +354,8 @@ export default function ProductGrid() {
         <HeroProductCard
           product={heroProduct}
           onAdd={() => handleAdd(heroProduct)}
+          basePrice={basePrice}
+          currency={currency}
         />
 
         {/* Remaining products */}
@@ -357,6 +366,8 @@ export default function ProductGrid() {
               product={p}
               index={i}
               onAdd={() => handleAdd(p)}
+              basePrice={basePrice}
+              currency={currency}
             />
           ))}
         </div>

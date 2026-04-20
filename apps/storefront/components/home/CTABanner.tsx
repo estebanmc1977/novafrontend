@@ -1,15 +1,14 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { FadeIn } from "@/components/ui/FadeIn";
+import { formatPrice } from "@/lib/format";
 
-const plans = [
+const PLAN_DEFS = [
   {
     label: "Frecuencia Mensual",
     days: "Cada 30",
     unit: "días",
-    discount: "−20%",
-    original: "Antes: MX$750",
-    price: "MX$600 / caja",
+    discountPct: 20,
     features: [
       "Recibe tus parches cada 30 días",
       "Pausa o cancela cuando quieras",
@@ -23,9 +22,7 @@ const plans = [
     label: "Frecuencia Bimestral",
     days: "Cada 60",
     unit: "días",
-    discount: "−15%",
-    original: "Antes: MX$750",
-    price: "MX$638 / caja",
+    discountPct: 15,
     features: [
       "Recibe tus parches cada 60 días",
       "Pausa o cancela cuando quieras",
@@ -37,9 +34,7 @@ const plans = [
     label: "Frecuencia Trimestral",
     days: "Cada 90",
     unit: "días",
-    discount: "−10%",
-    original: "Antes: MX$750",
-    price: "MX$675 / caja",
+    discountPct: 10,
     features: [
       "Recibe tus parches cada 90 días",
       "Pausa o cancela cuando quieras",
@@ -49,8 +44,14 @@ const plans = [
   },
 ];
 
-export default async function CTABanner() {
+export default async function CTABanner({ basePrice = 750, currency = "MXN" }: { basePrice?: number; currency?: string }) {
   const t = await getTranslations("home.cta");
+  const plans = PLAN_DEFS.map((p) => ({
+    ...p,
+    discount: `−${p.discountPct}%`,
+    original: `Antes: ${formatPrice(basePrice, currency)}`,
+    price: `${formatPrice(Math.round(basePrice * (1 - p.discountPct / 100)), currency)} / caja`,
+  }));
   return (
     <section
       id="suscripciones"

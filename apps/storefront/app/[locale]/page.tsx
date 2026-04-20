@@ -4,6 +4,9 @@ import HeroWithBar from "@/components/home/HeroWithBar";
 import HowItWorks from "@/components/home/HowItWorks";
 import ComparisonTable from "@/components/home/ComparisonTable";
 import CTABanner from "@/components/home/CTABanner";
+import { getProducts } from "@/lib/commerce";
+import { MARKETS } from "@/lib/markets";
+import type { Locale } from "@/i18n/routing";
 
 // Client Components: lazy-loaded to unblock LCP/FCP
 const AbsorptionSection = dynamic(() => import("@/components/home/AbsorptionSection"));
@@ -12,7 +15,17 @@ const Testimonials    = dynamic(() => import("@/components/home/Testimonials"));
 const HomeFAQ         = dynamic(() => import("@/components/home/HomeFAQ"));
 const Footer          = dynamic(() => import("@/components/Footer"));
 
-export default function HomePage() {
+export const revalidate = 3600;
+
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const market = MARKETS[locale as Locale] ?? MARKETS.mx;
+  const regionId = market.medusaRegionId || undefined;
+  const currency = market.currency;
+
+  const products = await getProducts(regionId, currency);
+  const basePrice = products[0]?.price ?? 750;
+
   return (
     <>
       <Navbar />
@@ -26,9 +39,9 @@ export default function HomePage() {
         {/* 5. Comparativo — comparison table */}
         <ComparisonTable />
         {/* 6. Cards de Producto — product grid */}
-        <ProductGrid />
+        <ProductGrid basePrice={basePrice} currency={currency} />
         {/* 7. Suscripciones — subscription plans */}
-        <CTABanner />
+        <CTABanner basePrice={basePrice} currency={currency} />
         {/* 8. Social Proof — testimonials */}
         <Testimonials />
         {/* 9. FAQ */}
