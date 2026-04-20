@@ -26,8 +26,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const products = await getProducts(regionId, currency);
   const basePrice = products[0]?.price ?? 750;
 
+  const debugMarker = `locale=${locale} regionId=${regionId ?? "undefined"} currency=${currency} productsCount=${products.length} firstTitle=${products[0]?.title ?? "none"} firstPrice=${products[0]?.price ?? "none"}`;
+
   return (
     <>
+      {/* NVP_DEBUG: ${debugMarker} */}
+      <div data-nvp-debug={debugMarker} style={{ display: "none" }} />
       <Navbar />
       <main>
         {/* 1. Hero + Features Bar — shared carousel state */}
