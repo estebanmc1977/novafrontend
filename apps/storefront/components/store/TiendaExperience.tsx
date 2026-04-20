@@ -282,7 +282,7 @@ function ProductCard({
           <div className="flex items-baseline gap-2 mb-3">
             <span className="text-[26px] font-black tracking-tight text-navy-light">
               ${displayPrice}
-              <span className="text-[14px] font-semibold text-[#9CA3AF] ml-1">MXN</span>
+              <span className="text-[14px] font-semibold text-[#9CA3AF] ml-1">{currency}</span>
             </span>
             <AnimatePresence>
               {mode === "sub" && (
@@ -314,7 +314,7 @@ function ProductCard({
 
 // ─── Componente principal ────────────────────────────────────────────────────
 
-export default function TiendaExperience({ products }: { products: Product[] }) {
+export default function TiendaExperience({ products, currency = "MXN" }: { products: Product[], currency?: string }) {
   const [mode, setMode] = useState<Mode>("once");
   const [freqs, setFreqs] = useState<Record<string, Freq>>({});
 

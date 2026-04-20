@@ -20,6 +20,7 @@ export default async function TiendaPage({ params }: { params: Promise<{ locale:
   const { locale } = await params
   const market = MARKETS[locale as Locale]
   const regionId = market?.medusaRegionId || undefined
+  const currency = market?.currency ?? "MXN"
   const products = getOrderedProducts(await getProducts(regionId))
 
   if (products.length === 0) {
@@ -47,7 +48,7 @@ export default async function TiendaPage({ params }: { params: Promise<{ locale:
   return (
     <>
       <Navbar lightBg />
-      <TiendaExperience products={products} />
+      <TiendaExperience products={products} currency={currency} />
       <Footer />
     </>
   )
