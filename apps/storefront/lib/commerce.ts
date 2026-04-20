@@ -37,10 +37,26 @@ const FALLBACK_PRODUCTS: Product[] = PRODUCT_ORDER.map((slug) => {
 
 // ─── Mapeo Medusa → Product local ─────────────────────────────────────────────
 
+// Per-currency divisor reflecting how Medusa admin stores amounts in this
+// project: MXN in cents (×100), ARS as whole units. Defaults to 100.
+const CURRENCY_DIVISOR: Record<string, number> = {
+  mxn: 100,
+  ars: 1,
+};
+
+function amountToDisplay(rawAmount: number, currencyCode: string): number {
+  const divisor = CURRENCY_DIVISOR[currencyCode.toLowerCase()] ?? 100;
+  return Math.round(rawAmount / divisor);
+}
+
 function medusaToProduct(p: Awaited<ReturnType<typeof medusa.catalog.getProducts>>[0], currencyCode = "mxn"): Product {
   const slug = p.handle ?? p.id;
   const meta = PRODUCT_META[slug];
-  const variant = p.variants?.[0];
+  // Prefer the "once" variant (non-subscription retail price) over the first one
+  const onceVariant = p.variants?.find(
+    (v) => (v as any)?.metadata?.is_subscription === false
+  );
+  const variant = onceVariant ?? p.variants?.[0];
   const calculatedAmount = (variant as any)?.calculated_price?.calculated_amount;
   const fallbackPrice = variant?.prices?.find((pr) => pr.currency_code === currencyCode);
   const rawAmount = calculatedAmount ?? fallbackPrice?.amount;
@@ -50,7 +66,7 @@ function medusaToProduct(p: Awaited<ReturnType<typeof medusa.catalog.getProducts
     slug,
     title: p.title,
     description: meta?.description ?? p.description ?? "",
-    price: rawAmount ? Math.round(rawAmount / 100) : 750,
+    price: rawAmount ? amountToDisplay(rawAmount, currencyCode) : 750,
     image: p.thumbnail ?? meta?.imgSrc ?? `/products/${slug}_thumb.webp`,
     variantId: variant?.id,
   };
