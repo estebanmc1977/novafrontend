@@ -5,6 +5,7 @@ import HowItWorks from "@/components/home/HowItWorks";
 import ComparisonTable from "@/components/home/ComparisonTable";
 import CTABanner from "@/components/home/CTABanner";
 import { getProducts } from "@/lib/commerce";
+import { medusa } from "@/lib/medusa";
 import { MARKETS } from "@/lib/markets";
 import type { Locale } from "@/i18n/routing";
 
@@ -26,7 +27,17 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const products = await getProducts(regionId, currency);
   const basePrice = products[0]?.price ?? 750;
 
-  const debugMarker = `locale=${locale} regionId=${regionId ?? "undefined"} currency=${currency} productsCount=${products.length} firstTitle=${products[0]?.title ?? "none"} firstPrice=${products[0]?.price ?? "none"}`;
+  // Raw fetch to inspect Medusa response shape
+  let rawDebug = "no-raw";
+  try {
+    const raw = await medusa.catalog.getProducts(regionId ? { region_id: regionId } : undefined);
+    const v = (raw as any)[0]?.variants?.[0];
+    rawDebug = `keys=${Object.keys(v ?? {}).join("|")} calc=${JSON.stringify(v?.calculated_price ?? null)} prices=${JSON.stringify(v?.prices ?? null)}`;
+  } catch (e) {
+    rawDebug = `err=${(e as Error).message}`;
+  }
+
+  const debugMarker = `locale=${locale} regionId=${regionId ?? "undefined"} currency=${currency} productsCount=${products.length} firstPrice=${products[0]?.price ?? "none"} | RAW: ${rawDebug}`;
 
   return (
     <>
