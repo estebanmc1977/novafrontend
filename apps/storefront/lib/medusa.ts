@@ -53,6 +53,7 @@ export type MedusaVariant = {
 export type MedusaCart = {
   id: string;
   region_id: string;
+  currency_code?: string;
   items: MedusaLineItem[];
   total: number;
   subtotal: number;
@@ -64,6 +65,10 @@ export type MedusaCart = {
   }>;
   payment_sessions?: { provider_id: string; status: string }[];
 };
+
+export type CompleteCartPayload =
+  | { openpay_token_id: string; email?: string; device_session_id?: string }
+  | { mp_card_token: string; email?: string };
 
 export type MedusaShippingOption = {
   id: string;
@@ -429,23 +434,20 @@ const checkout = {
   /**
    * POST /store/carts/:id/complete
    * Procesa el pago y crea la orden.
-   * Incluye el token_id generado por el SDK de Openpay en el frontend.
+   * Acepta payload de Openpay (MX) o MercadoPago (AR).
    */
   async completeCart(
     cart_id: string,
-    openpay_token_id: string,
-    email?: string,
-    device_session_id?: string
+    payload: CompleteCartPayload
   ): Promise<CompleteCartResult> {
     const data = await medusaFetch<CompleteCartResult>(
       `/store/carts/${cart_id}/complete`,
       {
         method: "POST",
-        body: JSON.stringify({ openpay_token_id, email, device_session_id }),
+        body: JSON.stringify(payload),
       }
     );
     if (data.type === "order") {
-      // Limpiar cart_id del storage solo cuando el cobro completó sin 3DS
       if (typeof window !== "undefined") {
         localStorage.removeItem("novapatch_medusa_cart_id");
       }

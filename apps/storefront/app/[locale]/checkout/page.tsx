@@ -10,6 +10,7 @@ import posthog from "posthog-js";
 import { useCart } from "@/contexts/CartContext";
 import { medusa } from "@/lib/medusa";
 import { tokenizeCard, parseCardForm, getDeviceSessionId } from "@/lib/openpay";
+import { tokenizeCardMP, parseCardFormMP } from "@/lib/mercadopago";
 import { useCopomex } from "@/hooks/useCopomex";
 import { useGooglePlaces } from "@/hooks/useGooglePlaces";
 import {
@@ -39,17 +40,18 @@ import {
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
-function fmt(n: number) {
-  return new Intl.NumberFormat("es-MX", {
+function fmt(n: number, region: "mxn" | "ars" | null = "mxn") {
+  const isAR = region === "ars";
+  return new Intl.NumberFormat(isAR ? "es-AR" : "es-MX", {
     style: "currency",
-    currency: "MXN",
+    currency: isAR ? "ARS" : "MXN",
     minimumFractionDigits: 0,
   }).format(n);
 }
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
-function OrderItem({ item }: { item: CartItem }) {
+function OrderItem({ item, region }: { item: CartItem; region: "mxn" | "ars" | null }) {
   const price = itemDisplayPrice(item);
   const isSub = item.mode === "sub";
 
@@ -97,7 +99,7 @@ function OrderItem({ item }: { item: CartItem }) {
       {/* price — always original so it matches the subtotal line */}
       <div className="text-right flex-shrink-0">
         <p className="text-[14px] font-black text-[#005088]">
-          {fmt(item.price * item.quantity)}
+          {fmt(item.price * item.quantity, region)}
         </p>
       </div>
     </div>
@@ -311,6 +313,8 @@ export default function CheckoutPage() {
 
   const REGION_ID = process.env.NEXT_PUBLIC_MEDUSA_REGION_ID ?? "reg_mx";
 
+  const [cartRegion, setCartRegion] = useState<"mxn" | "ars" | null>(null);
+
   const hasSubscriptions = items.some((i) => i.mode === "sub");
   const isSignedIn = !!user;
   const needsAuth = hasSubscriptions && !isSignedIn;
@@ -367,8 +371,18 @@ export default function CheckoutPage() {
   const itemsPreloaded = useRef(false);
   const couponAppliedInPreload = useRef(false);
 
+  // ── Dirección Argentina ────────────────────────────────────
+  const [addressAR, setAddressAR] = useState({
+    street: "",
+    depto: "",
+    city: "",
+    province: "",
+    zip: "",
+  });
+
   // ── COPOMEX (CP → colonias/estado/ciudad) ──────────────────
   const { state: copomex, lookup: lookupCp, reset: resetCopomex } = useCopomex();
+
 
   // ── Google Places (street autocomplete) ────────────────────
   const streetInputRef = useRef<HTMLInputElement>(null);
@@ -481,6 +495,8 @@ export default function CheckoutPage() {
         const cart = await medusa.cart.create(REGION_ID, customerId);
         const cartId = cart.id;
         setPreloadedCartId(cartId);
+        const region = (cart.currency_code ?? "mxn").toLowerCase() === "ars" ? "ars" : "mxn";
+        setCartRegion(region);
 
         // 4. Pre-agregar items al carrito mientras el usuario llena el formulario
         for (const item of items) {
@@ -532,22 +548,29 @@ export default function CheckoutPage() {
   // ── validation ───────────────────────────────────────────────
   function validate() {
     const e: Record<string, string> = {};
-    // Resolve city/state: prefer COPOMEX data, fall back to manual input
-    const resolvedCity =
-      copomex.status === "success" ? copomex.data.municipio || address.city : address.city;
-    const resolvedState =
-      copomex.status === "success" ? copomex.data.estado || address.state : address.state;
 
     if (!contact.name.trim()) e.name = "Requerido";
     if (!contact.email.trim() || !/\S+@\S+\.\S+/.test(contact.email))
       e.email = "Email inválido";
     if (!contact.phone.trim()) e.phone = "Requerido";
-    if (!address.street.trim()) e.street = "Requerido";
-    if (!address.colonia.trim()) e.colonia = "Requerido";
-    if (!resolvedCity.trim()) e.city = "Requerido";
-    if (!resolvedState.trim()) e.state = "Requerido";
-    if (!address.zip.trim() || !/^\d{5}$/.test(address.zip))
-      e.zip = "5 dígitos";
+
+    if (cartRegion === "ars") {
+      if (!addressAR.street.trim()) e.street = "Requerido";
+      if (!addressAR.city.trim()) e.city = "Requerido";
+      if (!addressAR.province.trim()) e.province = "Requerido";
+      if (!addressAR.zip.trim() || addressAR.zip.trim().length < 4) e.zip = "CP inválido";
+    } else {
+      const resolvedCity =
+        copomex.status === "success" ? copomex.data.municipio || address.city : address.city;
+      const resolvedState =
+        copomex.status === "success" ? copomex.data.estado || address.state : address.state;
+      if (!address.street.trim()) e.street = "Requerido";
+      if (!address.colonia.trim()) e.colonia = "Requerido";
+      if (!resolvedCity.trim()) e.city = "Requerido";
+      if (!resolvedState.trim()) e.state = "Requerido";
+      if (!address.zip.trim() || !/^\d{5}$/.test(address.zip)) e.zip = "5 dígitos";
+    }
+
     if (!card.number.replace(/\s/g, "") || card.number.replace(/\s/g, "").length < 15)
       e.cardNumber = "Número inválido";
     if (!card.name.trim()) e.cardName = "Requerido";
@@ -575,23 +598,47 @@ export default function CheckoutPage() {
 
       // ── Paso 1: Verificando tarjeta ──────────────────────────────────────
       setPaymentStep(1);
-      const device_session_id = getDeviceSessionId("checkout-form") ?? "dev_session";
 
-      let openpay_token_id: string;
-      try {
-        openpay_token_id = await tokenizeCard(
-          parseCardForm(card.number, card.name, card.expiry, card.cvv)
-        );
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : "Error en tarjeta";
-        if (process.env.NODE_ENV === "development") {
-          console.warn("[Checkout] Openpay en modo dev, usando token mock");
-          openpay_token_id = "tok_dev_mock";
-        } else {
-          setSubmitError(msg);
-          setSubmitting(false);
-          return;
+      let completePayload: import("@/lib/medusa").CompleteCartPayload;
+
+      if (cartRegion === "ars") {
+        // ── MercadoPago (AR) ──────────────────────────────────────────────
+        try {
+          const mp_card_token = await tokenizeCardMP(
+            parseCardFormMP(card.number, card.name, card.expiry, card.cvv)
+          );
+          completePayload = { mp_card_token, email: contact.email };
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : "Error en tarjeta";
+          if (process.env.NODE_ENV === "development") {
+            console.warn("[Checkout] MP en modo dev, usando token mock");
+            completePayload = { mp_card_token: "tok_mp_dev_mock", email: contact.email };
+          } else {
+            setSubmitError(msg);
+            setSubmitting(false);
+            return;
+          }
         }
+      } else {
+        // ── Openpay (MX) ──────────────────────────────────────────────────
+        const device_session_id = getDeviceSessionId("checkout-form") ?? "dev_session";
+        let openpay_token_id: string;
+        try {
+          openpay_token_id = await tokenizeCard(
+            parseCardForm(card.number, card.name, card.expiry, card.cvv)
+          );
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : "Error en tarjeta";
+          if (process.env.NODE_ENV === "development") {
+            console.warn("[Checkout] Openpay en modo dev, usando token mock");
+            openpay_token_id = "tok_dev_mock";
+          } else {
+            setSubmitError(msg);
+            setSubmitting(false);
+            return;
+          }
+        }
+        completePayload = { openpay_token_id, email: contact.email, device_session_id };
       }
 
       // ── Paso 2: Usar carrito pre-cargado o crear uno nuevo (fallback) ─────
@@ -623,33 +670,56 @@ export default function CheckoutPage() {
 
         // ── Paso 2: Guardando dirección de envío ────────────────────────────
         setPaymentStep(2);
-        const resolvedCity =
-          copomex.status === "success" ? copomex.data.municipio || address.city : address.city;
-        const resolvedState =
-          copomex.status === "success" ? copomex.data.estado || address.state : address.state;
 
-        await medusa.cart.update(cart_id, {
-          email: contact.email,
-          shipping_address: {
-            first_name: contact.name.split(" ")[0],
-            last_name: contact.name.split(" ").slice(1).join(" ") || "",
-            address_1: address.interior.trim()
-              ? `${address.street} Int ${address.interior.trim()}`
-              : address.street,
-            address_2: address.instructions.trim()
-              ? `${address.colonia} | ${address.instructions.trim()}`
-              : address.colonia,
-            city: resolvedCity,
-            province: resolvedState,
-            postal_code: address.zip,
-            country_code: "mx",
-            phone: contact.phone,
-          },
-          metadata: {
-            numero_interior: address.interior.trim() || null,
-            indicaciones_entrega: address.instructions.trim() || null,
-          },
-        });
+        let shippingAddressPayload: Parameters<typeof medusa.cart.update>[1];
+
+        if (cartRegion === "ars") {
+          shippingAddressPayload = {
+            email: contact.email,
+            shipping_address: {
+              first_name: contact.name.split(" ")[0],
+              last_name: contact.name.split(" ").slice(1).join(" ") || "",
+              address_1: addressAR.street,
+              address_2: addressAR.depto.trim() || undefined,
+              city: addressAR.city,
+              province: addressAR.province,
+              postal_code: addressAR.zip,
+              country_code: "ar",
+              phone: contact.phone,
+            },
+          };
+        } else {
+          const resolvedCity =
+            copomex.status === "success" ? copomex.data.municipio || address.city : address.city;
+          const resolvedState =
+            copomex.status === "success" ? copomex.data.estado || address.state : address.state;
+
+          shippingAddressPayload = {
+            email: contact.email,
+            shipping_address: {
+              first_name: contact.name.split(" ")[0],
+              last_name: contact.name.split(" ").slice(1).join(" ") || "",
+              address_1: address.interior.trim()
+                ? `${address.street} Int ${address.interior.trim()}`
+                : address.street,
+              address_2: address.instructions.trim()
+                ? `${address.colonia} | ${address.instructions.trim()}`
+                : address.colonia,
+              city: resolvedCity,
+              province: resolvedState,
+              postal_code: address.zip,
+              country_code: "mx",
+              phone: contact.phone,
+            },
+            metadata: {
+              colonia: address.colonia.trim() || null,
+              numero_interior: address.interior.trim() || null,
+              indicaciones_entrega: address.instructions.trim() || null,
+            },
+          };
+        }
+
+        await medusa.cart.update(cart_id, shippingAddressPayload);
 
         // ── Paso 2b: Aplicar shipping method ───────────────────────────────
         const shippingOptions = await medusa.cart.getShippingOptions(cart_id!).catch(() => []);
@@ -697,7 +767,7 @@ export default function CheckoutPage() {
 
         // ── Paso 4: Procesando cobro ────────────────────────────────────────
         setPaymentStep(4);
-        const result = await medusa.checkout.completeCart(cart_id, openpay_token_id, contact.email, device_session_id);
+        const result = await medusa.checkout.completeCart(cart_id, completePayload);
 
         // ── 3DS: el banco exige autenticación adicional ──────────────────────
         if (result.type === "redirect") {
@@ -922,6 +992,103 @@ export default function CheckoutPage() {
                   icon={<Truck size={16} />}
                   title="Dirección de envío"
                 />
+
+                {/* ── Formulario Argentina ── */}
+                {cartRegion === "ars" && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Calle + número con Google Places */}
+                    <div className="sm:col-span-2 flex flex-col gap-1.5">
+                      <label htmlFor="ar-street" className="text-[12px] font-bold text-[#005088] uppercase tracking-[0.06em]">
+                        Calle y número<span className="text-[#E8503A] ml-0.5">*</span>
+                      </label>
+                      <div className="relative">
+                        <input
+                          ref={streetInputRef}
+                          id="ar-street"
+                          type="text"
+                          placeholder="Av. Corrientes 1234"
+                          value={addressAR.street}
+                          onChange={(e) => { setAddressAR((a) => ({ ...a, street: e.target.value })); clearErr("street"); }}
+                          autoComplete="new-password"
+                          className={`w-full px-4 py-3 pr-10 rounded-xl text-[14px] text-[#005088] placeholder-[#9CA3AF] border bg-white transition-all duration-200 outline-none focus:ring-2 focus:ring-[#005088]/20 focus:border-[#005088] ${
+                            errors.street ? "border-[#E8503A] ring-2 ring-[#E8503A]/20" : "border-[#E5E7EB]"
+                          }`}
+                        />
+                        <MapPin size={15} className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: placesReady ? "#005088" : "#D1D5DB" }} />
+                      </div>
+                      {placesReady && (
+                        <p className="text-[10px] text-[#9CA3AF] flex items-center gap-1">
+                          <span className="text-[#4285F4] font-bold">G</span>
+                          Autocompletado con Google
+                        </p>
+                      )}
+                      <AnimatePresence>
+                        {errors.street && (
+                          <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} className="text-[11px] text-[#E8503A] flex items-center gap-1">
+                            <AlertCircle size={11} />{errors.street}
+                          </motion.p>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
+                    {/* Depto — opcional */}
+                    <div className="sm:col-span-2 flex flex-col gap-1.5">
+                      <label htmlFor="ar-depto" className="text-[12px] font-bold text-[#005088] uppercase tracking-[0.06em]">
+                        Depto / Piso <span className="text-[#9CA3AF] font-normal normal-case">(opcional)</span>
+                      </label>
+                      <input
+                        id="ar-depto"
+                        type="text"
+                        placeholder="Ej. 4to B"
+                        value={addressAR.depto}
+                        onChange={(e) => setAddressAR((a) => ({ ...a, depto: e.target.value.slice(0, 20) }))}
+                        autoComplete="address-line2"
+                        className="w-full px-4 py-3 rounded-xl text-[14px] text-[#005088] placeholder-[#9CA3AF] border border-[#E5E7EB] bg-white transition-all duration-200 outline-none focus:ring-2 focus:ring-[#005088]/20 focus:border-[#005088]"
+                      />
+                    </div>
+
+                    {/* CP */}
+                    <Field
+                      id="ar-zip"
+                      label="Código postal"
+                      placeholder="C1425"
+                      value={addressAR.zip}
+                      onChange={(v) => { setAddressAR((a) => ({ ...a, zip: v.toUpperCase().slice(0, 8) })); clearErr("zip"); }}
+                      required
+                      error={errors.zip}
+                      autoComplete="postal-code"
+                    />
+
+                    {/* Ciudad/Localidad */}
+                    <Field
+                      id="ar-city"
+                      label="Ciudad / Localidad"
+                      placeholder="Buenos Aires"
+                      value={addressAR.city}
+                      onChange={(v) => { setAddressAR((a) => ({ ...a, city: v })); clearErr("city"); }}
+                      required
+                      error={errors.city}
+                      autoComplete="address-level2"
+                    />
+
+                    {/* Provincia */}
+                    <div className="sm:col-span-2">
+                      <Field
+                        id="ar-province"
+                        label="Provincia"
+                        placeholder="Buenos Aires"
+                        value={addressAR.province}
+                        onChange={(v) => { setAddressAR((a) => ({ ...a, province: v })); clearErr("province"); }}
+                        required
+                        error={errors.province}
+                        autoComplete="address-level1"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Formulario México (default) ── */}
+                {cartRegion !== "ars" && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                   {/* Calle — con Google Places Autocomplete */}
@@ -1168,6 +1335,7 @@ export default function CheckoutPage() {
                   </div>
 
                 </div>
+                )}
               </motion.div>
 
               {/* ── 3. Pago ── */}
@@ -1194,7 +1362,9 @@ export default function CheckoutPage() {
                         {b}
                       </span>
                     ))}
-                    <span className="text-[11px] text-[#9CA3AF] ml-1">Vía Openpay</span>
+                    <span className="text-[11px] text-[#9CA3AF] ml-1">
+                      {cartRegion === "ars" ? "Vía MercadoPago" : "Vía Openpay"}
+                    </span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1244,13 +1414,15 @@ export default function CheckoutPage() {
                     />
                   </div>
 
-                  {/* Openpay security badge */}
+                  {/* Payment provider security badge */}
                   <div className="mt-5 flex items-center gap-2 p-3 rounded-xl bg-[#F9FAFB] border border-[#E5E7EB]">
                     <ShieldCheck size={16} className="text-[#3CBFAB] flex-shrink-0" />
                     <p className="text-[11px] text-[#6B7280] leading-[1.5]">
                       Tus datos están protegidos con encriptación SSL de 256 bits.
                       El procesamiento es a través de{" "}
-                      <span className="font-bold text-[#005088]">Openpay</span>.
+                      <span className="font-bold text-[#005088]">
+                        {cartRegion === "ars" ? "MercadoPago" : "Openpay"}
+                      </span>.
                     </p>
                   </div>
 
@@ -1317,7 +1489,7 @@ export default function CheckoutPage() {
                       style={{ background: "#E8503A" }}
                     >
                       <Lock size={16} />
-                      Pagar {fmt(confirmedTotal ?? (finalTotal + 85))}
+                      Pagar {fmt(confirmedTotal ?? (finalTotal + 85), cartRegion)}
                     </button>
                   )}
                 </motion.div>
@@ -1353,7 +1525,7 @@ export default function CheckoutPage() {
               {/* items */}
               <div className="px-6 divide-y divide-[#F3F4F6]">
                 {items.map((item) => (
-                  <OrderItem key={`${item.slug}__${item.mode}__${item.freq}`} item={item} />
+                  <OrderItem key={`${item.slug}__${item.mode}__${item.freq}`} item={item} region={cartRegion} />
                 ))}
               </div>
 
@@ -1361,7 +1533,7 @@ export default function CheckoutPage() {
               <div className="px-6 py-5 bg-[#F9FAFB] space-y-2.5">
                 <div className="flex justify-between text-[13px] text-[#6B7280]">
                   <span>Subtotal</span>
-                  <span>{fmt(totals.subtotal)}</span>
+                  <span>{fmt(totals.subtotal, cartRegion)}</span>
                 </div>
 
                 {totals.savings > 0 && (
@@ -1376,7 +1548,7 @@ export default function CheckoutPage() {
                       Descuento suscripción
                     </span>
                     <span className="font-bold" style={{ color: "#E8503A" }}>
-                      −{fmt(totals.savings)}
+                      −{fmt(totals.savings, cartRegion)}
                     </span>
                   </div>
                 )}
@@ -1393,14 +1565,14 @@ export default function CheckoutPage() {
                       {coupon.code}
                     </span>
                     <span className="font-bold text-[#16A34A]">
-                      −{fmt(effectiveCouponDiscount)}
+                      −{fmt(effectiveCouponDiscount, cartRegion)}
                     </span>
                   </div>
                 )}
 
                 <div className="flex justify-between text-[13px] text-[#6B7280]">
                   <span>Envío</span>
-                  <span className="font-semibold text-[#005088]">{fmt(85)}</span>
+                  <span className="font-semibold text-[#005088]">{fmt(85, cartRegion)}</span>
                 </div>
 
                 <div className="pt-2.5 border-t border-[#E5E7EB] flex justify-between">
@@ -1409,7 +1581,7 @@ export default function CheckoutPage() {
                     <p className="text-[18px] font-black text-[#005088]">{fmt(confirmedTotal ?? (finalTotal + 85))}</p>
                     {(totals.savings > 0 || effectiveCouponDiscount > 0) && (
                       <p className="text-[11px] text-[#6B7280]">
-                        antes {fmt(totals.subtotal + 85)}
+                        antes {fmt(totals.subtotal + 85, cartRegion)}
                       </p>
                     )}
                   </div>
