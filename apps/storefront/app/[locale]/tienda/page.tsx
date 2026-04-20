@@ -2,6 +2,8 @@ import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
 import TiendaExperience from "@/components/store/TiendaExperience"
 import { getProducts, type Product } from "@/lib/commerce"
+import { MARKETS } from "@/lib/markets"
+import type { Locale } from "@/i18n/routing"
 
 export const revalidate = 3600 // ISR: revalida productos cada hora
 
@@ -14,8 +16,11 @@ function getOrderedProducts(products: Product[]) {
   })
 }
 
-export default async function TiendaPage() {
-  const products = getOrderedProducts(await getProducts())
+export default async function TiendaPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  const market = MARKETS[locale as Locale]
+  const regionId = market?.medusaRegionId || undefined
+  const products = getOrderedProducts(await getProducts(regionId))
 
   if (products.length === 0) {
     return (

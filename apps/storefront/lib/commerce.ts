@@ -62,10 +62,11 @@ const REGION_ID = process.env.NEXT_PUBLIC_MEDUSA_REGION_ID ?? "";
  * Obtiene el catálogo de productos.
  * Intenta Medusa primero; si falla, usa fallback hardcodeado.
  */
-export async function getProducts(): Promise<Product[]> {
+export async function getProducts(regionId?: string): Promise<Product[]> {
+  const resolvedRegionId = regionId || REGION_ID;
   try {
     const medusaProducts = await medusa.catalog.getProducts(
-      REGION_ID ? { region_id: REGION_ID } : undefined
+      resolvedRegionId ? { region_id: resolvedRegionId } : undefined
     );
 
     if (medusaProducts.length === 0) return FALLBACK_PRODUCTS;
