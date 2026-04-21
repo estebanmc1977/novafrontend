@@ -347,6 +347,7 @@ export default function CheckoutPage() {
     name: "",
     expiry: "",
     cvv: "",
+    dni: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -594,6 +595,10 @@ export default function CheckoutPage() {
     if (!card.expiry.trim() || !/^\d{2}\/\d{2}$/.test(card.expiry))
       e.expiry = "MM/AA";
     if (!card.cvv.trim() || card.cvv.length < 3) e.cvv = "Requerido";
+    if (cartRegion === "ars") {
+      const digits = card.dni.replace(/\D/g, "");
+      if (!digits || digits.length < 7 || digits.length > 8) e.dni = "DNI inválido";
+    }
     return e;
   }
 
@@ -622,7 +627,7 @@ export default function CheckoutPage() {
         // ── MercadoPago (AR) ──────────────────────────────────────────────
         try {
           const mp_card_token = await tokenizeCardMP(
-            parseCardFormMP(card.number, card.name, card.expiry, card.cvv)
+            parseCardFormMP(card.number, card.name, card.expiry, card.cvv, card.dni)
           );
           completePayload = { mp_card_token, email: contact.email };
         } catch (err) {
@@ -1429,6 +1434,20 @@ export default function CheckoutPage() {
                       error={errors.cvv}
                       autoComplete="cc-csc"
                     />
+                    {cartRegion === "ars" && (
+                      <div className="sm:col-span-2">
+                        <Field
+                          id="dni"
+                          label="DNI del titular"
+                          placeholder="12345678"
+                          value={card.dni}
+                          onChange={(v) => { setCard((c) => ({ ...c, dni: v.replace(/\D/g, "").slice(0, 8) })); clearErr("dni"); }}
+                          required
+                          error={errors.dni}
+                          autoComplete="off"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   {/* Payment provider security badge */}

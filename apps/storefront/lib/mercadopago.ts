@@ -141,16 +141,23 @@ export function parseCardFormMP(
   number: string,
   name: string,
   expiry: string,
-  cvv: string
+  cvv: string,
+  dni?: string
 ): MPCardData {
   const [month = "", year = ""] = expiry.split("/");
-  return {
+  const base: MPCardData = {
     cardNumber: number.replace(/\s/g, ""),
     cardholderName: name.trim(),
     cardExpirationMonth: month.trim(),
     cardExpirationYear: year.trim(),
     securityCode: cvv.trim(),
   };
+  const digits = (dni ?? "").replace(/\D/g, "");
+  if (digits) {
+    base.identificationType = "DNI";
+    base.identificationNumber = digits;
+  }
+  return base;
 }
 
 // ─── Traducción de errores ────────────────────────────────────────────────────
