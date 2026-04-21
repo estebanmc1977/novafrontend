@@ -64,6 +64,8 @@ export type MedusaCart = {
     application_method?: { type: string; value: number };
   }>;
   payment_sessions?: { provider_id: string; status: string }[];
+  shipping_methods?: Array<{ id: string; amount: number; name?: string }>;
+  shipping_total?: number;
 };
 
 export type CompleteCartPayload =

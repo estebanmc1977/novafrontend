@@ -16,6 +16,7 @@ import { tokenizeCard, parseCardForm, getDeviceSessionId } from "@/lib/openpay";
 import { tokenizeCardMP, parseCardFormMP } from "@/lib/mercadopago";
 import { useCopomex } from "@/hooks/useCopomex";
 import { useGooglePlaces } from "@/hooks/useGooglePlaces";
+import { resolveShippingEta } from "@/lib/shipping-eta";
 import {
   CartItem,
   FREQ_LABELS,
@@ -266,7 +267,7 @@ function SectionHeader({
 
 // ─── Success Screen ───────────────────────────────────────────────────────────
 
-function SuccessScreen() {
+function SuccessScreen({ shippingAddress }: { shippingAddress?: { country_code?: string | null; province?: string | null } | null }) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAF7F2] px-6 text-center">
       <motion.div
@@ -288,6 +289,20 @@ function SuccessScreen() {
           Recibirás un correo de confirmación con los detalles de tu envío.
           Tu parche está en camino.
         </p>
+        {(() => {
+          const eta = resolveShippingEta({
+            country_code: shippingAddress?.country_code ?? null,
+            province: shippingAddress?.province ?? null,
+          })
+          if (!eta) return null
+          return (
+            <p className="mt-4 text-[14px] text-[#425066]">
+              Envío estimado: <span className="font-bold text-[#0D1B35]">{eta}</span>.
+              <br />
+              Te enviaremos la guía por email en las próximas 24 horas.
+            </p>
+          )
+        })()}
         <Link
           href="/"
           className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-[15px] font-bold text-white transition-all duration-200 hover:brightness-95 active:scale-[0.97]"
@@ -362,9 +377,12 @@ export default function CheckoutPage() {
     });
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [successAddress, setSuccessAddress] = useState<{ country_code?: string | null; province?: string | null } | null>(null);
   const [paymentStep, setPaymentStep] = useState<number>(0); // 0=idle, 1-4=processing
   // Total confirmed by Medusa after shipping is applied — authoritative for what gets charged
   const [confirmedTotal, setConfirmedTotal] = useState<number | null>(null);
+  // Real shipping cost returned by Medusa after applying the shipping method
+  const [shippingCost, setShippingCost] = useState<number>(85);
 
   // ── Pre-carga: carrito + catálogo + customer sync al montar ───
   const [preloadedCartId, setPreloadedCartId] = useState<string | null>(null);
@@ -456,7 +474,7 @@ export default function CheckoutPage() {
     if (!isLoaded || items.length === 0 || checkoutTracked.current) return;
     checkoutTracked.current = true;
     posthog.capture("checkout_started", {
-      cart_total: finalTotal + 85, // frontend estimate at fire time; preload may update finalTotal later
+      cart_total: finalTotal, // pre-shipping estimate at fire time; real total confirmed at order_completed
       item_count: items.reduce((sum, i) => sum + i.quantity, 0),
     });
   }, [isLoaded, items, finalTotal]);
@@ -561,7 +579,7 @@ export default function CheckoutPage() {
     );
   }
 
-  if (success) return <SuccessScreen />;
+  if (success) return <SuccessScreen shippingAddress={successAddress} />;
 
   // ── validation ───────────────────────────────────────────────
   function validate() {
@@ -613,7 +631,7 @@ export default function CheckoutPage() {
     setSubmitError(null);
     setSubmitting(true);
     // Will be set to Medusa's authoritative cart total once shipping is applied
-    let chargedTotal = finalTotal + 85;
+    let chargedTotal = finalTotal + shippingCost;
 
     try {
       console.time("[Checkout] total");
@@ -747,8 +765,10 @@ export default function CheckoutPage() {
         const shippingOptions = await medusa.cart.getShippingOptions(cart_id!).catch(() => []);
         if (shippingOptions[0]?.id) {
           const shippedCart = await medusa.cart.addShippingMethod(cart_id!, shippingOptions[0].id);
+          const shippingCost = shippedCart.shipping_methods?.[0]?.amount ?? shippedCart.shipping_total ?? 0;
           chargedTotal = shippedCart.total;
           setConfirmedTotal(shippedCart.total);
+          setShippingCost(shippingCost);
 
           // Coupon was applied during preload — verify it's still on the cart.
           // Uses data already in shippedCart: zero extra API calls.
@@ -830,6 +850,13 @@ export default function CheckoutPage() {
         item_count: items.reduce((sum, i) => sum + i.quantity, 0),
       });
       clearCart();
+      if (cartRegion === "ars") {
+        setSuccessAddress({ country_code: "ar", province: addressAR.province });
+      } else {
+        const resolvedState =
+          copomex.status === "success" ? copomex.data.estado || address.state : address.state;
+        setSuccessAddress({ country_code: "mx", province: resolvedState });
+      }
       setSuccess(true);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Error inesperado";
@@ -1525,7 +1552,7 @@ export default function CheckoutPage() {
                       style={{ background: "#E8503A" }}
                     >
                       <Lock size={16} />
-                      Pagar {fmt(confirmedTotal ?? (finalTotal + 85), cartRegion)}
+                      Pagar {fmt(confirmedTotal ?? (finalTotal + shippingCost), cartRegion)}
                     </button>
                   )}
                 </motion.div>
@@ -1608,16 +1635,16 @@ export default function CheckoutPage() {
 
                 <div className="flex justify-between text-[13px] text-[#6B7280]">
                   <span>Envío</span>
-                  <span className="font-semibold text-[#005088]">{fmt(85, cartRegion)}</span>
+                  <span className="font-semibold text-[#005088]">{fmt(shippingCost, cartRegion)}</span>
                 </div>
 
                 <div className="pt-2.5 border-t border-[#E5E7EB] flex justify-between">
                   <span className="text-[15px] font-black text-[#005088]">Total</span>
                   <div className="text-right">
-                    <p className="text-[18px] font-black text-[#005088]">{fmt(confirmedTotal ?? (finalTotal + 85), cartRegion)}</p>
+                    <p className="text-[18px] font-black text-[#005088]">{fmt(confirmedTotal ?? (finalTotal + shippingCost), cartRegion)}</p>
                     {(totals.savings > 0 || effectiveCouponDiscount > 0) && (
                       <p className="text-[11px] text-[#6B7280]">
-                        antes {fmt(totals.subtotal + 85, cartRegion)}
+                        antes {fmt(totals.subtotal + shippingCost, cartRegion)}
                       </p>
                     )}
                   </div>
