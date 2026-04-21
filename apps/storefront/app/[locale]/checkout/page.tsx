@@ -382,7 +382,7 @@ export default function CheckoutPage() {
   // Total confirmed by Medusa after shipping is applied — authoritative for what gets charged
   const [confirmedTotal, setConfirmedTotal] = useState<number | null>(null);
   // Real shipping cost returned by Medusa after applying the shipping method
-  const [shippingCost, setShippingCost] = useState<number>(85);
+  const [shippingCost, setShippingCost] = useState<number>(0);
 
   // ── Pre-carga: carrito + catálogo + customer sync al montar ───
   const [preloadedCartId, setPreloadedCartId] = useState<string | null>(null);
@@ -1633,10 +1633,12 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                <div className="flex justify-between text-[13px] text-[#6B7280]">
-                  <span>Envío</span>
-                  <span className="font-semibold text-[#005088]">{fmt(shippingCost, cartRegion)}</span>
-                </div>
+                {shippingCost > 0 && (
+                  <div className="flex justify-between text-[13px] text-[#6B7280]">
+                    <span>Envío</span>
+                    <span className="font-semibold text-[#005088]">{fmt(shippingCost, cartRegion)}</span>
+                  </div>
+                )}
 
                 <div className="pt-2.5 border-t border-[#E5E7EB] flex justify-between">
                   <span className="text-[15px] font-black text-[#005088]">Total</span>
