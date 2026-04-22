@@ -290,17 +290,8 @@ export default function CartDrawer() {
   const count = items.reduce((s, i) => s + i.quantity, 0);
   const hasSubs = items.some((i) => i.mode === "sub");
 
-  const [shippingCost, setShippingCost] = useState(85);
-  useEffect(() => {
-    const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ?? "http://localhost:9000";
-    fetch(`${MEDUSA_URL}/shipping-options`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        const first = data?.shipping_options?.[0];
-        if (first?.amount) setShippingCost(first.amount);
-      })
-      .catch(() => {});
-  }, []);
+  // Shipping is calculated at checkout once the address is known (zone-based).
+  // Showing a placeholder price here would be misleading, so we hide the line.
 
   // Coupon UI state (loading flag — applied/idle derived from context)
   const [couponLoading, setCouponLoading] = useState(false);
@@ -339,7 +330,7 @@ export default function CartDrawer() {
   const discountAmount = appliedCoupon
     ? Math.round(total * (appliedCoupon.discountPct / 100))
     : 0;
-  const finalTotal = total - discountAmount + shippingCost;
+  const finalTotal = total - discountAmount;
 
   return (
     <>
@@ -464,9 +455,9 @@ export default function CartDrawer() {
                         )}
                       </AnimatePresence>
 
-                      <div className="flex justify-between text-[13px]">
-                        <span className="text-gray-500">Envío</span>
-                        <span className="font-semibold text-gray-700">{formatPrice(shippingCost, market.currency)}</span>
+                      <div className="flex justify-between text-[12px] text-gray-500">
+                        <span>Envío</span>
+                        <span>Calculado al pagar</span>
                       </div>
 
                       <div className="flex justify-between text-[16px] font-black text-ocean pt-1 border-t border-black/[0.06]">
