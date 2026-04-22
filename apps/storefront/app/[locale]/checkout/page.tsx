@@ -404,6 +404,40 @@ export default function CheckoutPage() {
   // ── COPOMEX (CP → colonias/estado/ciudad) ──────────────────
   const { state: copomex, lookup: lookupCp, reset: resetCopomex } = useCopomex();
 
+  // ── Shipping preview (zone-based, MX) ──────────────────────
+  // Shown while the user types the address. Superseded by `shippingCost`
+  // once Medusa returns the applied shipping method amount at submit.
+  // CDMX + Estado de México → $90, rest of MX → $145, unknown → 0 (hide row).
+  const CDMX_EDOMEX_STATES = new Set([
+    "cdmx",
+    "ciudad de mexico",
+    "distrito federal",
+    "df",
+    "mexico city",
+    "estado de mexico",
+    "mexico",
+    "edo. mex.",
+    "edomex",
+    "edo de mexico",
+  ]);
+  const resolvedStateForPreview =
+    cartRegion === "ars"
+      ? addressAR.province
+      : (copomex.status === "success" ? copomex.data.estado : "") || address.state;
+  const normalizedStateForPreview = (resolvedStateForPreview ?? "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+  const shippingPreview =
+    cartRegion === "ars"
+      ? 0
+      : normalizedStateForPreview === ""
+        ? 0
+        : CDMX_EDOMEX_STATES.has(normalizedStateForPreview)
+          ? 90
+          : 145;
+  const displayShippingCost = shippingCost > 0 ? shippingCost : shippingPreview;
 
   // ── Google Places (street autocomplete) ────────────────────
   const streetInputRef = useRef<HTMLInputElement>(null);
@@ -1552,7 +1586,7 @@ export default function CheckoutPage() {
                       style={{ background: "#E8503A" }}
                     >
                       <Lock size={16} />
-                      Pagar {fmt(confirmedTotal ?? (finalTotal + shippingCost), cartRegion)}
+                      Pagar {fmt(confirmedTotal ?? (finalTotal + displayShippingCost), cartRegion)}
                     </button>
                   )}
                 </motion.div>
@@ -1633,20 +1667,20 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                {shippingCost > 0 && (
+                {displayShippingCost > 0 && (
                   <div className="flex justify-between text-[13px] text-[#6B7280]">
-                    <span>Envío</span>
-                    <span className="font-semibold text-[#005088]">{fmt(shippingCost, cartRegion)}</span>
+                    <span>Envío{shippingCost === 0 && <span className="text-[11px] text-[#9CA3AF] ml-1">(estimado)</span>}</span>
+                    <span className="font-semibold text-[#005088]">{fmt(displayShippingCost, cartRegion)}</span>
                   </div>
                 )}
 
                 <div className="pt-2.5 border-t border-[#E5E7EB] flex justify-between">
                   <span className="text-[15px] font-black text-[#005088]">Total</span>
                   <div className="text-right">
-                    <p className="text-[18px] font-black text-[#005088]">{fmt(confirmedTotal ?? (finalTotal + shippingCost), cartRegion)}</p>
+                    <p className="text-[18px] font-black text-[#005088]">{fmt(confirmedTotal ?? (finalTotal + displayShippingCost), cartRegion)}</p>
                     {(totals.savings > 0 || effectiveCouponDiscount > 0) && (
                       <p className="text-[11px] text-[#6B7280]">
-                        antes {fmt(totals.subtotal + shippingCost, cartRegion)}
+                        antes {fmt(totals.subtotal + displayShippingCost, cartRegion)}
                       </p>
                     )}
                   </div>
