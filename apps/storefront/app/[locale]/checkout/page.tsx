@@ -797,14 +797,26 @@ export default function CheckoutPage() {
 
         // ── Paso 2b: Aplicar shipping method ───────────────────────────────
         const shippingOptions = await medusa.cart.getShippingOptions(cart_id!).catch(() => []);
-        // Medusa may return multiple zone-matching options (e.g. CDMX + Nacional
-        // both match a CDMX address). Pick the cheapest so the user pays the
-        // zone-specific rate, not a stray fallback.
-        const cheapestOption = [...shippingOptions]
-          .filter((o: any) => typeof o?.amount === "number" && o?.id)
-          .sort((a: any, b: any) => a.amount - b.amount)[0];
-        if (cheapestOption?.id) {
-          const shippedCart = await medusa.cart.addShippingMethod(cart_id!, cheapestOption.id);
+        // Medusa returns multiple matching options when zones overlap
+        // (Nacional covers all of MX, so it also matches CDMX addresses).
+        // Pick the option whose amount equals our zone-based preview so the
+        // user always pays the correct zone rate.
+        const validOptions = shippingOptions.filter(
+          (o: any) => typeof o?.amount === "number" && o?.id
+        );
+        const zonalOption =
+          shippingPreview > 0
+            ? validOptions.find((o: any) => o.amount === shippingPreview)
+            : undefined;
+        // Fallback: if no exact match (e.g. admin changed the price), take the
+        // cheapest for CDMX carts and the most expensive for Nacional carts.
+        const pickedOption =
+          zonalOption ??
+          (shippingPreview === 90
+            ? [...validOptions].sort((a: any, b: any) => a.amount - b.amount)[0]
+            : [...validOptions].sort((a: any, b: any) => b.amount - a.amount)[0]);
+        if (pickedOption?.id) {
+          const shippedCart = await medusa.cart.addShippingMethod(cart_id!, pickedOption.id);
           const shippingCost = shippedCart.shipping_methods?.[0]?.amount ?? shippedCart.shipping_total ?? 0;
           chargedTotal = shippedCart.total;
           setConfirmedTotal(shippedCart.total);
