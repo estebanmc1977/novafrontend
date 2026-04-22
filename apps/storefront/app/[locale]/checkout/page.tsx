@@ -1295,8 +1295,11 @@ export default function CheckoutPage() {
                         {copomex.status === "success" && (
                           <CheckCircle2 size={14} className="text-[#3CBFAB]" />
                         )}
-                        {copomex.status === "error" && (
+                        {copomex.status === "error" && !address.colonia.trim() && (
                           <AlertCircle size={14} className="text-[#E8503A]" />
+                        )}
+                        {copomex.status === "error" && address.colonia.trim() && (
+                          <CheckCircle2 size={14} className="text-[#3CBFAB]" />
                         )}
                       </span>
                     </div>
