@@ -797,8 +797,14 @@ export default function CheckoutPage() {
 
         // ── Paso 2b: Aplicar shipping method ───────────────────────────────
         const shippingOptions = await medusa.cart.getShippingOptions(cart_id!).catch(() => []);
-        if (shippingOptions[0]?.id) {
-          const shippedCart = await medusa.cart.addShippingMethod(cart_id!, shippingOptions[0].id);
+        // Medusa may return multiple zone-matching options (e.g. CDMX + Nacional
+        // both match a CDMX address). Pick the cheapest so the user pays the
+        // zone-specific rate, not a stray fallback.
+        const cheapestOption = [...shippingOptions]
+          .filter((o: any) => typeof o?.amount === "number" && o?.id)
+          .sort((a: any, b: any) => a.amount - b.amount)[0];
+        if (cheapestOption?.id) {
+          const shippedCart = await medusa.cart.addShippingMethod(cart_id!, cheapestOption.id);
           const shippingCost = shippedCart.shipping_methods?.[0]?.amount ?? shippedCart.shipping_total ?? 0;
           chargedTotal = shippedCart.total;
           setConfirmedTotal(shippedCart.total);
@@ -1305,14 +1311,14 @@ export default function CheckoutPage() {
                           ✓ {copomex.data.municipio}, {copomex.data.estado}
                         </motion.p>
                       )}
-                      {copomex.status === "error" && (
+                      {copomex.status === "error" && !address.colonia.trim() && (
                         <motion.p
                           initial={{ opacity: 0, y: -4 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0 }}
                           className="text-[11px] text-[#E8503A] flex items-center gap-1"
                         >
-                          <AlertCircle size={11} />CP no encontrado
+                          <AlertCircle size={11} />CP no encontrado — completá colonia manualmente
                         </motion.p>
                       )}
                       {errors.zip && copomex.status !== "error" && (
