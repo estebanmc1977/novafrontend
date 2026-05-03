@@ -35,8 +35,22 @@ export async function POST(req: NextRequest) {
     });
 
     if (!res.ok) {
-      const err = await res.text();
-      console.error(`[influencers] Medusa error ${res.status}:`, err);
+      const errText = await res.text();
+      console.error(`[influencers] Medusa error ${res.status}:`, errText);
+      // Surface 4xx errors verbatim (they carry actionable validation
+      // messages from the backend). Only collapse 5xx into a generic message
+      // so we don't leak server internals.
+      if (res.status >= 400 && res.status < 500) {
+        try {
+          const parsed = JSON.parse(errText) as { error?: string };
+          return NextResponse.json(
+            { error: parsed.error ?? errText },
+            { status: res.status }
+          );
+        } catch {
+          return NextResponse.json({ error: errText || "Solicitud inválida" }, { status: res.status });
+        }
+      }
       return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
     }
 

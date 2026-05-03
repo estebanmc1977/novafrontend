@@ -1058,7 +1058,19 @@ export default function InfluencerForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error("Error del servidor");
+      if (!res.ok) {
+        // Try to surface the backend's validation message when present so the
+        // user can fix the issue (instead of a generic "try again").
+        let message = "No se pudo enviar la postulación. Por favor intentá de nuevo.";
+        try {
+          const data = (await res.json()) as { error?: string };
+          if (data.error) message = data.error;
+        } catch {
+          /* response wasn't JSON — keep generic message */
+        }
+        setSubmitError(message);
+        return;
+      }
       setSubmitted(true);
     } catch {
       setSubmitError("No se pudo enviar la postulación. Por favor intentá de nuevo.");
