@@ -6,26 +6,32 @@ import Image from "next/image";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+interface AddressData {
+  street: string;
+  interior: string;
+  colonia: string;
+  city: string;
+  state: string;
+  zip: string;
+  instructions: string;
+}
+
 interface FormData {
   nombre: string;
   email: string;
-  pais: string;
-  red_principal: string;
-  handle: string;
-  handle_secundario: string;
-  link_perfil: string;
+  // País se fija desde la página (mx). No se pide al usuario.
+  instagram_handle: string;
+  tiktok_handle: string;
   rango_seguidores: string;
   nicho: string[];
   tipo_contenido: string[];
-  genero_audiencia: string;
-  edad_audiencia: string;
   tiene_contenido_bienestar: string;
   marcas_previas: string;
   parches: string[];
-  modalidad: string[];
   media_kit: string;
   media_kit_url: string;
   mensaje_libre: string;
+  direccion: AddressData;
 }
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
@@ -106,12 +112,6 @@ const NICHES = [
 
 const CONTENT_TYPES = [
   "Reels", "Reviews", "Rutinas", "Unboxing", "Educativo", "Vlogs", "Otro",
-];
-
-const MODALIDADES = [
-  "Producto a cambio de contenido",
-  "Colaboración paga",
-  "Embajador a largo plazo",
 ];
 
 const FOLLOWER_RANGES = ["1k–5k", "5k–10k", "10k–50k", "50k–100k", "+100k"];
@@ -424,61 +424,38 @@ function Step1({
         </Field>
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-6">
-        <Field label="País" required>
-          <Select
-            value={data.pais}
-            onChange={(v) => set("pais", v)}
-            placeholder="Seleccioná tu país"
-            error={errors.pais}
-            options={[
-              { value: "mx", label: "México" },
-              { value: "br", label: "Brasil" },
-              { value: "otro", label: "Otro" },
-            ]}
-          />
-        </Field>
-        <Field label="Red social principal" required>
-          <Select
-            value={data.red_principal}
-            onChange={(v) => set("red_principal", v)}
-            placeholder="¿Dónde vivís?"
-            error={errors.red_principal}
-            options={[
-              { value: "instagram", label: "Instagram" },
-              { value: "tiktok", label: "TikTok" },
-            ]}
-          />
-        </Field>
+      <div>
+        <p
+          className="text-xs mb-3"
+          style={{ color: "rgba(13,27,53,0.5)" }}
+        >
+          Indicá al menos uno de tus handles. Sin el @ — usamos el handle para
+          armar el link de tu perfil automáticamente.
+        </p>
+        <div className="grid sm:grid-cols-2 gap-6">
+          <Field label="Instagram">
+            <Input
+              value={data.instagram_handle}
+              onChange={(v) => set("instagram_handle", v.replace(/^@/, ""))}
+              placeholder="ej: novapatch_mx"
+              error={errors.instagram_handle}
+            />
+          </Field>
+          <Field label="TikTok">
+            <Input
+              value={data.tiktok_handle}
+              onChange={(v) => set("tiktok_handle", v.replace(/^@/, ""))}
+              placeholder="ej: novapatch_mx"
+              error={errors.tiktok_handle}
+            />
+          </Field>
+        </div>
+        {errors.handles && (
+          <p className="mt-2 text-xs" style={{ color: CORAL }}>
+            {errors.handles}
+          </p>
+        )}
       </div>
-
-      <div className="grid sm:grid-cols-2 gap-6">
-        <Field label="Tu handle / @" required>
-          <Input
-            value={data.handle}
-            onChange={(v) => set("handle", v)}
-            placeholder="Sin el @, ej: novapatch_mx"
-            error={errors.handle}
-          />
-        </Field>
-        <Field label="Handle secundario">
-          <Input
-            value={data.handle_secundario}
-            onChange={(v) => set("handle_secundario", v)}
-            placeholder="Segunda red activa (opcional)"
-          />
-        </Field>
-      </div>
-
-      <Field label="Link a tu perfil público" required>
-        <Input
-          type="url"
-          value={data.link_perfil}
-          onChange={(v) => set("link_perfil", v)}
-          placeholder="https://instagram.com/tu_usuario"
-          error={errors.link_perfil}
-        />
-      </Field>
     </div>
   );
 }
@@ -523,36 +500,6 @@ function Step2({
           error={errors.tipo_contenido}
         />
       </Field>
-
-      <div className="grid sm:grid-cols-2 gap-6 items-end">
-        <Field label="Género mayoritario de tu audiencia" required>
-          <Select
-            value={data.genero_audiencia}
-            onChange={(v) => set("genero_audiencia", v)}
-            placeholder="Género predominante"
-            error={errors.genero_audiencia}
-            options={[
-              { value: "femenino", label: "Mayormente femenino" },
-              { value: "masculino", label: "Mayormente masculino" },
-              { value: "mixto", label: "Mixto" },
-            ]}
-          />
-        </Field>
-        <Field label="Rango etario de tu audiencia" required>
-          <Select
-            value={data.edad_audiencia}
-            onChange={(v) => set("edad_audiencia", v)}
-            placeholder="Edad predominante"
-            error={errors.edad_audiencia}
-            options={[
-              { value: "18-24", label: "18–24" },
-              { value: "25-34", label: "25–34" },
-              { value: "35-44", label: "35–44" },
-              { value: "45+", label: "45+" },
-            ]}
-          />
-        </Field>
-      </div>
 
       <Field label="¿Ya creás contenido de bienestar o suplementos?" required>
         <RadioGroup
@@ -691,11 +638,13 @@ function Step3({
   data,
   set,
   setArr,
+  setAddr,
   errors,
 }: {
   data: FormData;
   set: (k: keyof FormData, v: string) => void;
   setArr: (k: keyof FormData, v: string[]) => void;
+  setAddr: (k: keyof AddressData, v: string) => void;
   errors: Record<string, string>;
 }) {
   return (
@@ -740,14 +689,85 @@ function Step3({
         )}
       </Field>
 
-      <Field label="¿Cómo te gustaría colaborar?" required>
-        <ChipSelect
-          options={MODALIDADES}
-          selected={data.modalidad}
-          onChange={(v) => setArr("modalidad", v)}
-          error={errors.modalidad}
-        />
-      </Field>
+      <div>
+        <h4
+          className="text-sm font-bold mb-1"
+          style={{ color: NAVY }}
+        >
+          ¿A dónde te enviamos tus parches?
+        </h4>
+        <p
+          className="text-xs mb-4"
+          style={{ color: "rgba(13,27,53,0.5)" }}
+        >
+          Si te seleccionamos, mandamos los parches a esta dirección. Solo MX
+          por ahora.
+        </p>
+        <div className="flex flex-col gap-5">
+          <Field label="Calle y número exterior" required>
+            <Input
+              value={data.direccion.street}
+              onChange={(v) => setAddr("street", v)}
+              placeholder="Ej: Insurgentes Sur 1234"
+              error={errors["direccion.street"]}
+            />
+          </Field>
+
+          <div className="grid sm:grid-cols-2 gap-5">
+            <Field label="Número interior">
+              <Input
+                value={data.direccion.interior}
+                onChange={(v) => setAddr("interior", v.slice(0, 20))}
+                placeholder="Depto, oficina (opcional)"
+              />
+            </Field>
+            <Field label="Código postal" required>
+              <Input
+                value={data.direccion.zip}
+                onChange={(v) => setAddr("zip", v.replace(/\D/g, "").slice(0, 5))}
+                placeholder="5 dígitos"
+                error={errors["direccion.zip"]}
+              />
+            </Field>
+          </div>
+
+          <Field label="Colonia" required>
+            <Input
+              value={data.direccion.colonia}
+              onChange={(v) => setAddr("colonia", v)}
+              placeholder="Nombre de la colonia"
+              error={errors["direccion.colonia"]}
+            />
+          </Field>
+
+          <div className="grid sm:grid-cols-2 gap-5">
+            <Field label="Ciudad / Alcaldía" required>
+              <Input
+                value={data.direccion.city}
+                onChange={(v) => setAddr("city", v)}
+                placeholder="Ej: Benito Juárez"
+                error={errors["direccion.city"]}
+              />
+            </Field>
+            <Field label="Estado" required>
+              <Input
+                value={data.direccion.state}
+                onChange={(v) => setAddr("state", v)}
+                placeholder="Ej: CDMX"
+                error={errors["direccion.state"]}
+              />
+            </Field>
+          </div>
+
+          <Field label="Instrucciones de entrega">
+            <Input
+              value={data.direccion.instructions}
+              onChange={(v) => setAddr("instructions", v.slice(0, 200))}
+              placeholder="Referencias, horario preferido (opcional)"
+            />
+          </Field>
+        </div>
+      </div>
 
       <Field label="¿Tenés media kit?">
         <RadioGroup
@@ -931,14 +951,19 @@ function SuccessScreen({ nombre }: { nombre: string }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
+const EMPTY_ADDRESS: AddressData = {
+  street: "", interior: "", colonia: "", city: "", state: "", zip: "",
+  instructions: "",
+};
+
 const EMPTY: FormData = {
-  nombre: "", email: "", pais: "", red_principal: "", handle: "",
-  handle_secundario: "", link_perfil: "",
+  nombre: "", email: "",
+  instagram_handle: "", tiktok_handle: "",
   rango_seguidores: "", nicho: [], tipo_contenido: [],
-  genero_audiencia: "", edad_audiencia: "",
   tiene_contenido_bienestar: "", marcas_previas: "",
-  parches: [], modalidad: [], media_kit: "", media_kit_url: "",
+  parches: [], media_kit: "", media_kit_url: "",
   mensaje_libre: "",
+  direccion: EMPTY_ADDRESS,
 };
 
 const slideVariants = {
@@ -968,32 +993,38 @@ export default function InfluencerForm() {
   const setArr = (k: keyof FormData, v: string[]) =>
     setData((d) => ({ ...d, [k]: v }));
 
+  const setAddr = (k: keyof AddressData, v: string) =>
+    setData((d) => ({ ...d, direccion: { ...d.direccion, [k]: v } }));
+
   const validate = (s: number): Record<string, string> => {
     const e: Record<string, string> = {};
     if (s === 0) {
       if (!data.nombre.trim()) e.nombre = "Requerido";
       if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
         e.email = "Ingresá un email válido";
-      if (!data.pais) e.pais = "Requerido";
-      if (!data.red_principal) e.red_principal = "Requerido";
-      if (!data.handle.trim()) e.handle = "Requerido";
-      if (!data.link_perfil.trim()) e.link_perfil = "Requerido";
+      // Al menos un handle (Instagram o TikTok). Ninguno es obligatorio
+      // por separado, pero al menos uno tiene que estar.
+      if (!data.instagram_handle.trim() && !data.tiktok_handle.trim()) {
+        e.handles = "Indicá al menos un handle: Instagram o TikTok";
+      }
     }
     if (s === 1) {
       if (!data.rango_seguidores) e.rango_seguidores = "Requerido";
       if (!data.nicho.length) e.nicho = "Elegí al menos un nicho";
       if (!data.tipo_contenido.length)
         e.tipo_contenido = "Elegí al menos un tipo";
-      if (!data.genero_audiencia) e.genero_audiencia = "Requerido";
-      if (!data.edad_audiencia) e.edad_audiencia = "Requerido";
       if (!data.tiene_contenido_bienestar)
         e.tiene_contenido_bienestar = "Requerido";
     }
     if (s === 2) {
       if (!data.parches.length)
         e.parches = "Elegí al menos un parche";
-      if (!data.modalidad.length)
-        e.modalidad = "Elegí al menos una modalidad";
+      const a = data.direccion;
+      if (!a.street.trim()) e["direccion.street"] = "Requerido";
+      if (!a.colonia.trim()) e["direccion.colonia"] = "Requerido";
+      if (!a.city.trim()) e["direccion.city"] = "Requerido";
+      if (!a.state.trim()) e["direccion.state"] = "Requerido";
+      if (!/^\d{5}$/.test(a.zip)) e["direccion.zip"] = "5 dígitos";
     }
     return e;
   };
@@ -1019,10 +1050,13 @@ export default function InfluencerForm() {
     setSubmitting(true);
     setSubmitError("");
     try {
+      // Esta página solo se usa para MX. El backend igual valida el campo
+      // pais, así que lo enviamos hardcoded.
+      const payload = { ...data, pais: "mx" };
       const res = await fetch("/api/influencers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error("Error del servidor");
       setSubmitted(true);
@@ -1126,6 +1160,7 @@ export default function InfluencerForm() {
                       data={data}
                       set={set}
                       setArr={setArr}
+                      setAddr={setAddr}
                       errors={errors}
                     />
                   )}

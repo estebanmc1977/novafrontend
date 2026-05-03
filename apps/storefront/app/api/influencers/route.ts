@@ -4,11 +4,18 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    const required = ["nombre", "email", "pais", "red_principal", "handle", "link_perfil"];
+    const required = ["nombre", "email", "pais"];
     for (const field of required) {
       if (!body[field]) {
         return NextResponse.json({ error: `Campo requerido: ${field}` }, { status: 400 });
       }
+    }
+    // At least one of Instagram / TikTok handle must be present.
+    if (!body.instagram_handle && !body.tiktok_handle) {
+      return NextResponse.json(
+        { error: "Indicá al menos un handle: Instagram o TikTok" },
+        { status: 400 }
+      );
     }
 
     const medusaUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL;
