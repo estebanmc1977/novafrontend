@@ -252,6 +252,20 @@ const cart = {
   },
 
   /**
+   * GET /store/carts/:id
+   * Trae el carrito por ID. Usado por el flujo de recuperación de carrito
+   * (email enviado a las 11 h de abandono — el link aterriza en
+   * /[locale]/cart-recovery, que llama a este método para verificar que
+   * el carrito sigue activo antes de redirigir al checkout).
+   */
+  async retrieve(cart_id: string): Promise<MedusaCart & { completed_at?: string | null }> {
+    const data = await medusaFetch<{ cart: MedusaCart & { completed_at?: string | null } }>(
+      `/store/carts/${encodeURIComponent(cart_id)}`
+    );
+    return data.cart;
+  },
+
+  /**
    * Garantiza que existe un carrito en Medusa, creándolo si hace falta.
    * El customer_id es ignorado — la asociación ocurre via Bearer token automáticamente.
    */
