@@ -5,8 +5,8 @@ import InfluencerHero from "./InfluencerHero";
 import InfluencerForm from "./InfluencerForm";
 
 export const metadata: Metadata = {
-  title: "Programa de Influencers | Novapatch",
-  description: "Únete a la red de embajadores de Novapatch. Aplica ahora y comienza a compartir el bienestar.",
+  title: "Creadores | Novapatch",
+  description: "Estamos armando una red chica de creadores en México. Si lo que haces conecta con el bienestar real, hablemos.",
   robots: { index: false, follow: false },
 };
 

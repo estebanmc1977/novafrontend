@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 
 const VALUE_PROPS = [
-  { label: "Productos gratis", sub: "a cambio de contenido auténtico" },
+  { label: "Productos para ti", sub: "te los mandamos para que los pruebes" },
   { label: "Colaboraciones pagas", sub: "para perfiles seleccionados" },
   { label: "Comunidad real", sub: "de creadores de bienestar en LATAM" },
 ];
@@ -65,7 +65,7 @@ export default function InfluencerHero() {
                 className="w-1.5 h-1.5 rounded-full"
                 style={{ background: "#E8503A", boxShadow: "0 0 8px #E8503A" }}
               />
-              Programa de Embajadores · México 2026
+              Creadores Novapatch · México
             </span>
           </motion.div>
 
@@ -102,7 +102,7 @@ export default function InfluencerHero() {
             className="text-lg leading-relaxed mb-12"
             style={{ color: "rgba(255,255,255,0.5)", maxWidth: 480 }}
           >
-            Únete a la red de embajadores de Novapatch. Gana acceso anticipado a nuevos parches, colaboraciones pagadas y una comunidad que apuesta por el bienestar real.
+            Estamos armando una red chica de creadores con quienes queremos construir Novapatch en México. Si lo que haces conecta con el bienestar real, nos encantaría conocerte.
           </motion.p>
 
           {/* Value props */}
@@ -142,7 +142,7 @@ export default function InfluencerHero() {
               boxShadow: "0 4px 24px rgba(232,80,58,0.35)",
             }}
           >
-            Quiero aplicar
+            Hablemos
             <svg
               width="18"
               height="18"

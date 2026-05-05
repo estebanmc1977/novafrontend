@@ -429,7 +429,7 @@ function Step1({
           className="text-xs mb-3"
           style={{ color: "rgba(13,27,53,0.5)" }}
         >
-          Indicá al menos uno de tus handles. Sin el @ — usamos el handle para
+          Indica al menos uno de tus handles. Sin el @ — usamos el handle para
           armar el link de tu perfil automáticamente.
         </p>
         <div className="grid sm:grid-cols-2 gap-6">
@@ -477,7 +477,7 @@ function Step2({
         <Select
           value={data.rango_seguidores}
           onChange={(v) => set("rango_seguidores", v)}
-          placeholder="¿Cuántos seguidores tenés?"
+          placeholder="¿Cuántos seguidores tienes?"
           error={errors.rango_seguidores}
           options={FOLLOWER_RANGES.map((r) => ({ value: r, label: r }))}
         />
@@ -501,7 +501,7 @@ function Step2({
         />
       </Field>
 
-      <Field label="¿Ya creás contenido de bienestar o suplementos?" required>
+      <Field label="¿Ya creas contenido de bienestar o suplementos?" required>
         <RadioGroup
           value={data.tiene_contenido_bienestar}
           onChange={(v) => set("tiene_contenido_bienestar", v)}
@@ -649,10 +649,10 @@ function Step3({
 }) {
   return (
     <div className="flex flex-col gap-7">
-      <Field label="¿Con qué parches Novapatch te identificás?" required>
+      <Field label="¿Con qué parches Novapatch te identificas?" required>
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs" style={{ color: "rgba(13,27,53,0.4)" }}>
-            Elegí hasta 6
+            Elige hasta 6
           </span>
           <span
             className="text-xs font-semibold tabular-nums"
@@ -700,7 +700,7 @@ function Step3({
           className="text-xs mb-4"
           style={{ color: "rgba(13,27,53,0.5)" }}
         >
-          Si te seleccionamos, mandamos los parches a esta dirección. Solo MX
+          Si colaboramos, te mandamos los parches a esta dirección. Solo MX
           por ahora.
         </p>
         <div className="flex flex-col gap-5">
@@ -769,7 +769,7 @@ function Step3({
         </div>
       </div>
 
-      <Field label="¿Tenés media kit?">
+      <Field label="¿Tienes media kit?">
         <RadioGroup
           value={data.media_kit}
           onChange={(v) => set("media_kit", v)}
@@ -805,7 +805,7 @@ function Step3({
             onChange={(e) => set("mensaje_libre", e.target.value)}
             maxLength={300}
             rows={4}
-            placeholder="Contanos algo sobre vos o tu comunidad..."
+            placeholder="Cuéntanos algo sobre ti o tu comunidad..."
             style={{
               ...inputBase,
               resize: "vertical",
@@ -923,7 +923,7 @@ function SuccessScreen({ nombre }: { nombre: string }) {
           className="text-base leading-relaxed"
           style={{ color: "rgba(13,27,53,0.55)", maxWidth: 380, margin: "0 auto" }}
         >
-          Recibimos tu postulación. Nuestro equipo la revisará en los próximos 7 días hábiles y te contactaremos por email.
+          Listo, ya tenemos tu info. Te escribimos pronto para ver cómo seguimos.
         </p>
       </div>
       <div
@@ -1001,24 +1001,24 @@ export default function InfluencerForm() {
     if (s === 0) {
       if (!data.nombre.trim()) e.nombre = "Requerido";
       if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
-        e.email = "Ingresá un email válido";
+        e.email = "Ingresa un email válido";
       // Al menos un handle (Instagram o TikTok). Ninguno es obligatorio
       // por separado, pero al menos uno tiene que estar.
       if (!data.instagram_handle.trim() && !data.tiktok_handle.trim()) {
-        e.handles = "Indicá al menos un handle: Instagram o TikTok";
+        e.handles = "Indica al menos un handle: Instagram o TikTok";
       }
     }
     if (s === 1) {
       if (!data.rango_seguidores) e.rango_seguidores = "Requerido";
-      if (!data.nicho.length) e.nicho = "Elegí al menos un nicho";
+      if (!data.nicho.length) e.nicho = "Elige al menos un nicho";
       if (!data.tipo_contenido.length)
-        e.tipo_contenido = "Elegí al menos un tipo";
+        e.tipo_contenido = "Elige al menos un tipo";
       if (!data.tiene_contenido_bienestar)
         e.tiene_contenido_bienestar = "Requerido";
     }
     if (s === 2) {
       if (!data.parches.length)
-        e.parches = "Elegí al menos un parche";
+        e.parches = "Elige al menos un parche";
       const a = data.direccion;
       if (!a.street.trim()) e["direccion.street"] = "Requerido";
       if (!a.colonia.trim()) e["direccion.colonia"] = "Requerido";
@@ -1061,7 +1061,7 @@ export default function InfluencerForm() {
       if (!res.ok) {
         // Try to surface the backend's validation message when present so the
         // user can fix the issue (instead of a generic "try again").
-        let message = "No se pudo enviar la postulación. Por favor intentá de nuevo.";
+        let message = "No se pudo enviar el formulario. Por favor inténtalo de nuevo.";
         try {
           const data = (await res.json()) as { error?: string };
           if (data.error) message = data.error;
@@ -1073,7 +1073,7 @@ export default function InfluencerForm() {
       }
       setSubmitted(true);
     } catch {
-      setSubmitError("No se pudo enviar la postulación. Por favor intentá de nuevo.");
+      setSubmitError("No se pudo enviar el formulario. Por favor inténtalo de nuevo.");
     } finally {
       setSubmitting(false);
     }
@@ -1093,13 +1093,13 @@ export default function InfluencerForm() {
               className="text-xs font-semibold tracking-widest uppercase mb-3"
               style={{ color: CORAL }}
             >
-              Postulación
+              Colaboremos
             </p>
             <h2
               className="text-4xl font-bold mb-3"
               style={{ color: NAVY, letterSpacing: "-0.02em" }}
             >
-              Aplicá al programa
+              Cuéntanos sobre ti
             </h2>
             <p
               className="text-base"
@@ -1131,7 +1131,7 @@ export default function InfluencerForm() {
                   className="text-xl font-bold"
                   style={{ color: NAVY }}
                 >
-                  {step === 0 && "Cuéntanos quién sos"}
+                  {step === 0 && "Cuéntanos quién eres"}
                   {step === 1 && "Tu comunidad y contenido"}
                   {step === 2 && "Tu fit con Novapatch"}
                 </h3>
@@ -1140,8 +1140,8 @@ export default function InfluencerForm() {
                   style={{ color: "rgba(13,27,53,0.4)" }}
                 >
                   {step === 0 && "Datos básicos para conocerte"}
-                  {step === 1 && "Cuéntanos sobre tu audiencia y lo que creás"}
-                  {step === 2 && "El paso final para completar tu postulación"}
+                  {step === 1 && "Cuéntanos sobre tu audiencia y lo que creas"}
+                  {step === 2 && "Último paso y listo"}
                 </p>
               </div>
 
@@ -1242,7 +1242,7 @@ export default function InfluencerForm() {
                     className="flex items-center gap-2.5 px-7 py-3.5 rounded-full font-semibold text-sm text-white transition-all hover:shadow-xl disabled:opacity-60"
                     style={{ background: CORAL }}
                   >
-                    {submitting ? "Enviando..." : "Enviar postulación"}
+                    {submitting ? "Enviando..." : "Quiero colaborar"}
                     {!submitting && (
                       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
                         <path
@@ -1265,7 +1265,7 @@ export default function InfluencerForm() {
           className="text-center text-xs mt-6 leading-relaxed"
           style={{ color: "rgba(13,27,53,0.3)" }}
         >
-          Al enviar esta postulación confirmás que leíste y aceptás los{" "}
+          Al enviar este formulario confirmas que leíste y aceptas los{" "}
           <a href="/terminos-influencers" target="_blank" rel="noopener noreferrer" style={{ color: CORAL, fontWeight: 500 }}>
             Términos de Colaboración para Influencers
           </a>
