@@ -40,10 +40,24 @@ jobs:
         id: latency
         env:
           PROD_URL: https://www.novapatch.care
+          THRESHOLD: "3.0"
         run: |
-          TTFB=$(curl -s -o /dev/null -w "%{time_starttransfer}" -L --max-time 10 "$PROD_URL")
-          echo "ttfb=$TTFB" >> "$GITHUB_OUTPUT"
-          python3 -c "import sys; sys.exit(1 if float('$TTFB') > 3.0 else 0)"
+          # Warm-up request — discarded. Vercel serverless cold starts can hit
+          # 4-5s on first hit after idle, which is not a real signal of perf
+          # regression. Follow-up requests reflect actual performance.
+          curl -s -o /dev/null -L --max-time 10 "$PROD_URL" || true
+
+          # Take 3 timed samples and use the median. A single noisy spike no
+          # longer trips the alert; only sustained slowness does.
+          T1=$(curl -s -o /dev/null -w "%{time_starttransfer}" -L --max-time 10 "$PROD_URL")
+          T2=$(curl -s -o /dev/null -w "%{time_starttransfer}" -L --max-time 10 "$PROD_URL")
+          T3=$(curl -s -o /dev/null -w "%{time_starttransfer}" -L --max-time 10 "$PROD_URL")
+
+          MEDIAN=$(T1="$T1" T2="$T2" T3="$T3" python3 -c "import os, statistics; print(statistics.median([float(os.environ['T1']), float(os.environ['T2']), float(os.environ['T3'])]))")
+          echo "Samples: $T1 / $T2 / $T3 — median=$MEDIAN"
+          echo "ttfb=$MEDIAN" >> "$GITHUB_OUTPUT"
+
+          MEDIAN="$MEDIAN" THRESHOLD="$THRESHOLD" python3 -c "import os, sys; sys.exit(1 if float(os.environ['MEDIAN']) > float(os.environ['THRESHOLD']) else 0)"
 
       - name: Notify Slack on failure
         if: failure()
