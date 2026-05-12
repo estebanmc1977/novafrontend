@@ -4,6 +4,13 @@ name: Smoke Tests
 on:
   pull_request:
     branches: [main]
+  # Manual trigger — useful for the pre-checkout smoke which is safe to
+  # run anytime (no real order created, no charge).
+  workflow_dispatch:
+  # Nightly safety net at 06:00 UTC (00:00 CDMX). If a third-party
+  # (Envia, Openpay, Resend) breaks overnight, alert fires before users.
+  schedule:
+    - cron: "0 6 * * *"
 
 jobs:
   smoke:
