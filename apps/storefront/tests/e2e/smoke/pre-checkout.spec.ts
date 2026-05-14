@@ -68,6 +68,15 @@ test.describe("pre-checkout funnel — validates the path up to payment", () => 
   )
 
   test("full pre-checkout flow ends with a created payment session", async ({ request }) => {
+    // The /store/shipping-options call alone can take 5-10s because the
+    // backend quotes 4 MX carriers in parallel via Envia. Combined with the
+    // 6 other API hops in this flow we routinely land in the 15-25s range.
+    // Default Playwright timeout (30s) was tripping on the slowest carrier
+    // — bump to 2 min so a legitimately slow Envia response doesn't false-
+    // alert us on the smoke.
+    test.setTimeout(120_000)
+
+
     // ── 1. Pull a real variant to add to the cart ────────────────────────────
     const productsRes = await api(request, "/store/products?limit=1")
     expect(productsRes.status(), "products endpoint should return 200").toBe(200)
