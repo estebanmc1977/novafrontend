@@ -19,6 +19,7 @@ interface AddressData {
 interface FormData {
   nombre: string;
   email: string;
+  telefono: string;
   // País se fija desde la página (mx). No se pide al usuario.
   instagram_handle: string;
   tiktok_handle: string;
@@ -422,6 +423,25 @@ function Step1({
             error={errors.email}
           />
         </Field>
+      </div>
+
+      <div>
+        <Field label="Teléfono móvil" required>
+          <Input
+            type="tel"
+            value={data.telefono}
+            onChange={(v) => set("telefono", v.replace(/\D/g, "").slice(0, 10))}
+            placeholder="55 1234 5678"
+            error={errors.telefono}
+          />
+        </Field>
+        <p
+          className="text-xs mt-2"
+          style={{ color: "rgba(13,27,53,0.5)" }}
+        >
+          Necesitamos tu número para que el repartidor pueda contactarte cuando
+          entregue tus muestras. No lo usamos para marketing.
+        </p>
       </div>
 
       <div>
@@ -957,7 +977,7 @@ const EMPTY_ADDRESS: AddressData = {
 };
 
 const EMPTY: FormData = {
-  nombre: "", email: "",
+  nombre: "", email: "", telefono: "",
   instagram_handle: "", tiktok_handle: "",
   rango_seguidores: "", nicho: [], tipo_contenido: [],
   tiene_contenido_bienestar: "", marcas_previas: "",
@@ -1002,6 +1022,8 @@ export default function InfluencerForm() {
       if (!data.nombre.trim()) e.nombre = "Requerido";
       if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
         e.email = "Ingresa un email válido";
+      if (!/^\d{10}$/.test(data.telefono))
+        e.telefono = "Ingresa 10 dígitos (sin lada del país)";
       // Al menos un handle (Instagram o TikTok). Ninguno es obligatorio
       // por separado, pero al menos uno tiene que estar.
       if (!data.instagram_handle.trim() && !data.tiktok_handle.trim()) {
