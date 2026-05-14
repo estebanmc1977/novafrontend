@@ -114,11 +114,15 @@ test.describe("pre-checkout funnel — validates the path up to payment", () => 
     expect(cartWithItem?.items?.length, "cart should have exactly 1 line item").toBe(1)
 
     // ── 4. Update cart with email + shipping address ─────────────────────────
+    // metadata.smoke_test=true tells the cart-recovery job to skip this
+    // cart — without it, every smoke run would queue a recovery email to
+    // a fake address 11h later, producing Resend bounces.
     const updateRes = await api(request, `/store/carts/${cartId}`, {
       method: "POST",
       data: {
         email: "smoke-test@novapatch.care",
         shipping_address: TEST_SHIPPING_ADDRESS,
+        metadata: { smoke_test: true },
       },
     })
     expect(updateRes.status(), "update cart with address should return 200").toBe(200)
