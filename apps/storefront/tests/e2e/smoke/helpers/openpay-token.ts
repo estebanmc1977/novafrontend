@@ -39,6 +39,7 @@ export async function createOpenpayToken(input: OpenpayTokenInput): Promise<stri
       expiration_month: card.expirationMonth,
       cvv2: card.cvv,
     }),
+    signal: AbortSignal.timeout(10_000),
   })
 
   if (!res.ok) {
