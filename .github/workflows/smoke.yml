@@ -10,12 +10,14 @@ on:
   # Nightly safety net at 06:00 UTC (00:00 CDMX). If a third-party
   # (Envia, Openpay, Resend) breaks overnight, alert fires before users.
   schedule:
-    - cron: "0 6 * * *"
+    - cron: "0 6 * * *"     # Daily L3 (pre-checkout, no charge)
+    - cron: "0 6 * * 1"     # Weekly L4 (full checkout, real residual charge)
 
 jobs:
   smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    if: github.event_name != 'schedule' || github.event.schedule == '0 6 * * *'
     steps:
       - uses: actions/checkout@v4
 
@@ -93,3 +95,82 @@ jobs:
           | curl -s -X POST "$SLACK_WEBHOOK_URL" \
               -H "Content-Type: application/json" \
               -d @-
+
+  full-checkout:
+    # L4 smoke — runs against PROD with a real (residual) charge.
+    # Manual trigger always available. Schedule = weekly Mondays 06:00 UTC.
+    # The daily L3 smoke (job: smoke) is the safety net for everything else.
+    #
+    # The `if:` below uses github.event.schedule to ensure this job runs
+    # ONLY on the Monday cron (not the daily one). Combined with the L3 job's
+    # mirror filter (see step 3), each cron line triggers exactly one job.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && github.event.schedule == '0 6 * * 1')
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: apps/storefront/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: apps/storefront
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install chromium --with-deps
+        working-directory: apps/storefront
+
+      - name: Run L4 full-checkout smoke
+        run: pnpm exec playwright test tests/e2e/smoke/full-checkout.spec.ts --reporter=line
+        working-directory: apps/storefront
+        env:
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${{ secrets.MEDUSA_PUBLISHABLE_KEY }}
+          PROD_ADMIN_API_KEY: ${{ secrets.PROD_ADMIN_API_KEY }}
+          SMOKE_PROMO_CODE: ${{ secrets.SMOKE_PROMO_CODE }}
+          SMOKE_VARIANT_ID: ${{ secrets.SMOKE_VARIANT_ID }}
+          SMOKE_OPENPAY_MERCHANT_ID: ${{ secrets.SMOKE_OPENPAY_MERCHANT_ID }}
+          SMOKE_OPENPAY_PRIVATE_KEY: ${{ secrets.SMOKE_OPENPAY_PRIVATE_KEY }}
+          SMOKE_CARD_NUMBER: ${{ secrets.SMOKE_CARD_NUMBER }}
+          SMOKE_CARD_CVV: ${{ secrets.SMOKE_CARD_CVV }}
+          SMOKE_CARD_EXP_MONTH: ${{ secrets.SMOKE_CARD_EXP_MONTH }}
+          SMOKE_CARD_EXP_YEAR: ${{ secrets.SMOKE_CARD_EXP_YEAR }}
+          SMOKE_CARD_HOLDER_NAME: ${{ secrets.SMOKE_CARD_HOLDER_NAME }}
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-l4-report
+          path: apps/storefront/playwright-report/
+
+      - name: Notify Slack on failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          jq -n \
+            --arg run_url "$RUN_URL" \
+            '{
+              text: ":x: *L4 full-checkout smoke FAILED*",
+              blocks: [
+                {
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text: (":x: *L4 full-checkout smoke FAILED*\nWebhook, charge, or order creation broke in PROD.\n*Run:* <" + $run_url + "|Ver logs>")
+                  }
+                }
+              ]
+            }' | curl -X POST -H "Content-Type: application/json" -d @- "$SLACK_WEBHOOK_URL"
