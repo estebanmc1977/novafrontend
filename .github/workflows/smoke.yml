@@ -7,6 +7,11 @@ on:
   # Manual trigger — useful for the pre-checkout smoke which is safe to
   # run anytime (no real order created, no charge).
   workflow_dispatch:
+    inputs:
+      run_l4:
+        description: "Also run L4 full-checkout (REAL charge ~$1-5 MXN)?"
+        type: boolean
+        default: false
   # Nightly safety net at 06:00 UTC (00:00 CDMX). If a third-party
   # (Envia, Openpay, Resend) breaks overnight, alert fires before users.
   schedule:
@@ -106,7 +111,7 @@ jobs:
     # mirror filter (see step 3), each cron line triggers exactly one job.
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && github.event.schedule == '0 6 * * 1')
+    if: (github.event_name == 'workflow_dispatch' && inputs.run_l4 == true) || (github.event_name == 'schedule' && github.event.schedule == '0 6 * * 1')
     steps:
       - uses: actions/checkout@v4
 
