@@ -209,6 +209,8 @@ test.describe("full-checkout smoke (L4) — PRODUCTION, real charge", () => {
           const body = await orderRes.json()
           order = body.order
           if (order?.payment_status === "captured") break
+        } else {
+          console.warn(`[smoke L4] polling /admin/orders/${orderId} returned ${orderRes.status()} — retrying`)
         }
         await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS))
       }
