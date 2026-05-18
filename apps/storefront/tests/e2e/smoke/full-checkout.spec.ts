@@ -184,9 +184,15 @@ test.describe("full-checkout smoke (L4) — PRODUCTION, real charge", () => {
       expect(openpayTokenId, "Openpay token should be created").toBeTruthy()
 
       // ── 8. Complete checkout — REAL CHARGE HAPPENS HERE ──────────────────────
+      // device_session_id is required by Openpay's antifraud — in the browser
+      // it comes from their SDK; from a server-side test we synthesize a UUID
+      // since we're not actually doing device fingerprinting.
       const completeRes = await api(request, `/store/carts/${cartId}/complete`, {
         method: "POST",
-        data: { openpay_token_id: openpayTokenId },
+        data: {
+          openpay_token_id: openpayTokenId,
+          device_session_id: crypto.randomUUID(),
+        },
       })
       expect(completeRes.status(), `complete should succeed: ${await completeRes.text()}`).toBe(200)
       const completeBody = await completeRes.json()
