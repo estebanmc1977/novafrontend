@@ -16,7 +16,12 @@ on:
   # (Envia, Openpay, Resend) breaks overnight, alert fires before users.
   schedule:
     - cron: "0 6 * * *"     # Daily L3 (pre-checkout, no charge)
-    - cron: "0 6 * * 1"     # Weekly L4 (full checkout, real residual charge)
+    # L4 weekly cron disabled (2026-05-18) — Openpay producción forza 3DS en
+    # MX y el smoke no puede completar 3DS unattended. Mientras tanto
+    # validamos checkout manualmente cada lunes (ver docs/runbooks/smoke-manual-semanal.md).
+    # El job full-checkout sigue disparable vía workflow_dispatch + run_l4 input
+    # por si en el futuro Openpay habilita bypass o cambiamos de estrategia.
+    # - cron: "0 6 * * 1"
 
 jobs:
   smoke:
