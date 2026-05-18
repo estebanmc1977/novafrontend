@@ -191,7 +191,7 @@ test.describe("full-checkout smoke (L4) — PRODUCTION, real charge", () => {
         method: "POST",
         data: {
           openpay_token_id: openpayTokenId,
-          device_session_id: crypto.randomUUID(),
+          device_session_id: crypto.randomUUID().replace(/-/g, ""),
         },
       })
       expect(completeRes.status(), `complete should succeed: ${await completeRes.text()}`).toBe(200)
