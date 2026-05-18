@@ -129,12 +129,16 @@ test.describe("full-checkout smoke (L4) — PRODUCTION, real charge", () => {
       })
       expect(updateRes.status(), "set address should succeed").toBe(200)
 
-      // ── 4. Apply the 99% off + free shipping promo ───────────────────────────
+      // ── 4. Apply the discount + free-shipping promos ─────────────────────────
+      // SMOKE_PROMO_CODE is comma-separated: typically one code for product
+      // discount and one for free shipping (Medusa v2 = one application
+      // method per promo, so two promos stacked).
+      const promoCodes = PROMO_CODE.split(",").map((c) => c.trim()).filter(Boolean)
       const promoRes = await api(request, `/store/carts/${cartId}/promotions`, {
         method: "POST",
-        data: { promo_codes: [PROMO_CODE] },
+        data: { promo_codes: promoCodes },
       })
-      expect(promoRes.status(), "apply promo should succeed (check promo not expired)").toBe(200)
+      expect(promoRes.status(), `apply promos should succeed (check promos not expired): ${promoCodes.join(", ")}`).toBe(200)
 
       // ── 5. Apply shipping method ─────────────────────────────────────────────
       const shippingRes = await api(
