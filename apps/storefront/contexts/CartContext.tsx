@@ -19,6 +19,12 @@ export type AppliedCoupon = {
   label: string;
   /** "order" → applies to subtotal; "shipping" → applies to shipping at checkout */
   kind: "order" | "shipping";
+  /**
+   * true when Medusa accepted the request but didn't attach the promo to the
+   * cart yet — typically a shipping promo applied before a shipping_method is
+   * set. The code is retried at checkout after shipping is applied.
+   */
+  deferred?: boolean;
 };
 
 type CartContextType = {

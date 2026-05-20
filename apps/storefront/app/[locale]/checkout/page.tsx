@@ -587,12 +587,15 @@ export default function CheckoutPage() {
         }
         itemsPreloaded.current = true;
 
-        // Apply coupons if present — so createPaymentSession sees the discounted total.
-        // Each coupon is POSTed individually; Medusa accumulates them on the cart.
-        if (capturedCoupons.length > 0) {
+        // Apply non-deferred coupons during preload so createPaymentSession
+        // sees the discounted total. Deferred coupons (typically shipping
+        // promos) can't apply until a shipping_method is on the cart — we
+        // retry those after addShippingMethod in the submit step.
+        const eagerCoupons = capturedCoupons.filter((c) => !c.deferred);
+        if (eagerCoupons.length > 0) {
           let latestCart: typeof cart | null = null;
           let allApplied = true;
-          for (const c of capturedCoupons) {
+          for (const c of eagerCoupons) {
             try {
               const updatedCart = await medusa.cart.applyPromotion(cartId, c.code);
               const ok = updatedCart.promotions?.some(
@@ -605,7 +608,8 @@ export default function CheckoutPage() {
             }
           }
           if (latestCart) setMedusaCartTotal(latestCart.total);
-          // Only mark preload as done if ALL coupons applied; otherwise submit will retry.
+          // Mark preload as done if all eager coupons succeeded. Deferred
+          // coupons are handled separately after shipping is applied.
           couponAppliedInPreload.current = allApplied;
         }
       } catch { /* se creará en handleSubmit como fallback */ }
@@ -827,18 +831,43 @@ export default function CheckoutPage() {
             ? [...validOptions].sort((a: any, b: any) => a.amount - b.amount)[0]
             : [...validOptions].sort((a: any, b: any) => b.amount - a.amount)[0]);
         if (pickedOption?.id) {
-          const shippedCart = await medusa.cart.addShippingMethod(cart_id!, pickedOption.id);
-          const shippingCost = shippedCart.shipping_methods?.[0]?.amount ?? shippedCart.shipping_total ?? 0;
-          chargedTotal = shippedCart.total;
-          setConfirmedTotal(shippedCart.total);
+          let workingCart = await medusa.cart.addShippingMethod(cart_id!, pickedOption.id);
+          const shippingCost = workingCart.shipping_methods?.[0]?.amount ?? workingCart.shipping_total ?? 0;
           setShippingCost(shippingCost);
 
-          // Coupons applied during preload — verify ALL are still on the cart.
-          // Uses data already in shippedCart: zero extra API calls.
-          if (couponAppliedInPreload.current && coupons.length > 0) {
-            const missing = coupons.find(
+          // ── Apply deferred coupons (typically shipping promos) ─────────────
+          // These were rejected silently in the drawer because no shipping
+          // method was on the cart. Now that shipping is applied, retry them.
+          const deferredCoupons = coupons.filter((c) => c.deferred);
+          for (const c of deferredCoupons) {
+            try {
+              workingCart = await medusa.cart.applyPromotion(cart_id!, c.code);
+            } catch {
+              setSubmitError(`El cupón ${c.code} no es válido. Quítalo y vuelve a intentar.`);
+              setSubmitting(false);
+              setPaymentStep(0);
+              return;
+            }
+            const ok = workingCart.promotions?.some(
+              (p) => p.code.toUpperCase() === c.code.toUpperCase()
+            );
+            if (!ok) {
+              setSubmitError(`El cupón ${c.code} no pudo aplicarse al envío. Verifica el código e intenta de nuevo.`);
+              setSubmitting(false);
+              setPaymentStep(0);
+              return;
+            }
+          }
+
+          chargedTotal = workingCart.total;
+          setConfirmedTotal(workingCart.total);
+
+          // ── Verify eager coupons (applied during preload) are still on cart ──
+          if (couponAppliedInPreload.current) {
+            const eagerCoupons = coupons.filter((c) => !c.deferred);
+            const missing = eagerCoupons.find(
               (c) =>
-                !shippedCart.promotions?.some(
+                !workingCart.promotions?.some(
                   (p) => p.code.toUpperCase() === c.code.toUpperCase()
                 )
             );
@@ -853,8 +882,10 @@ export default function CheckoutPage() {
 
         // ── Paso 2c: Aplicar cupones de descuento si existen ──────────────────
         // Skip if already applied during preload (verified above); otherwise apply each and verify.
+        // Deferred coupons were already handled in the shipping block above, so only retry eager ones here.
         if (coupons.length > 0 && !couponAppliedInPreload.current) {
-          for (const c of coupons) {
+          const eagerCoupons = coupons.filter((c) => !c.deferred);
+          for (const c of eagerCoupons) {
             const updatedCart = await medusa.cart.applyPromotion(cart_id!, c.code);
             const promotionApplied = updatedCart.promotions?.some(
               (p) => p.code.toUpperCase() === c.code.toUpperCase()

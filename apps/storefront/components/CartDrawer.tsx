@@ -92,7 +92,7 @@ function CouponInput({ onApply, onRemove, status, applied }: CouponInputProps) {
                 <p className="text-[12px] font-black text-green-600 tracking-wide">{c.code}</p>
                 <p className="text-[10px] text-green-400 font-medium">
                   {c.label}
-                  {c.kind === "shipping" ? " · se aplica al pagar" : ""}
+                  {c.deferred || c.kind === "shipping" ? " · se aplica al pagar" : ""}
                 </p>
               </div>
             </div>
@@ -278,27 +278,45 @@ async function applyDiscountCode(code: string): Promise<AppliedCoupon> {
   // POST /store/carts/:id/promotions — same endpoint the smoke test uses.
   // Medusa accumulates promo codes on the cart; we read the resulting
   // promotions[] to confirm acceptance.
+  //
+  // Three possible outcomes:
+  //   1. Error / non-2xx → applyPromotion throws → genuinely invalid code.
+  //   2. 200 + code present in cart.promotions → applied immediately
+  //      (order-target promo, conditions met).
+  //   3. 200 + code NOT in cart.promotions → Medusa accepted the code as
+  //      valid but couldn't apply it yet (typical case: shipping-target promo
+  //      before a shipping_method is set). We mark it as "deferred" and
+  //      checkout retries it after applying the shipping method.
   const cart = await medusa.cart.applyPromotion(cartId, upperCode);
   const applied = cart.promotions?.find(
     (p) => p.code?.toUpperCase() === upperCode
   );
-  if (!applied) {
-    throw new Error("Cupón inválido o expirado");
+
+  if (applied) {
+    const targetType = applied.application_method?.target_type;
+    const kind: "order" | "shipping" =
+      targetType === "shipping_methods" ? "shipping" : "order";
+    const discountPct = applied.application_method?.value ?? 0;
+    return {
+      code: upperCode,
+      discountPct,
+      kind,
+      label:
+        kind === "shipping"
+          ? "Envío gratis"
+          : `${discountPct}% de descuento`,
+    };
   }
 
-  const targetType = applied.application_method?.target_type;
-  const kind: "order" | "shipping" =
-    targetType === "shipping_methods" ? "shipping" : "order";
-  const discountPct = applied.application_method?.value ?? 0;
-
+  // Outcome 3 — assume shipping-target promo waiting for shipping_method.
+  // We can't know the discount value yet (Medusa didn't return application_method),
+  // so we just defer.
   return {
     code: upperCode,
-    discountPct,
-    kind,
-    label:
-      kind === "shipping"
-        ? "Envío gratis"
-        : `${discountPct}% de descuento`,
+    discountPct: 0,
+    kind: "shipping",
+    label: "Envío gratis",
+    deferred: true,
   };
 }
 
