@@ -119,7 +119,7 @@ function CouponInput({ onApply, onRemove, status, applied }: CouponInputProps) {
           placeholder="Código de descuento"
           disabled={status === "loading"}
           className="w-full pl-8 pr-3 py-2.5 text-[13px] font-semibold text-navy-light placeholder:text-slate-300 placeholder:font-normal bg-white border-2 border-gray-200 focus:border-coral focus:outline-none rounded-xl transition-colors duration-150 disabled:opacity-50 uppercase tracking-wide"
-          maxLength={20}
+          maxLength={64}
         />
       </div>
       <button
