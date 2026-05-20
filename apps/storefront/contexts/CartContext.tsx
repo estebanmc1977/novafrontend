@@ -17,6 +17,8 @@ export type AppliedCoupon = {
   code: string;
   discountPct: number;
   label: string;
+  /** "order" → applies to subtotal; "shipping" → applies to shipping at checkout */
+  kind: "order" | "shipping";
 };
 
 type CartContextType = {
@@ -27,9 +29,9 @@ type CartContextType = {
   addToCart: (item: Omit<CartItem, "quantity"> & { quantity?: number }) => void;
   updateQty: (slug: string, mode: "once" | "sub", freq: 30 | 60 | 90, delta: number) => void;
   removeItem: (slug: string, mode: "once" | "sub", freq: 30 | 60 | 90) => void;
-  coupon: AppliedCoupon | null;
+  coupons: AppliedCoupon[];
   applyCoupon: (coupon: AppliedCoupon) => void;
-  removeCoupon: () => void;
+  removeCoupon: (code: string) => void;
 };
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -40,13 +42,20 @@ const CART_LOCALE_KEY = "novapatch_cart_locale";
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [coupon, setCoupon] = useState<AppliedCoupon | null>(() => {
-    if (typeof window === "undefined") return null;
+  const [coupons, setCoupons] = useState<AppliedCoupon[]>(() => {
+    if (typeof window === "undefined") return [];
     try {
       const stored = localStorage.getItem(COUPON_STORAGE_KEY);
-      return stored ? (JSON.parse(stored) as AppliedCoupon) : null;
+      if (!stored) return [];
+      const parsed = JSON.parse(stored);
+      // Backward-compat: previously we stored a single coupon object.
+      if (Array.isArray(parsed)) return parsed as AppliedCoupon[];
+      if (parsed && typeof parsed === "object" && "code" in parsed) {
+        return [{ ...(parsed as AppliedCoupon), kind: (parsed as AppliedCoupon).kind ?? "order" }];
+      }
+      return [];
     } catch {
-      return null;
+      return [];
     }
   });
 
@@ -71,7 +80,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const stored = localStorage.getItem(CART_LOCALE_KEY);
     if (stored && stored !== currentLocale) {
       cartClear();
-      setCoupon(null);
+      setCoupons([]);
       localStorage.removeItem(COUPON_STORAGE_KEY);
       sync();
     }
@@ -127,18 +136,27 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             });
           }
         },
-        coupon,
+        coupons,
         applyCoupon: (c) => {
-          setCoupon(c);
-          if (typeof window !== "undefined") {
-            localStorage.setItem(COUPON_STORAGE_KEY, JSON.stringify(c));
-          }
+          setCoupons((prev) => {
+            // Replace if same code already present (case-insensitive); otherwise append.
+            const filtered = prev.filter((p) => p.code.toUpperCase() !== c.code.toUpperCase());
+            const next = [...filtered, c];
+            if (typeof window !== "undefined") {
+              localStorage.setItem(COUPON_STORAGE_KEY, JSON.stringify(next));
+            }
+            return next;
+          });
         },
-        removeCoupon: () => {
-          setCoupon(null);
-          if (typeof window !== "undefined") {
-            localStorage.removeItem(COUPON_STORAGE_KEY);
-          }
+        removeCoupon: (code) => {
+          setCoupons((prev) => {
+            const next = prev.filter((p) => p.code.toUpperCase() !== code.toUpperCase());
+            if (typeof window !== "undefined") {
+              if (next.length === 0) localStorage.removeItem(COUPON_STORAGE_KEY);
+              else localStorage.setItem(COUPON_STORAGE_KEY, JSON.stringify(next));
+            }
+            return next;
+          });
         },
       }}
     >

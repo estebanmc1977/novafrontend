@@ -318,7 +318,7 @@ function SuccessScreen({ shippingAddress }: { shippingAddress?: { country_code?:
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function CheckoutPage() {
-  const { items, openCart, coupon } = useCart();
+  const { items, openCart, coupons } = useCart();
   const { user, isLoaded } = useUser();
   const { openSignIn } = useClerk();
   const { getToken } = useAuth();
@@ -340,7 +340,12 @@ export default function CheckoutPage() {
   const [medusaCartTotal, setMedusaCartTotal] = useState<number | null>(null);
 
   const totals = cartTotals(items);
-  const couponDiscount = coupon ? Math.round(totals.total * (coupon.discountPct / 100)) : 0;
+  // Only order-kind coupons reduce the subtotal in the visible estimate.
+  // Shipping coupons are reflected in medusaCartTotal once Medusa applies them.
+  const orderCoupons = coupons.filter((c) => c.kind === "order");
+  const shippingCoupon = coupons.find((c) => c.kind === "shipping") ?? null;
+  const totalOrderPct = orderCoupons.reduce((sum, c) => sum + c.discountPct, 0);
+  const couponDiscount = Math.round(totals.total * (Math.min(totalOrderPct, 100) / 100));
   // effectiveCouponDiscount: Medusa-confirmed discount once preload resolves; falls back to frontend estimate
   const effectiveCouponDiscount =
     medusaCartTotal !== null ? Math.max(0, totals.total - medusaCartTotal) : couponDiscount;
@@ -518,8 +523,8 @@ export default function CheckoutPage() {
     if (!isLoaded || items.length === 0 || preloadStarted.current) return;
     preloadStarted.current = true;
 
-    // Snapshot coupon at effect-fire time — effect runs once
-    const capturedCoupon = coupon;
+    // Snapshot coupons at effect-fire time — effect runs once
+    const capturedCoupons = coupons;
 
     const preload = async () => {
       console.time("[Checkout] preload");
@@ -582,20 +587,26 @@ export default function CheckoutPage() {
         }
         itemsPreloaded.current = true;
 
-        // Apply coupon if present — so createPaymentSession sees the discounted total
-        if (capturedCoupon?.code) {
-          try {
-            const updatedCart = await medusa.cart.applyPromotion(cartId, capturedCoupon.code);
-            const promotionApplied = updatedCart.promotions?.some(
-              (p) => p.code.toUpperCase() === capturedCoupon.code.toUpperCase()
-            );
-            if (promotionApplied) {
-              setMedusaCartTotal(updatedCart.total);
-              couponAppliedInPreload.current = true;
+        // Apply coupons if present — so createPaymentSession sees the discounted total.
+        // Each coupon is POSTed individually; Medusa accumulates them on the cart.
+        if (capturedCoupons.length > 0) {
+          let latestCart: typeof cart | null = null;
+          let allApplied = true;
+          for (const c of capturedCoupons) {
+            try {
+              const updatedCart = await medusa.cart.applyPromotion(cartId, c.code);
+              const ok = updatedCart.promotions?.some(
+                (p) => p.code.toUpperCase() === c.code.toUpperCase()
+              );
+              if (ok) latestCart = updatedCart;
+              else allApplied = false;
+            } catch {
+              allApplied = false;
             }
-          } catch {
-            // Failed during preload — will retry on submit
           }
+          if (latestCart) setMedusaCartTotal(latestCart.total);
+          // Only mark preload as done if ALL coupons applied; otherwise submit will retry.
+          couponAppliedInPreload.current = allApplied;
         }
       } catch { /* se creará en handleSubmit como fallback */ }
 
@@ -822,14 +833,17 @@ export default function CheckoutPage() {
           setConfirmedTotal(shippedCart.total);
           setShippingCost(shippingCost);
 
-          // Coupon was applied during preload — verify it's still on the cart.
+          // Coupons applied during preload — verify ALL are still on the cart.
           // Uses data already in shippedCart: zero extra API calls.
-          if (couponAppliedInPreload.current && coupon?.code) {
-            const stillApplied = shippedCart.promotions?.some(
-              (p) => p.code.toUpperCase() === coupon.code.toUpperCase()
+          if (couponAppliedInPreload.current && coupons.length > 0) {
+            const missing = coupons.find(
+              (c) =>
+                !shippedCart.promotions?.some(
+                  (p) => p.code.toUpperCase() === c.code.toUpperCase()
+                )
             );
-            if (!stillApplied) {
-              setSubmitError("Tu cupón de descuento ya no es válido. Intenta con otro código.");
+            if (missing) {
+              setSubmitError(`El cupón ${missing.code} ya no es válido. Intenta con otro código.`);
               setSubmitting(false);
               setPaymentStep(0);
               return;
@@ -837,22 +851,24 @@ export default function CheckoutPage() {
           }
         }
 
-        // ── Paso 2c: Aplicar cupón de descuento si existe ──────────────────
-        // Skip if already applied during preload (verified above); otherwise apply now and verify.
-        if (coupon?.code && !couponAppliedInPreload.current) {
-          const updatedCart = await medusa.cart.applyPromotion(cart_id!, coupon.code);
-          const promotionApplied = updatedCart.promotions?.some(
-            (p) => p.code.toUpperCase() === coupon.code.toUpperCase()
-          );
-          if (!promotionApplied) {
-            setSubmitError("El cupón no pudo aplicarse. Verifica el código e intenta de nuevo.");
-            setSubmitting(false);
-            setPaymentStep(0);
-            return;
+        // ── Paso 2c: Aplicar cupones de descuento si existen ──────────────────
+        // Skip if already applied during preload (verified above); otherwise apply each and verify.
+        if (coupons.length > 0 && !couponAppliedInPreload.current) {
+          for (const c of coupons) {
+            const updatedCart = await medusa.cart.applyPromotion(cart_id!, c.code);
+            const promotionApplied = updatedCart.promotions?.some(
+              (p) => p.code.toUpperCase() === c.code.toUpperCase()
+            );
+            if (!promotionApplied) {
+              setSubmitError(`El cupón ${c.code} no pudo aplicarse. Verifica el código e intenta de nuevo.`);
+              setSubmitting(false);
+              setPaymentStep(0);
+              return;
+            }
+            // Capture latest cart total as the authoritative amount
+            chargedTotal = updatedCart.total;
+            setConfirmedTotal(updatedCart.total);
           }
-          // Coupon updated the cart total — capture it as the new authoritative amount
-          chargedTotal = updatedCart.total;
-          setConfirmedTotal(updatedCart.total);
         }
 
         // ── Paso 3: Preparando pago ─────────────────────────────────────────
@@ -1671,20 +1687,26 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                {coupon && effectiveCouponDiscount > 0 && (
+                {coupons.length > 0 && effectiveCouponDiscount > 0 && (
                   <div className="flex justify-between text-[13px]">
-                    <span className="flex items-center gap-1.5">
+                    <span className="flex items-center gap-1.5 flex-wrap">
                       <span
                         className="text-[10px] font-black px-2 py-0.5 rounded-full text-white"
                         style={{ background: "#16A34A" }}
                       >
-                        CUPÓN
+                        {coupons.length > 1 ? "CUPONES" : "CUPÓN"}
                       </span>
-                      {coupon.code}
+                      {coupons.map((c) => c.code).join(" · ")}
                     </span>
                     <span className="font-bold text-[#16A34A]">
                       −{fmt(effectiveCouponDiscount, cartRegion)}
                     </span>
+                  </div>
+                )}
+                {shippingCoupon && (
+                  <div className="flex justify-between text-[12px] text-[#16A34A]">
+                    <span>Envío gratis ({shippingCoupon.code})</span>
+                    <span className="font-bold">aplicado</span>
                   </div>
                 )}
 

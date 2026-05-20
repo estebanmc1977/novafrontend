@@ -13,7 +13,7 @@ import { formatPrice } from "@/lib/format";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type CouponStatus = "idle" | "loading" | "applied";
+type CouponStatus = "idle" | "loading";
 
 interface ToastState {
   message: string;
@@ -58,82 +58,90 @@ function Toast({ message, visible }: ToastState) {
 
 interface CouponInputProps {
   onApply: (code: string) => void;
-  onRemove: () => void;
+  onRemove: (code: string) => void;
   status: CouponStatus;
-  applied: AppliedCoupon | null;
+  applied: AppliedCoupon[];
 }
 
 function CouponInput({ onApply, onRemove, status, applied }: CouponInputProps) {
   const [code, setCode] = useState("");
 
   function handleApply() {
-    if (code.trim()) onApply(code.trim());
+    const trimmed = code.trim();
+    if (!trimmed) return;
+    onApply(trimmed);
+    setCode("");
   }
 
-  // Applied state — show chip
-  if (status === "applied" && applied) {
-    return (
+  return (
+    <div className="flex flex-col gap-2">
+      {/* Applied coupon chips */}
+      <AnimatePresence initial={false}>
+        {applied.map((c) => (
+          <motion.div
+            key={c.code}
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, height: 0, marginTop: 0 }}
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-3.5 py-2.5"
+          >
+            <div className="flex items-center gap-2">
+              <CheckCircle2 size={14} className="text-green-600 flex-shrink-0" />
+              <div>
+                <p className="text-[12px] font-black text-green-600 tracking-wide">{c.code}</p>
+                <p className="text-[10px] text-green-400 font-medium">
+                  {c.label}
+                  {c.kind === "shipping" ? " · se aplica al pagar" : ""}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => onRemove(c.code)}
+              className="w-6 h-6 rounded-lg bg-green-100 hover:bg-green-200 flex items-center justify-center transition-colors duration-150"
+              aria-label={`Quitar cupón ${c.code}`}
+            >
+              <X size={11} className="text-green-600" />
+            </button>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+
+      {/* Input — always available so the user can stack multiple codes */}
       <motion.div
-        key="applied"
-        initial={{ opacity: 0, y: -6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-3.5 py-2.5"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex gap-2"
       >
-        <div className="flex items-center gap-2">
-          <CheckCircle2 size={14} className="text-green-600 flex-shrink-0" />
-          <div>
-            <p className="text-[12px] font-black text-green-600 tracking-wide">{applied.code}</p>
-            <p className="text-[10px] text-green-400 font-medium">{applied.label} aplicado</p>
-          </div>
+        <div className="relative flex-1">
+          <Tag
+            size={13}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+          />
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value.toUpperCase())}
+            onKeyDown={(e) => e.key === "Enter" && handleApply()}
+            placeholder={applied.length > 0 ? "Agregar otro código" : "Código de descuento"}
+            disabled={status === "loading"}
+            className="w-full pl-8 pr-3 py-2.5 text-[13px] font-semibold text-navy-light placeholder:text-slate-300 placeholder:font-normal bg-white border-2 border-gray-200 focus:border-coral focus:outline-none rounded-xl transition-colors duration-150 disabled:opacity-50 uppercase tracking-wide"
+            maxLength={64}
+          />
         </div>
         <button
-          onClick={onRemove}
-          className="w-6 h-6 rounded-lg bg-green-100 hover:bg-green-200 flex items-center justify-center transition-colors duration-150"
-          aria-label="Quitar cupón"
+          onClick={handleApply}
+          disabled={!code.trim() || status === "loading"}
+          className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-navy-light hover:bg-navy disabled:bg-gray-200 disabled:text-gray-400 text-white text-[12px] font-black rounded-xl transition-all duration-150 min-w-[80px]"
         >
-          <X size={11} className="text-green-600" />
+          {status === "loading" ? (
+            <Loader2 size={13} className="animate-spin" />
+          ) : (
+            "Aplicar"
+          )}
         </button>
       </motion.div>
-    );
-  }
-
-  // Input state
-  return (
-    <motion.div
-      key="input"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="flex gap-2"
-    >
-      <div className="relative flex-1">
-        <Tag
-          size={13}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-        />
-        <input
-          type="text"
-          value={code}
-          onChange={(e) => setCode(e.target.value.toUpperCase())}
-          onKeyDown={(e) => e.key === "Enter" && handleApply()}
-          placeholder="Código de descuento"
-          disabled={status === "loading"}
-          className="w-full pl-8 pr-3 py-2.5 text-[13px] font-semibold text-navy-light placeholder:text-slate-300 placeholder:font-normal bg-white border-2 border-gray-200 focus:border-coral focus:outline-none rounded-xl transition-colors duration-150 disabled:opacity-50 uppercase tracking-wide"
-          maxLength={64}
-        />
-      </div>
-      <button
-        onClick={handleApply}
-        disabled={!code.trim() || status === "loading"}
-        className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-navy-light hover:bg-navy disabled:bg-gray-200 disabled:text-gray-400 text-white text-[12px] font-black rounded-xl transition-all duration-150 min-w-[80px]"
-      >
-        {status === "loading" ? (
-          <Loader2 size={13} className="animate-spin" />
-        ) : (
-          "Aplicar"
-        )}
-      </button>
-    </motion.div>
+    </div>
   );
 }
 
@@ -260,31 +268,44 @@ function EmptyCart({ onClose }: { onClose: () => void }) {
 
 // ─── Coupon logic ─────────────────────────────────────────────────────────────
 
-const REGION_ID = process.env.NEXT_PUBLIC_MEDUSA_REGION_ID ?? "";
-
 async function applyDiscountCode(code: string): Promise<AppliedCoupon> {
   const upperCode = code.toUpperCase();
-  const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ?? "";
-  const res = await fetch(
-    `${MEDUSA_URL}/promotions?code=${encodeURIComponent(upperCode)}`
-  );
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error(body?.message ?? "Cupón inválido o expirado");
+  const cartId = medusa.cart.getStoredId();
+  if (!cartId) {
+    throw new Error("Agregá productos al carrito primero");
   }
-  const { promotion } = await res.json();
-  const discountPct = promotion.discount_value ?? 0;
+
+  // POST /store/carts/:id/promotions — same endpoint the smoke test uses.
+  // Medusa accumulates promo codes on the cart; we read the resulting
+  // promotions[] to confirm acceptance.
+  const cart = await medusa.cart.applyPromotion(cartId, upperCode);
+  const applied = cart.promotions?.find(
+    (p) => p.code?.toUpperCase() === upperCode
+  );
+  if (!applied) {
+    throw new Error("Cupón inválido o expirado");
+  }
+
+  const targetType = applied.application_method?.target_type;
+  const kind: "order" | "shipping" =
+    targetType === "shipping_methods" ? "shipping" : "order";
+  const discountPct = applied.application_method?.value ?? 0;
+
   return {
     code: upperCode,
     discountPct,
-    label: `${discountPct}% de descuento`,
+    kind,
+    label:
+      kind === "shipping"
+        ? "Envío gratis"
+        : `${discountPct}% de descuento`,
   };
 }
 
 // ─── Drawer principal ─────────────────────────────────────────────────────────
 
 export default function CartDrawer() {
-  const { items, isOpen, closeCart, coupon: appliedCoupon, applyCoupon, removeCoupon } = useCart();
+  const { items, isOpen, closeCart, coupons, applyCoupon, removeCoupon } = useCart();
   const market = useMarket();
   const { savings, total } = cartTotals(items);
   const count = items.reduce((s, i) => s + i.quantity, 0);
@@ -297,7 +318,7 @@ export default function CartDrawer() {
   const [couponLoading, setCouponLoading] = useState(false);
   const [toast, setToast] = useState<ToastState>({ message: "", visible: false });
 
-  const couponStatus: CouponStatus = couponLoading ? "loading" : appliedCoupon ? "applied" : "idle";
+  const couponStatus: CouponStatus = couponLoading ? "loading" : "idle";
 
   const showToast = useCallback((message: string) => {
     setToast({ message, visible: true });
@@ -316,20 +337,21 @@ export default function CartDrawer() {
     }
   }, [applyCoupon, showToast]);
 
-  const handleRemove = useCallback(() => {
-    if (appliedCoupon) {
-      const cartId = medusa.cart.getStoredId();
-      if (cartId) {
-        medusa.cart.removePromotion(cartId, appliedCoupon.code).catch(() => {});
-      }
+  const handleRemove = useCallback((code: string) => {
+    const cartId = medusa.cart.getStoredId();
+    if (cartId) {
+      medusa.cart.removePromotion(cartId, code).catch(() => {});
     }
-    removeCoupon();
-  }, [appliedCoupon, removeCoupon]);
+    removeCoupon(code);
+  }, [removeCoupon]);
 
-  // Totales con descuento
-  const discountAmount = appliedCoupon
-    ? Math.round(total * (appliedCoupon.discountPct / 100))
-    : 0;
+  // Totales con descuento.
+  // We only apply order-kind discounts to the visible total here; shipping
+  // discounts kick in at checkout once Medusa knows the shipping method.
+  const orderCoupons = coupons.filter((c) => c.kind === "order");
+  const shippingCoupon = coupons.find((c) => c.kind === "shipping") ?? null;
+  const totalOrderPct = orderCoupons.reduce((sum, c) => sum + c.discountPct, 0);
+  const discountAmount = Math.round(total * (Math.min(totalOrderPct, 100) / 100));
   const finalTotal = total - discountAmount;
 
   return (
@@ -422,7 +444,7 @@ export default function CartDrawer() {
                         onApply={handleApply}
                         onRemove={handleRemove}
                         status={couponStatus}
-                        applied={appliedCoupon}
+                        applied={coupons}
                       />
                     </div>
 
@@ -433,31 +455,37 @@ export default function CartDrawer() {
                         <span className="font-semibold text-navy-light">{formatPrice(total, market.currency)}</span>
                       </div>
 
-                      {/* Línea de descuento — aparece cuando hay cupón */}
+                      {/* Línea(s) de descuento de orden */}
                       <AnimatePresence>
-                        {appliedCoupon && discountAmount > 0 && (
-                          <motion.div
-                            key="discount-line"
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                            className="overflow-hidden"
-                          >
-                            <div className="flex justify-between text-[13px] py-0.5">
-                              <span className="text-green-600 font-semibold flex items-center gap-1">
-                                <Tag size={11} />
-                                {appliedCoupon.code}
-                              </span>
-                              <span className="font-bold text-green-600">−{formatPrice(discountAmount, market.currency)}</span>
-                            </div>
-                          </motion.div>
-                        )}
+                        {orderCoupons.map((c) => {
+                          const amount = Math.round(total * (c.discountPct / 100));
+                          if (amount <= 0) return null;
+                          return (
+                            <motion.div
+                              key={`discount-line-${c.code}`}
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              exit={{ opacity: 0, height: 0 }}
+                              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                              className="overflow-hidden"
+                            >
+                              <div className="flex justify-between text-[13px] py-0.5">
+                                <span className="text-green-600 font-semibold flex items-center gap-1">
+                                  <Tag size={11} />
+                                  {c.code}
+                                </span>
+                                <span className="font-bold text-green-600">−{formatPrice(amount, market.currency)}</span>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
                       </AnimatePresence>
 
                       <div className="flex justify-between text-[12px] text-gray-500">
                         <span>Envío</span>
-                        <span>Calculado al pagar</span>
+                        <span className={shippingCoupon ? "text-green-600 font-semibold" : ""}>
+                          {shippingCoupon ? "Gratis al pagar" : "Calculado al pagar"}
+                        </span>
                       </div>
 
                       <div className="flex justify-between text-[16px] font-black text-ocean pt-1 border-t border-black/[0.06]">

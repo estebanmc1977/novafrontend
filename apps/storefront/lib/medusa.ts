@@ -61,7 +61,11 @@ export type MedusaCart = {
   promotions?: Array<{
     id: string;
     code: string;
-    application_method?: { type: string; value: number };
+    application_method?: {
+      type: string;
+      value: number;
+      target_type?: "order" | "items" | "shipping_methods" | string;
+    };
   }>;
   payment_sessions?: { provider_id: string; status: string }[];
   shipping_methods?: Array<{ id: string; amount: number; name?: string }>;
