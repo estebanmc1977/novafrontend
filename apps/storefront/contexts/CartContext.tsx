@@ -3,6 +3,9 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import posthog from "posthog-js";
+import { trackMeta } from "@/lib/meta";
+import { MARKETS } from "@/lib/markets";
+import type { Locale } from "@/i18n/routing";
 import {
   getCart,
   addToCart as cartAdd,
@@ -111,13 +114,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           cartAdd(item);
           setIsOpen(true);
           if (typeof window !== "undefined") {
+            const qty = item.quantity ?? 1;
             posthog.capture("add_to_cart", {
               product_id: item.slug,
               variant_id: item.variantId ?? item.slug,
-              quantity: item.quantity ?? 1,
+              quantity: qty,
               price: item.price,
               mode: item.mode,
               freq: item.freq,
+            });
+            const currency = MARKETS[currentLocale as Locale]?.currency ?? "MXN";
+            trackMeta("AddToCart", {
+              currency,
+              value: item.price * qty,
+              content_ids: [item.variantId ?? item.slug],
+              content_name: item.title,
+              content_type: "product",
+              contents: [{ id: item.variantId ?? item.slug, quantity: qty, item_price: item.price }],
+              num_items: qty,
             });
           }
         },

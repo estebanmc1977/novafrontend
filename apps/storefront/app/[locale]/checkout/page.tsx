@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useUser, useClerk, useAuth } from "@clerk/nextjs";
 import posthog from "posthog-js";
+import { trackMeta } from "@/lib/meta";
 import { useCart } from "@/contexts/CartContext";
 import { medusa } from "@/lib/medusa";
 import { formatPrice } from "@/lib/format";
@@ -512,11 +513,32 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (!isLoaded || items.length === 0 || checkoutTracked.current) return;
     checkoutTracked.current = true;
+    const numItems = items.reduce((sum, i) => sum + i.quantity, 0);
     posthog.capture("checkout_started", {
       cart_total: finalTotal, // pre-shipping estimate at fire time; real total confirmed at order_completed
-      item_count: items.reduce((sum, i) => sum + i.quantity, 0),
+      item_count: numItems,
     });
-  }, [isLoaded, items, finalTotal]);
+    trackMeta(
+      "InitiateCheckout",
+      {
+        currency: market.currency,
+        value: finalTotal,
+        content_ids: items.map((i) => i.variantId ?? i.slug),
+        contents: items.map((i) => ({
+          id: i.variantId ?? i.slug,
+          quantity: i.quantity,
+          item_price: i.price,
+        })),
+        num_items: numItems,
+      },
+      {
+        email: user?.primaryEmailAddress?.emailAddress,
+        externalId: user?.id,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+      },
+    );
+  }, [isLoaded, items, finalTotal, market.currency, user]);
 
   // ── Pre-carga: ejecutar en paralelo al montar la página ──────
   useEffect(() => {
@@ -944,10 +966,35 @@ export default function CheckoutPage() {
       console.timeEnd("[Checkout] total");
 
       // ── Éxito (cobro directo sin 3DS) ─────────────────────────────────────────
+      const purchaseNumItems = items.reduce((sum, i) => sum + i.quantity, 0);
       posthog.capture("order_completed", {
         cart_total: chargedTotal,
-        item_count: items.reduce((sum, i) => sum + i.quantity, 0),
+        item_count: purchaseNumItems,
       });
+      trackMeta(
+        "Purchase",
+        {
+          currency: market.currency,
+          value: chargedTotal,
+          content_ids: items.map((i) => i.variantId ?? i.slug),
+          contents: items.map((i) => ({
+            id: i.variantId ?? i.slug,
+            quantity: i.quantity,
+            item_price: i.price,
+          })),
+          num_items: purchaseNumItems,
+        },
+        {
+          email: contact.email || user?.primaryEmailAddress?.emailAddress,
+          phone: contact.phone,
+          firstName: contact.name?.split(" ")[0],
+          lastName: contact.name?.split(" ").slice(1).join(" "),
+          externalId: user?.id,
+        },
+        // Use cart_id as event_id when available so a future Medusa-side Purchase
+        // dedupes with this browser-side one.
+        cart_id || undefined,
+      );
       clearCart();
       if (cartRegion === "ars") {
         setSuccessAddress({ country_code: "ar", province: addressAR.province });
