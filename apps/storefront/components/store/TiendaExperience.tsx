@@ -16,7 +16,7 @@ const META: Record<string, {
   taglineColor: string;
   quote: string;
   tags: string[];
-  ingredients: string[];     // ← Nuevo
+  ingredients: string[];
   popular?: boolean;
 }> = {
   energy: {
@@ -153,8 +153,6 @@ function FrequencyPicker({
   );
 }
 
-// ─── Seccion Product Card ────────────────────────────────────────────────────
-
 function ProductCard({
   product,
   mode,
@@ -196,7 +194,7 @@ function ProductCard({
       <Link href={`/${locale}/tienda/${product.slug}`} className="block h-full">
         <div className="bg-white rounded-[22px] overflow-hidden border border-black/[0.05] shadow-[0_4px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.09)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
 
-          {/* Imagen - clickeable hacia PDP */}
+          {/* Imagen */}
           <div className="relative flex items-center justify-center py-10 px-6" style={{ background: meta.bg }}>
             {meta.popular && (
               <span className="absolute top-3 right-3 bg-coral text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full">
@@ -216,7 +214,7 @@ function ProductCard({
                 </motion.span>
               )}
             </AnimatePresence>
-            <div className="relative w-48 h-48">   {/* ← Más grande como pediste */}
+            <div className="relative w-48 h-48">
               <Image
                 src={product.image}
                 alt={`Novapatch ${product.title}`}
@@ -239,7 +237,6 @@ function ProductCard({
               </p>
             </div>
 
-            {/* Pack + Ingredientes */}
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-gray-400 mb-1">
                 Pack de 30 parches
@@ -261,7 +258,7 @@ function ProductCard({
               ))}
             </div>
 
-            {/* Selector de frecuencia - NO clickeable hacia PDP */}
+            {/* Frecuencia - SIN ir a PDP */}
             <AnimatePresence>
               {mode === "sub" && (
                 <motion.div
@@ -269,7 +266,7 @@ function ProductCard({
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   className="overflow-hidden"
-                  onClick={(e) => e.stopPropagation()}   {/* ← Importante: evita ir a PDP */}
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#9CA3AF] mb-2 mt-1">
                     Frecuencia de entrega
@@ -285,7 +282,7 @@ function ProductCard({
               )}
             </AnimatePresence>
 
-            {/* Precio + Botón */}
+            {/* Precio y botón */}
             <div className="mt-auto pt-3 border-t border-black/[0.05]">
               <div className="flex items-baseline gap-2 mb-3">
                 <span className="text-[26px] font-black tracking-tight text-navy-light">
@@ -337,7 +334,6 @@ export default function TiendaExperience({
 
   return (
     <main className="min-h-screen" style={{ background: "#F8F3EC" }}>
-
       {/* Hero */}
       <section className="pt-32 pb-12 px-6 text-center">
         <motion.p
@@ -393,7 +389,7 @@ export default function TiendaExperience({
               key={product.slug}
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: i * 0.07, duration: 0.55 }}
               className={`flex ${i === 0 ? "sm:col-span-2 md:col-span-1" : ""}`}
             >
               <ProductCard
@@ -423,21 +419,9 @@ export default function TiendaExperience({
           >
             <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
               {[
-                {
-                  icon: "🔄",
-                  title: "Sin interrupciones",
-                  desc: "Tu parche llega antes de que se te acabe.",
-                },
-                {
-                  icon: "💰",
-                  title: "Precio de suscriptor",
-                  desc: "Siempre más bajo que la compra individual.",
-                },
-                {
-                  icon: "🎛️",
-                  title: "Tú controlas",
-                  desc: "Pausa, cambia o cancela sin llamadas ni penalizaciones.",
-                },
+                { icon: "🔄", title: "Sin interrupciones", desc: "Tu parche llega antes de que se te acabe." },
+                { icon: "💰", title: "Precio de suscriptor", desc: "Siempre más bajo que la compra individual." },
+                { icon: "🎛️", title: "Tú controlas", desc: "Pausa, cambia o cancela sin llamadas ni penalizaciones." },
               ].map((b, i) => (
                 <div key={i} className="flex flex-col items-center gap-3">
                   <div className="text-4xl mb-2">{b.icon}</div>
