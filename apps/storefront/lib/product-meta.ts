@@ -80,6 +80,13 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
     bg: "#EBF7F5",
     taglineColor: "#0F6B5C",
     imgSrc: "/products/Sleep_thumb.webp",
+     // ←←← NUEVO: Agregamos varias fotos
+    images: [
+      "/products/Sleep_thumb.webp",
+      "/products/Sleep_1.webp",      // podes agregar más después
+      "/products/Sleep_2.webp",
+      "/products/Sleep_3.webp"
+    ],
     ingredients: [
       "Tryptophan",
       "Magnesium (Bisglycinate)",
