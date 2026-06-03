@@ -83,121 +83,6 @@ const products = [
   },
 ];
 
-/* ── Hero card — featured product (Glow) ──────────────────────────────── */
-
-function HeroProductCard({
-  product,
-  onAdd,
-  basePrice,
-  currency,
-  locale,                    // ← Agregado
-}: {
-  product: (typeof products)[0];
-  onAdd: () => void;
-  basePrice: number;
-  currency: string;
-  locale: string;            // ← Agregado
-}) {
-  const subPrice = Math.round(basePrice * (1 - SUB_DISCOUNT));
-  const p = product;
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 32 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <Link href={`/${locale}/tienda/${p.slug}`} className="block">
-        <div
-          className="group relative grid grid-cols-1 md:grid-cols-2 gap-0 rounded-[28px] overflow-hidden border border-black/[0.06] shadow-[0_8px_40px_rgba(0,0,0,0.08)]"
-          style={{ background: p.bg }}
-        >
-          {/* Image */}
-          <div className="relative flex items-center justify-center py-12 px-8 md:py-16 md:px-12">
-            <div className="relative w-[clamp(180px,22vw,288px)] h-[clamp(180px,22vw,288px)]">
-              <Image
-                src={p.imgSrc}
-                alt={`NovaPatch ${p.name}`}
-                fill
-                sizes="(max-width: 640px) 180px, (max-width: 1280px) 22vw, 288px"
-                className="object-contain group-hover:scale-[1.04] transition-transform duration-500"
-              />
-            </div>
-            <span
-              className="absolute top-5 left-5 text-white text-[11px] font-extrabold uppercase tracking-[0.08em] px-3.5 py-1.5 rounded-full"
-              style={{ background: p.color }}
-            >
-              Más popular
-            </span>
-          </div>
-
-          {/* Content */}
-          <div className="flex flex-col justify-center px-8 py-10 md:px-12 md:py-16 bg-white">
-            <p
-              className="text-[28px] md:text-[36px] font-black tracking-[-0.02em] leading-tight"
-              style={{ color: p.taglineColor }}
-            >
-              {p.name}
-            </p>
-            <p
-              className="text-[15px] font-semibold leading-[1.5] mt-1 opacity-80"
-              style={{ color: p.taglineColor }}
-            >
-              {p.tagline}
-            </p>
-            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-gray-400 mt-3">
-              Pack de 30 parches
-            </p>
-            <ul className="mt-1.5 space-y-0.5">
-              {p.ingredients.map((ing) => (
-                <li key={ing} className="text-[13px] text-gray-600 flex items-center gap-1.5">
-                  <span className="w-1 h-1 rounded-full flex-shrink-0 inline-block" style={{ background: p.color }} />
-                  {ing}
-                </li>
-              ))}
-            </ul>
-
-            <div className="flex flex-wrap gap-1.5 mt-5">
-              {p.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="text-[11px] font-bold px-3 py-1 rounded-full border-[1.5px]"
-                  style={{ borderColor: p.color, color: p.color }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            <div className="mt-6 flex items-baseline gap-3 flex-wrap">
-              <span
-                className="text-[28px] font-black"
-                style={{ color: p.taglineColor }}
-              >
-                {formatPrice(basePrice, currency)}
-              </span>
-              <span className="text-[13px] text-green-600 font-bold bg-green-50 px-2.5 py-1 rounded-lg">
-                Desde {formatPrice(subPrice, currency)} con suscripción
-              </span>
-            </div>
-
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                onAdd();
-              }}
-              className="mt-5 w-full md:w-auto md:px-10 py-3.5 rounded-xl text-[15px] font-bold text-white transition-all duration-200 active:scale-[0.97] hover:brightness-110 hover:-translate-y-0.5 hover:shadow-lg"
-              style={{ background: p.color }}
-            >
-              Agregar al carrito
-            </button>
-          </div>
-        </div>
-      </Link>
-    </motion.div>
-  );
-}
-
 /* ── Standard product card ────────────────────────────────────────────── */
 
 function ProductCard({
@@ -239,12 +124,12 @@ function ProductCard({
             className="relative flex items-center justify-center"
             style={{ background: p.bg, padding: "36px 24px" }}
           >
-            <div className="relative w-36 h-36">
+            <div className="relative w-64 h-64">
               <Image
                 src={p.imgSrc}
                 alt={`NovaPatch ${p.name}`}
                 fill
-                sizes="144px"
+                sizes="160px"
                 loading="lazy"
                 className="object-contain group-hover:scale-[1.06] transition-transform duration-300"
               />
@@ -253,16 +138,10 @@ function ProductCard({
 
           <div className="p-5 flex flex-col gap-2 flex-1">
             <div>
-              <p
-                className="text-[20px] font-black tracking-[-0.01em]"
-                style={{ color: p.taglineColor }}
-              >
+              <p className="text-[20px] font-black tracking-[-0.01em]" style={{ color: p.taglineColor }}>
                 {p.name}
               </p>
-              <p
-                className="text-[13px] font-semibold leading-[1.45] mt-0.5 opacity-75"
-                style={{ color: p.taglineColor }}
-              >
+              <p className="text-[13px] font-semibold leading-[1.45] mt-0.5 opacity-75" style={{ color: p.taglineColor }}>
                 {p.tagline}
               </p>
             </div>
@@ -289,10 +168,7 @@ function ProductCard({
             </div>
 
             <div className="mt-auto pt-3 flex items-baseline gap-2">
-              <span
-                className="text-[22px] font-black"
-                style={{ color: p.taglineColor }}
-              >
+              <span className="text-[22px] font-black" style={{ color: p.taglineColor }}>
                 {formatPrice(basePrice, currency)}
               </span>
             </div>
@@ -306,12 +182,7 @@ function ProductCard({
                 onAdd();
               }}
               className="product-card-btn mt-2 w-full py-3 rounded-xl border-2 text-[14px] font-bold transition-all duration-200 active:scale-[0.97]"
-              style={
-                {
-                  "--btn-accent": p.color,
-                  borderColor: p.color,
-                } as React.CSSProperties
-              }
+              style={{ "--btn-accent": p.color, borderColor: p.color } as React.CSSProperties}
             >
               Agregar al carrito
             </button>
@@ -334,9 +205,6 @@ export default function ProductGrid({
   locale?: string;
 }) {
   const { addToCart } = useCart();
-
-  const heroProduct = products.find((p) => p.popular)!;
-  const rest = products.filter((p) => !p.popular);
 
   const handleAdd = (p: (typeof products)[0]) => {
     addToCart({
@@ -372,16 +240,9 @@ export default function ProductGrid({
           </p>
         </motion.div>
 
-        <HeroProductCard
-          product={heroProduct}
-          onAdd={() => handleAdd(heroProduct)}
-          basePrice={basePrice}
-          currency={currency}
-          locale={locale}
-        />
-
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-          {rest.map((p, i) => (
+        {/* Grid uniforme de 3 columnas */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+          {products.map((p, i) => (
             <ProductCard
               key={p.slug}
               product={p}

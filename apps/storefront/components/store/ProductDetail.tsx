@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/format";
 import type { ProductMeta } from "@/lib/product-meta";
@@ -168,6 +168,67 @@ export default function ProductDetail({
         </div>
       </section>
 
+{/* Banner de Beneficios Suscripción con transición suave */}
+
+      <AnimatePresence mode="wait">
+        {mode === "sub" && (
+          <motion.section
+            key="benefits-banner"
+            initial={{ opacity: 0, height: 0, y: 20 }}
+            animate={{ opacity: 1, height: "auto", y: 0 }}
+            exit={{ opacity: 0, height: 0, y: 20 }}
+            transition={{ duration: 0.35, ease: "easeInOut" }}
+            className="overflow-hidden"
+            style={{ background: "#FAF7F2" }}
+          >
+            <div className="max-w-5xl mx-auto px-6 py-12">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {[
+                  {
+                    title: "Sin interrupciones",
+                    desc: "Tu parche llega antes de que se te acabe. Sin acordarte. Sin perder el ritmo.",
+                    icon: (
+                      <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                        <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    ),
+                  },
+                  {
+                    title: "Precio de suscriptor",
+                    desc: "Siempre más bajo que la compra individual. El hábito que sostiene, conviene.",
+                    icon: (
+                      <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                        <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    ),
+                  },
+                  {
+                    title: "Tú controlas",
+                    desc: "Pausa, cambia o cancela cuando quieras. Sin llamadas, sin penalizaciones.",
+                    icon: (
+                      <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                        <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    ),
+                  },
+                ].map((b, i) => (
+                  <div key={i} className="flex gap-5 items-start">
+                    <div className="text-[#3CBFAB] flex-shrink-0 mt-1">
+                      {b.icon}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-[#005088] text-[17px] mb-1.5">{b.title}</h4>
+                      <p className="text-[14px] leading-[1.55] text-gray-600">{b.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.section>
+        )}
+      </AnimatePresence>
+
       {/* Resto de secciones (sin cambios) */}
       <section className="max-w-5xl mx-auto px-6 py-16">
         <h2 className="text-3xl font-bold text-center mb-12">¿Cómo te acompaña?</h2>
@@ -184,8 +245,8 @@ export default function ProductDetail({
       <section className="bg-white py-16">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-3xl font-bold text-center mb-4">Cómo funciona</h2>
-          <p className="text-center text-gray-600 max-w-2xl mx-auto mb-12">Tecnología transdérmica que libera los ingredientes de forma gradual</p>
-          <div className="prose prose-lg mx-auto text-gray-700">{product.howItWorks}</div>
+          <p className="text-center text-gray-600 max-w-2xl mx-auto mb-12">Los parches Novapatch liberan sus ingredientes activos de forma gradual directamente a través de la piel hacia el torrente sanguíneo. </p>
+          <div className="text-center prose prose-lg mx-auto text-gray-700">{product.howItWorks}</div>
         </div>
       </section>
 

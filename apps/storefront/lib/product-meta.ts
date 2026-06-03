@@ -41,15 +41,8 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "/products/Energy_2.webp",
       "/products/Energy_3.webp"
     ],
-    ingredients: [
-      "Vitamin C (Ascorbyl Palmitate)",
-      "L-Carnitine",
-      "Green Tea Extract (20% Caffeine)",
-      "Ginseng Extract",
-      "Vitamin B2 (Riboflavin)",
-      "Folic Acid (L-Methylfolate)",
-      "Vitamin E",
-    ],
+    ingredients: ["Vitamina C", "L-Carnitina", "Extracto de Té Verde", "Extracto de Ginseng", "Vitamina B2", "Ácido Fólico", "Vitamina E"],
+    
     benefits: [
       "Apoya la energía constante durante el día",
       "Ayuda a mantener el foco y la concentración",
@@ -87,13 +80,8 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "/products/Sleep_2.webp",
       "/products/Sleep_3.webp"
     ],
-    ingredients: [
-      "Tryptophan",
-      "Magnesium (Bisglycinate)",
-      "Inositol",
-      "Vitamin B6",
-      "Glycine",
-    ],
+    ingredients: ["Triptófano", "Magnesio", "Inositol", "Vitamina B6", "Glicina"]
+    ,
     benefits: [
       "Acompaña la relajación antes de dormir",
       "Apoya un sueño más profundo y reparador",
@@ -130,15 +118,7 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "/products/Glow_2.webp",
       "/products/Glow_3.webp"
     ],
-    ingredients: [
-      "Vitamin C (Magnesium Ascorbyl Phosphate)",
-      "Hyaluronic Acid",
-      "Hydrolyzed Collagen",
-      "Biotin",
-      "Niacinamide (Vitamin B3)",
-      "Centella Asiatica Extract",
-      "Vitamin E",
-    ],
+    ingredients: ["Vitamina C", "Ácido Hialurónico", "Colágeno Hidrolizado", "Biotina", "Vitamina B3", "Extracto de Centella Asiática", "Vitamina E"],
     benefits: [
       "Apoya la hidratación natural de la piel",
       "Contribuye a la elasticidad y luminosidad",
@@ -175,13 +155,8 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "/products/Shield_2.webp",
       "/products/Shield_3.webp"
     ],
-    ingredients: [
-      "Vitamin C (Ascorbyl Palmitate)",
-      "Zinc (Picolinate)",
-      "Vitamin D3",
-      "Vitamin E",
-      "Niacinamide",
-    ],
+    ingredients: ["Vitamina C", "Zinc", "Vitamina D3", "Vitamina E", "Niacinamida"],
+    
     benefits: [
       "Apoya las defensas naturales del cuerpo",
       "Contribuye al funcionamiento normal del sistema inmune",
@@ -217,13 +192,7 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "/products/Zen_2.webp",
       "/products/Zen_3.webp"
     ],
-    ingredients: [
-      "Tryptophan",
-      "Magnesium (Taurate)",
-      "Taurine",
-      "Chamomile Extract",
-      "Vitamin B6",
-    ],
+    ingredients: ["Triptófano", "Magnesio", "Taurina", "Extracto de Manzanilla", "Vitamina B6"],
     benefits: [
       "Acompaña la calma mental",
       "Ayuda a reducir la tensión acumulada",
@@ -258,13 +227,7 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "/products/Woman_2.webp",
       "/products/Woman_3.webp"
     ],
-    ingredients: [
-      "Soy Extract",
-      "Vitamin B6",
-      "Magnesium (Bisglycinate)",
-      "Folic Acid (L-Methylfolate)",
-      "Iron (Bisglycinate)",
-    ],
+    ingredients: ["Extracto de Soya", "Vitamina B6", "Magnesio", "Ácido Fólico", "Hierro"],
     benefits: [
       "Acompaña el equilibrio hormonal natural",
       "Ayuda con el bienestar durante el ciclo",
