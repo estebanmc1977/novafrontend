@@ -153,7 +153,7 @@ function FrequencyPicker({
   );
 }
 
-
+// ─── Seccion Product Card ────────────────────────────────────────────────────
 
 function ProductCard({
   product,
@@ -192,117 +192,124 @@ function ProductCard({
   }
 
   return (
-    <Link href={`/${locale}/tienda/${product.slug}`} className="block h-full group">
-      <div className="bg-white rounded-[22px] overflow-hidden border border-black/[0.05] shadow-[0_4px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.09)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+    <div className="block h-full group">
+      <Link href={`/${locale}/tienda/${product.slug}`} className="block h-full">
+        <div className="bg-white rounded-[22px] overflow-hidden border border-black/[0.05] shadow-[0_4px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.09)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
 
-        <div className="relative flex items-center justify-center py-10 px-6" style={{ background: meta.bg }}>
-          {meta.popular && (
-            <span className="absolute top-3 right-3 bg-coral text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full">
-              Más popular
-            </span>
-          )}
-          <AnimatePresence>
-            {mode === "sub" && (
-              <motion.span
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                className="absolute top-3 left-3 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-full"
-                style={{ background: meta.color }}
-              >
-                {freqBadge}
-              </motion.span>
-            )}
-          </AnimatePresence>
-          <div className="relative w-64 h-64">
-            <Image
-              src={product.image}
-              alt={`Novapatch ${product.title}`}
-              fill
-              sizes="144px"
-              loading="lazy"
-              className="object-contain drop-shadow-md"
-            />
-          </div>
-        </div>
-
-        <div className="p-5 flex flex-col gap-3 flex-1">
-          <div>
-            <h3 className="text-[22px] font-black tracking-tight leading-none text-navy-light">
-              {product.title}
-            </h3>
-            <p className="text-[13px] font-semibold leading-snug mt-1" style={{ color: meta.taglineColor }}>
-              {product.description}
-            </p>
-          </div>
-
-          {/* Nueva sección Pack + Ingredientes */}
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-gray-400 mb-1">
-              Pack de 30 parches
-            </p>
-            <p className="text-[12px] text-gray-500 leading-[1.5]">
-              {meta.ingredients.join(" · ")}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-1.5">
-            {meta.tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-[11px] font-bold px-2.5 py-1 rounded-full border-[1.5px]"
-                style={{ borderColor: meta.color, color: meta.color }}
-              >
-                {tag}
+          {/* Imagen - clickeable hacia PDP */}
+          <div className="relative flex items-center justify-center py-10 px-6" style={{ background: meta.bg }}>
+            {meta.popular && (
+              <span className="absolute top-3 right-3 bg-coral text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full">
+                Más popular
               </span>
-            ))}
-          </div>
-
-          <AnimatePresence>
-            {mode === "sub" && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden"
-              >
-                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#9CA3AF] mb-2 mt-1">
-                  Frecuencia de entrega
-                </p>
-                <FrequencyPicker
-                  selected={freq}
-                  color={meta.color}
-                  bg={meta.bg}
-                  taglineColor={meta.taglineColor}
-                  onChange={onFreqChange}
-                />
-              </motion.div>
             )}
-          </AnimatePresence>
-
-          <div className="mt-auto pt-3 border-t border-black/[0.05]">
-            <div className="flex items-baseline gap-2 mb-3">
-              <span className="text-[26px] font-black tracking-tight text-navy-light">
-                {formatPrice(displayPrice, currency)}
-              </span>
+            <AnimatePresence>
               {mode === "sub" && (
-                <span className="text-[14px] text-[#C0C0C0] line-through">
-                  {formatPrice(product.price, currency)}
-                </span>
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className="absolute top-3 left-3 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-full"
+                  style={{ background: meta.color }}
+                >
+                  {freqBadge}
+                </motion.span>
               )}
+            </AnimatePresence>
+            <div className="relative w-48 h-48">   {/* ← Más grande como pediste */}
+              <Image
+                src={product.image}
+                alt={`Novapatch ${product.title}`}
+                fill
+                sizes="192px"
+                loading="lazy"
+                className="object-contain drop-shadow-md"
+              />
+            </div>
+          </div>
+
+          {/* Contenido */}
+          <div className="p-5 flex flex-col gap-3 flex-1">
+            <div>
+              <h3 className="text-[22px] font-black tracking-tight leading-none text-navy-light">
+                {product.title}
+              </h3>
+              <p className="text-[13px] font-semibold leading-snug mt-1" style={{ color: meta.taglineColor }}>
+                {product.description}
+              </p>
             </div>
 
-            <button
-              onClick={handleAddToCart}
-              className="product-card-btn w-full py-3 rounded-xl border-2 text-[14px] font-bold transition-all duration-200 active:scale-[0.97]"
-              style={{ "--btn-accent": meta.color, borderColor: meta.color } as React.CSSProperties}
-            >
-              {mode === "sub" ? "Suscribirse" : "Agregar al carrito"}
-            </button>
+            {/* Pack + Ingredientes */}
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-gray-400 mb-1">
+                Pack de 30 parches
+              </p>
+              <p className="text-[12px] text-gray-500 leading-[1.5]">
+                {meta.ingredients.join(" · ")}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-1.5">
+              {meta.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="text-[11px] font-bold px-2.5 py-1 rounded-full border-[1.5px]"
+                  style={{ borderColor: meta.color, color: meta.color }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            {/* Selector de frecuencia - NO clickeable hacia PDP */}
+            <AnimatePresence>
+              {mode === "sub" && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="overflow-hidden"
+                  onClick={(e) => e.stopPropagation()}   {/* ← Importante: evita ir a PDP */}
+                >
+                  <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#9CA3AF] mb-2 mt-1">
+                    Frecuencia de entrega
+                  </p>
+                  <FrequencyPicker
+                    selected={freq}
+                    color={meta.color}
+                    bg={meta.bg}
+                    taglineColor={meta.taglineColor}
+                    onChange={onFreqChange}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Precio + Botón */}
+            <div className="mt-auto pt-3 border-t border-black/[0.05]">
+              <div className="flex items-baseline gap-2 mb-3">
+                <span className="text-[26px] font-black tracking-tight text-navy-light">
+                  {formatPrice(displayPrice, currency)}
+                </span>
+                {mode === "sub" && (
+                  <span className="text-[14px] text-[#C0C0C0] line-through">
+                    {formatPrice(product.price, currency)}
+                  </span>
+                )}
+              </div>
+
+              <button
+                onClick={handleAddToCart}
+                className="product-card-btn w-full py-3 rounded-xl border-2 text-[14px] font-bold transition-all duration-200 active:scale-[0.97]"
+                style={{ "--btn-accent": meta.color, borderColor: meta.color } as React.CSSProperties}
+              >
+                {mode === "sub" ? "Suscribirse" : "Agregar al carrito"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 }
 
