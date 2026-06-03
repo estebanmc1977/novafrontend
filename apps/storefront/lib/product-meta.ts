@@ -13,6 +13,7 @@ export type ProductMeta = {
   bg: string;
   taglineColor: string;
   imgSrc: string;
+  images?: string[];
   ingredients: string[];
   benefits: string[];
   howItWorks: string;
