@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/format";
 
@@ -89,11 +90,13 @@ function HeroProductCard({
   onAdd,
   basePrice,
   currency,
+  locale,                    // ← Agregado
 }: {
   product: (typeof products)[0];
   onAdd: () => void;
   basePrice: number;
   currency: string;
+  locale: string;            // ← Agregado
 }) {
   const subPrice = Math.round(basePrice * (1 - SUB_DISCOUNT));
   const p = product;
@@ -104,89 +107,93 @@ function HeroProductCard({
       viewport={{ once: true }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div
-        className="group relative grid grid-cols-1 md:grid-cols-2 gap-0 rounded-[28px] overflow-hidden border border-black/[0.06] shadow-[0_8px_40px_rgba(0,0,0,0.08)]"
-        style={{ background: p.bg }}
-      >
-        {/* Image */}
-        <div className="relative flex items-center justify-center py-12 px-8 md:py-16 md:px-12">
-          <div className="relative w-[clamp(180px,22vw,288px)] h-[clamp(180px,22vw,288px)]">
-            <Image
-              src={p.imgSrc}
-              alt={`NovaPatch ${p.name}`}
-              fill
-              sizes="(max-width: 640px) 180px, (max-width: 1280px) 22vw, 288px"
-              className="object-contain group-hover:scale-[1.04] transition-transform duration-500"
-            />
-          </div>
-          <span
-            className="absolute top-5 left-5 text-white text-[11px] font-extrabold uppercase tracking-[0.08em] px-3.5 py-1.5 rounded-full"
-            style={{ background: p.color }}
-          >
-            Más popular
-          </span>
-        </div>
-
-        {/* Content */}
-        <div className="flex flex-col justify-center px-8 py-10 md:px-12 md:py-16 bg-white">
-          <p
-            className="text-[28px] md:text-[36px] font-black tracking-[-0.02em] leading-tight"
-            style={{ color: p.taglineColor }}
-          >
-            {p.name}
-          </p>
-          <p
-            className="text-[15px] font-semibold leading-[1.5] mt-1 opacity-80"
-            style={{ color: p.taglineColor }}
-          >
-            {p.tagline}
-          </p>
-          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-gray-400 mt-3">
-            Pack de 30 parches
-          </p>
-          <ul className="mt-1.5 space-y-0.5">
-            {p.ingredients.map((ing) => (
-              <li key={ing} className="text-[13px] text-gray-600 flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full flex-shrink-0 inline-block" style={{ background: p.color }} />
-                {ing}
-              </li>
-            ))}
-          </ul>
-
-          <div className="flex flex-wrap gap-1.5 mt-5">
-            {p.tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-[11px] font-bold px-3 py-1 rounded-full border-[1.5px]"
-                style={{ borderColor: p.color, color: p.color }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          {/* Pricing */}
-          <div className="mt-6 flex items-baseline gap-3 flex-wrap">
+      <Link href={`/${locale}/tienda/${p.slug}`} className="block">
+        <div
+          className="group relative grid grid-cols-1 md:grid-cols-2 gap-0 rounded-[28px] overflow-hidden border border-black/[0.06] shadow-[0_8px_40px_rgba(0,0,0,0.08)]"
+          style={{ background: p.bg }}
+        >
+          {/* Image */}
+          <div className="relative flex items-center justify-center py-12 px-8 md:py-16 md:px-12">
+            <div className="relative w-[clamp(180px,22vw,288px)] h-[clamp(180px,22vw,288px)]">
+              <Image
+                src={p.imgSrc}
+                alt={`NovaPatch ${p.name}`}
+                fill
+                sizes="(max-width: 640px) 180px, (max-width: 1280px) 22vw, 288px"
+                className="object-contain group-hover:scale-[1.04] transition-transform duration-500"
+              />
+            </div>
             <span
-              className="text-[28px] font-black"
+              className="absolute top-5 left-5 text-white text-[11px] font-extrabold uppercase tracking-[0.08em] px-3.5 py-1.5 rounded-full"
+              style={{ background: p.color }}
+            >
+              Más popular
+            </span>
+          </div>
+
+          {/* Content */}
+          <div className="flex flex-col justify-center px-8 py-10 md:px-12 md:py-16 bg-white">
+            <p
+              className="text-[28px] md:text-[36px] font-black tracking-[-0.02em] leading-tight"
               style={{ color: p.taglineColor }}
             >
-              {formatPrice(basePrice, currency)}
-            </span>
-            <span className="text-[13px] text-green-600 font-bold bg-green-50 px-2.5 py-1 rounded-lg">
-              Desde {formatPrice(subPrice, currency)} con suscripción
-            </span>
-          </div>
+              {p.name}
+            </p>
+            <p
+              className="text-[15px] font-semibold leading-[1.5] mt-1 opacity-80"
+              style={{ color: p.taglineColor }}
+            >
+              {p.tagline}
+            </p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-gray-400 mt-3">
+              Pack de 30 parches
+            </p>
+            <ul className="mt-1.5 space-y-0.5">
+              {p.ingredients.map((ing) => (
+                <li key={ing} className="text-[13px] text-gray-600 flex items-center gap-1.5">
+                  <span className="w-1 h-1 rounded-full flex-shrink-0 inline-block" style={{ background: p.color }} />
+                  {ing}
+                </li>
+              ))}
+            </ul>
 
-          <button
-            onClick={onAdd}
-            className="mt-5 w-full md:w-auto md:px-10 py-3.5 rounded-xl text-[15px] font-bold text-white transition-all duration-200 active:scale-[0.97] hover:brightness-110 hover:-translate-y-0.5 hover:shadow-lg"
-            style={{ background: p.color }}
-          >
-            Agregar al carrito
-          </button>
+            <div className="flex flex-wrap gap-1.5 mt-5">
+              {p.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="text-[11px] font-bold px-3 py-1 rounded-full border-[1.5px]"
+                  style={{ borderColor: p.color, color: p.color }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            <div className="mt-6 flex items-baseline gap-3 flex-wrap">
+              <span
+                className="text-[28px] font-black"
+                style={{ color: p.taglineColor }}
+              >
+                {formatPrice(basePrice, currency)}
+              </span>
+              <span className="text-[13px] text-green-600 font-bold bg-green-50 px-2.5 py-1 rounded-lg">
+                Desde {formatPrice(subPrice, currency)} con suscripción
+              </span>
+            </div>
+
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                onAdd();
+              }}
+              className="mt-5 w-full md:w-auto md:px-10 py-3.5 rounded-xl text-[15px] font-bold text-white transition-all duration-200 active:scale-[0.97] hover:brightness-110 hover:-translate-y-0.5 hover:shadow-lg"
+              style={{ background: p.color }}
+            >
+              Agregar al carrito
+            </button>
+          </div>
         </div>
-      </div>
+      </Link>
     </motion.div>
   );
 }
@@ -199,15 +206,18 @@ function ProductCard({
   onAdd,
   basePrice,
   currency,
+  locale,
 }: {
   product: (typeof products)[0];
   index: number;
   onAdd: () => void;
   basePrice: number;
   currency: string;
+  locale: string;
 }) {
   const subPrice = Math.round(basePrice * (1 - SUB_DISCOUNT));
   const p = product;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 32 }}
@@ -220,96 +230,109 @@ function ProductCard({
       }}
       className="h-full"
     >
-      <div className="group flex flex-col bg-white rounded-[20px] overflow-hidden border border-black/[0.06] shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:-translate-y-[5px] transition-all duration-300 h-full">
-        {/* Image area */}
-        <div
-          className="relative flex items-center justify-center"
-          style={{ background: p.bg, padding: "36px 24px" }}
-        >
-          <div className="relative w-36 h-36">
-            <Image
-              src={p.imgSrc}
-              alt={`NovaPatch ${p.name}`}
-              fill
-              sizes="144px"
-              loading="lazy"
-              className="object-contain group-hover:scale-[1.06] transition-transform duration-300"
-            />
-          </div>
-        </div>
-
-        {/* Body */}
-        <div className="p-5 flex flex-col gap-2 flex-1">
-          <div>
-            <p
-              className="text-[20px] font-black tracking-[-0.01em]"
-              style={{ color: p.taglineColor }}
-            >
-              {p.name}
-            </p>
-            <p
-              className="text-[13px] font-semibold leading-[1.45] mt-0.5 opacity-75"
-              style={{ color: p.taglineColor }}
-            >
-              {p.tagline}
-            </p>
-          </div>
-
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-gray-400 mb-1">
-              Pack de 30 parches
-            </p>
-            <p className="text-[12px] text-gray-500 leading-[1.5]">
-              {p.ingredients.join(" · ")}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-1.5">
-            {p.tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-[11px] font-bold px-3 py-1 rounded-full border-[1.5px]"
-                style={{ borderColor: p.color, color: p.color }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          {/* Pricing */}
-          <div className="mt-auto pt-3 flex items-baseline gap-2">
-            <span
-              className="text-[22px] font-black"
-              style={{ color: p.taglineColor }}
-            >
-              {formatPrice(basePrice, currency)}
-            </span>
-          </div>
-          <p className="text-[11px] text-green-600 font-semibold -mt-1">
-            Desde {formatPrice(subPrice, currency)}/caja con suscripción
-          </p>
-
-          <button
-            onClick={onAdd}
-            className="product-card-btn mt-2 w-full py-3 rounded-xl border-2 text-[14px] font-bold transition-all duration-200 active:scale-[0.97]"
-            style={
-              {
-                "--btn-accent": p.color,
-                borderColor: p.color,
-              } as React.CSSProperties
-            }
+      <Link 
+        href={`/${locale}/tienda/${p.slug}`}
+        className="block h-full group"
+      >
+        <div className="group flex flex-col bg-white rounded-[20px] overflow-hidden border border-black/[0.06] shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:-translate-y-[5px] transition-all duration-300 h-full">
+          <div
+            className="relative flex items-center justify-center"
+            style={{ background: p.bg, padding: "36px 24px" }}
           >
-            Agregar al carrito
-          </button>
+            <div className="relative w-36 h-36">
+              <Image
+                src={p.imgSrc}
+                alt={`NovaPatch ${p.name}`}
+                fill
+                sizes="144px"
+                loading="lazy"
+                className="object-contain group-hover:scale-[1.06] transition-transform duration-300"
+              />
+            </div>
+          </div>
+
+          <div className="p-5 flex flex-col gap-2 flex-1">
+            <div>
+              <p
+                className="text-[20px] font-black tracking-[-0.01em]"
+                style={{ color: p.taglineColor }}
+              >
+                {p.name}
+              </p>
+              <p
+                className="text-[13px] font-semibold leading-[1.45] mt-0.5 opacity-75"
+                style={{ color: p.taglineColor }}
+              >
+                {p.tagline}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-gray-400 mb-1">
+                Pack de 30 parches
+              </p>
+              <p className="text-[12px] text-gray-500 leading-[1.5]">
+                {p.ingredients.join(" · ")}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-1.5">
+              {p.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="text-[11px] font-bold px-3 py-1 rounded-full border-[1.5px]"
+                  style={{ borderColor: p.color, color: p.color }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            <div className="mt-auto pt-3 flex items-baseline gap-2">
+              <span
+                className="text-[22px] font-black"
+                style={{ color: p.taglineColor }}
+              >
+                {formatPrice(basePrice, currency)}
+              </span>
+            </div>
+            <p className="text-[11px] text-green-600 font-semibold -mt-1">
+              Desde {formatPrice(subPrice, currency)}/caja con suscripción
+            </p>
+
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                onAdd();
+              }}
+              className="product-card-btn mt-2 w-full py-3 rounded-xl border-2 text-[14px] font-bold transition-all duration-200 active:scale-[0.97]"
+              style={
+                {
+                  "--btn-accent": p.color,
+                  borderColor: p.color,
+                } as React.CSSProperties
+              }
+            >
+              Agregar al carrito
+            </button>
+          </div>
         </div>
-      </div>
+      </Link>
     </motion.div>
   );
 }
 
 /* ── Main grid ────────────────────────────────────────────────────────── */
 
-export default function ProductGrid({ basePrice = 750, currency = "MXN" }: { basePrice?: number; currency?: string }) {
+export default function ProductGrid({ 
+  basePrice = 750, 
+  currency = "MXN",
+  locale = "mx" 
+}: { 
+  basePrice?: number; 
+  currency?: string;
+  locale?: string;
+}) {
   const { addToCart } = useCart();
 
   const heroProduct = products.find((p) => p.popular)!;
@@ -331,7 +354,6 @@ export default function ProductGrid({ basePrice = 750, currency = "MXN" }: { bas
   return (
     <section id="productos" className="bg-gray-50 px-5 sm:px-8 md:px-12 pt-20 pb-16">
       <div className="max-w-[1200px] mx-auto">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -350,15 +372,14 @@ export default function ProductGrid({ basePrice = 750, currency = "MXN" }: { bas
           </p>
         </motion.div>
 
-        {/* Featured product — Glow */}
         <HeroProductCard
           product={heroProduct}
           onAdd={() => handleAdd(heroProduct)}
           basePrice={basePrice}
           currency={currency}
+          locale={locale}
         />
 
-        {/* Remaining products */}
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           {rest.map((p, i) => (
             <ProductCard
@@ -368,6 +389,7 @@ export default function ProductGrid({ basePrice = 750, currency = "MXN" }: { bas
               onAdd={() => handleAdd(p)}
               basePrice={basePrice}
               currency={currency}
+              locale={locale}
             />
           ))}
         </div>

@@ -33,6 +33,13 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
     bg: "#EBF4FB",
     taglineColor: "#1A5C9A",
     imgSrc: "/products/Energy_thumb.webp",
+    // ←←← NUEVO: Agregamos varias fotos
+    images: [
+      "/products/Energy_thumb.webp",
+      "/products/Energy_1.webp",      // podes agregar más después
+      "/products/Energy_2.webp",
+      "/products/Energy_3.webp"
+    ],
     ingredients: [
       "Vitamin C (Ascorbyl Palmitate)",
       "L-Carnitine",
@@ -108,6 +115,13 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
     bg: "#FAF0EE",
     taglineColor: "#B83525",
     imgSrc: "/products/Glow_thumb.webp",
+    // ←←← NUEVO: Agregamos varias fotos
+    images: [
+      "/products/Glow_thumb.webp",
+      "/products/Glow_1.webp",      // podes agregar más después
+      "/products/Glow_2.webp",
+      "/products/Glow_3.webp"
+    ],
     ingredients: [
       "Vitamin C (Magnesium Ascorbyl Phosphate)",
       "Hyaluronic Acid",
@@ -146,6 +160,13 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
     bg: "#FAF6E9",
     taglineColor: "#8C6000",
     imgSrc: "/products/Shield_thumb.webp",
+    // ←←← NUEVO: Agregamos varias fotos
+    images: [
+      "/products/Shield_thumb.webp",
+      "/products/Shield_1.webp",      // podes agregar más después
+      "/products/Shield_2.webp",
+      "/products/Shield_3.webp"
+    ],
     ingredients: [
       "Vitamin C (Ascorbyl Palmitate)",
       "Zinc (Picolinate)",
@@ -181,6 +202,13 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
     bg: "#EBF0F9",
     taglineColor: "#2A5490",
     imgSrc: "/products/Zen_thumb.webp",
+    // ←←← NUEVO: Agregamos varias fotos
+    images: [
+      "/products/Zen_thumb.webp",
+      "/products/Zen_1.webp",      // podes agregar más después
+      "/products/Zen_2.webp",
+      "/products/Zen_3.webp"
+    ],
     ingredients: [
       "Tryptophan",
       "Magnesium (Taurate)",
@@ -215,6 +243,13 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
     bg: "#F3EBF9",
     taglineColor: "#6B3080",
     imgSrc: "/products/Woman_thumb.webp",
+    // ←←← NUEVO: Agregamos varias fotos
+    images: [
+      "/products/Woman_thumb.webp",
+      "/products/Woman_1.webp",      // podes agregar más después
+      "/products/Woman_2.webp",
+      "/products/Woman_3.webp"
+    ],
     ingredients: [
       "Soy Extract",
       "Vitamin B6",

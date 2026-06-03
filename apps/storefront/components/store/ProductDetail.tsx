@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -19,15 +18,21 @@ export default function ProductDetail({
 }) {
   const { addToCart } = useCart();
   const [mode, setMode] = useState<"once" | "sub">("sub");
-  const basePrice = 750; // Temporal - luego lo conectaremos con Medusa
+  const [selectedImage, setSelectedImage] = useState(0);
 
+  const basePrice = 750; 
   const subPrice = Math.round(basePrice * (1 - SUB_DISCOUNT));
+
+  // Usa el array de imágenes o fallback a la imagen principal
+  const images = product.images && product.images.length > 0 
+    ? product.images 
+    : [product.imgSrc];
 
   const handleAddToCart = () => {
     addToCart({
       slug: product.slug,
       title: product.name,
-      image: product.imgSrc,
+      image: images[0],
       price: basePrice,
       color: product.color,
       bg: product.bg,
@@ -38,25 +43,52 @@ export default function ProductDetail({
 
   return (
     <main className="bg-[#F8F7F4] min-h-screen pb-20">
-      {/* Hero Section */}
+      {/* Hero Section con Galería */}
       <section 
         className="pt-24 pb-16 px-6"
         style={{ background: product.bg }}
       >
-        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-          <div className="relative">
-            <div className="relative w-full aspect-square max-w-[420px] mx-auto">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-start">
+          
+          {/* === GALERÍA DE IMÁGENES === */}
+          <div className="space-y-6">
+            <div className="relative aspect-square bg-white rounded-3xl overflow-hidden shadow-xl">
               <Image
-                src={product.imgSrc}
+                src={images[selectedImage]}
                 alt={product.name}
                 fill
-                className="object-contain drop-shadow-xl"
+                className="object-contain p-8"
                 priority
               />
             </div>
+
+            {/* Miniaturas */}
+            {images.length > 1 && (
+              <div className="flex gap-4 justify-center md:justify-start overflow-x-auto pb-2">
+                {images.map((img, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImage(index)}
+                    className={`relative w-20 h-20 flex-shrink-0 rounded-2xl overflow-hidden border-2 transition-all ${
+                      selectedImage === index 
+                        ? 'border-transparent scale-105' 
+                        : 'border-transparent hover:border-gray-300'
+                    }`}
+                  >
+                    <Image
+                      src={img}
+                      alt={`${product.name} vista ${index + 1}`}
+                      fill
+                      className="object-contain p-2"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          <div>
+          {/* === INFORMACIÓN DEL PRODUCTO === */}
+          <div className="pt-4">
             <h1 
               className="text-5xl md:text-6xl font-black tracking-tighter"
               style={{ color: product.taglineColor }}
@@ -86,7 +118,7 @@ export default function ProductDetail({
               ))}
             </div>
 
-            {/* Selector y Precio */}
+            {/* Selector Compra / Suscripción */}
             <div className="mt-10">
               <div className="flex gap-3 mb-6">
                 <button
@@ -118,7 +150,7 @@ export default function ProductDetail({
 
               <button
                 onClick={handleAddToCart}
-                className="mt-6 w-full md:w-auto px-10 py-4 rounded-2xl text-white font-bold text-lg active:scale-[0.97] transition-all"
+                className="mt-8 w-full md:w-auto px-12 py-4 rounded-2xl text-white font-bold text-lg active:scale-[0.97] transition-all"
                 style={{ background: product.color }}
               >
                 {mode === "sub" ? "Suscribirme ahora" : "Agregar al carrito"}

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import type { Product } from "@/lib/commerce";
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/format";
@@ -15,22 +16,16 @@ const META: Record<string, {
   taglineColor: string;
   quote: string;
   tags: string[];
+  ingredients: string[];     // ← Nuevo
   popular?: boolean;
 }> = {
-  shield: {
-    color: "#A07000",
-    bg: "#FAF6E9",
-    taglineColor: "#A07000",
-    quote: '"Tu rutina de cuidado empieza hoy, no cuando algo pasa."',
-    tags: ["Cuidado preventivo", "Uso diario"],
-  },
-  glow: {
-    color: "#C94030",
-    bg: "#FAF0EE",
-    taglineColor: "#C94030",
-    quote: '"La piel también refleja cómo te cuidas."',
-    tags: ["Bienestar desde adentro", "Constancia"],
-    popular: true,
+  energy: {
+    color: "#2B7CC1",
+    bg: "#EBF4FB",
+    taglineColor: "#2B7CC1",
+    quote: '"Tu día no para. Tu energía tampoco."',
+    tags: ["Energía sostenida", "Sin picos ni caídas"],
+    ingredients: ["Vitamina C", "L-Carnitina", "Extracto de Té Verde", "Extracto de Ginseng", "Vitamina B2", "Ácido Fólico", "Vitamina E"],
   },
   sleep: {
     color: "#138A75",
@@ -38,13 +33,24 @@ const META: Record<string, {
     taglineColor: "#138A75",
     quote: '"Porque descansar también es cuidarse."',
     tags: ["Descanso nocturno", "Sin somníferos"],
+    ingredients: ["Triptófano", "Magnesio", "Inositol", "Vitamina B6", "Glicina"],
   },
-  energy: {
-    color: "#2B7CC1",
-    bg: "#EBF4FB",
-    taglineColor: "#2B7CC1",
-    quote: '"Tu día no para. Tu energía tampoco."',
-    tags: ["Energía sostenida", "Sin picos ni caídas"],
+  glow: {
+    color: "#C94030",
+    bg: "#FAF0EE",
+    taglineColor: "#C94030",
+    quote: '"La piel también refleja cómo te cuidas."',
+    tags: ["Bienestar desde adentro", "Constancia"],
+    ingredients: ["Vitamina C", "Ácido Hialurónico", "Colágeno Hidrolizado", "Biotina", "Vitamina B3", "Extracto de Centella Asiática", "Vitamina E"],
+    popular: true,
+  },
+  shield: {
+    color: "#A07000",
+    bg: "#FAF6E9",
+    taglineColor: "#A07000",
+    quote: '"Tu rutina de cuidado empieza hoy, no cuando algo pasa."',
+    tags: ["Cuidado preventivo", "Uso diario"],
+    ingredients: ["Vitamina C", "Zinc", "Vitamina D3", "Vitamina E", "Niacinamida"],
   },
   zen: {
     color: "#3A6FA8",
@@ -52,6 +58,7 @@ const META: Record<string, {
     taglineColor: "#3A6FA8",
     quote: '"El equilibrio que no se ve, pero se siente."',
     tags: ["Calma funcional", "Días intensos"],
+    ingredients: ["Triptófano", "Magnesio", "Taurina", "Extracto de Manzanilla", "Vitamina B6"],
   },
   woman: {
     color: "#8A3EBE",
@@ -59,10 +66,11 @@ const META: Record<string, {
     taglineColor: "#8A3EBE",
     quote: '"Escucharte también es una forma de cuidarte."',
     tags: ["Bienestar femenino", "Ritmos naturales"],
+    ingredients: ["Extracto de Soya", "Vitamina B6", "Magnesio", "Ácido Fólico", "Hierro"],
   },
 };
 
-// ─── Frecuencias de suscripción (del PRD) ───────────────────────────────────
+// ─── Frecuencias de suscripción ─────────────────────────────────────────────
 
 const FRECUENCIAS = [
   { days: 30 as const, label: "Mensual",    discount: 0.20, badge: "20% OFF" },
@@ -72,8 +80,6 @@ const FRECUENCIAS = [
 
 type Freq = 30 | 60 | 90;
 type Mode = "once" | "sub";
-
-// ─── Helpers ────────────────────────────────────────────────────────────────
 
 function discountedPrice(base: number, freq: Freq): number {
   const { discount } = FRECUENCIAS.find((f) => f.days === freq)!;
@@ -87,21 +93,17 @@ function ModeToggle({ mode, onChange }: { mode: Mode; onChange: (m: Mode) => voi
     <div className="inline-flex items-center bg-white rounded-full p-1 shadow-sm border border-black/[0.07]">
       <button
         onClick={() => onChange("once")}
-        className="px-6 py-2.5 rounded-full text-[13px] font-bold transition-all duration-200"
-        style={{
-          background: mode === "once" ? "var(--color-ocean)" : "transparent",
-          color: mode === "once" ? "#fff" : "#6B7280",
-        }}
+        className={`px-6 py-2.5 rounded-full text-[13px] font-bold transition-all duration-200 ${
+          mode === "once" ? "bg-ocean text-white" : "text-gray-500"
+        }`}
       >
         Compra única
       </button>
       <button
         onClick={() => onChange("sub")}
-        className="flex items-center gap-2 px-6 py-2.5 rounded-full text-[13px] font-bold transition-all duration-200"
-        style={{
-          background: mode === "sub" ? "var(--color-coral)" : "transparent",
-          color: mode === "sub" ? "#fff" : "#6B7280",
-        }}
+        className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-[13px] font-bold transition-all duration-200 ${
+          mode === "sub" ? "bg-coral text-white" : "text-gray-500"
+        }`}
       >
         Suscripción
         {mode === "once" && (
@@ -151,28 +153,32 @@ function FrequencyPicker({
   );
 }
 
+
+
 function ProductCard({
   product,
   mode,
   freq,
   onFreqChange,
   currency = "MXN",
+  locale,
 }: {
   product: Product;
   mode: Mode;
   freq: Freq;
   onFreqChange: (f: Freq) => void;
   currency?: string;
+  locale: string;
 }) {
   const meta = META[product.slug];
   const { addToCart } = useCart();
   if (!meta) return null;
 
-  const displayPrice =
-    mode === "sub" ? discountedPrice(product.price, freq) : product.price;
+  const displayPrice = mode === "sub" ? discountedPrice(product.price, freq) : product.price;
   const freqBadge = FRECUENCIAS.find((f) => f.days === freq)!.badge;
 
-  function handleAddToCart() {
+  function handleAddToCart(e: React.MouseEvent) {
+    e.preventDefault();
     addToCart({
       slug: product.slug,
       title: product.title,
@@ -186,137 +192,131 @@ function ProductCard({
   }
 
   return (
-    <div className="bg-white rounded-[22px] overflow-hidden border border-black/[0.05] shadow-[0_4px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.09)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+    <Link href={`/${locale}/tienda/${product.slug}`} className="block h-full group">
+      <div className="bg-white rounded-[22px] overflow-hidden border border-black/[0.05] shadow-[0_4px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.09)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
 
-      {/* Imagen */}
-      <div
-        className="relative flex items-center justify-center py-10 px-6"
-        style={{ background: meta.bg }}
-      >
-        {meta.popular && (
-          <span className="absolute top-3 right-3 bg-coral text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full">
-            Más popular
-          </span>
-        )}
-        <AnimatePresence>
-          {mode === "sub" && (
-            <motion.span
-              key="discount-badge"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.2 }}
-              className="absolute top-3 left-3 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-full"
-              style={{ background: meta.color }}
-            >
-              {freqBadge}
-            </motion.span>
-          )}
-        </AnimatePresence>
-        <div className="relative w-36 h-36">
-          <Image
-            src={product.image}
-            alt={`Novapatch ${product.title}`}
-            fill
-            sizes="144px"
-            loading="lazy"
-            className="object-contain drop-shadow-md"
-          />
-        </div>
-      </div>
-
-      {/* Cuerpo */}
-      <div className="p-5 flex flex-col gap-3 flex-1">
-        <div>
-          <h3 className="text-[22px] font-black tracking-tight leading-none text-navy-light">
-            {product.title}
-          </h3>
-          <p
-            className="text-[13px] font-semibold leading-snug mt-1"
-            style={{ color: meta.taglineColor }}
-          >
-            {product.description}
-          </p>
-        </div>
-
-        <p className="text-[12.5px] text-[#6B7280] italic leading-relaxed">
-          {meta.quote}
-        </p>
-
-        <div className="flex flex-wrap gap-1.5">
-          {meta.tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-[11px] font-bold px-2.5 py-1 rounded-full border-[1.5px]"
-              style={{ borderColor: meta.color, color: meta.color }}
-            >
-              {tag}
+        <div className="relative flex items-center justify-center py-10 px-6" style={{ background: meta.bg }}>
+          {meta.popular && (
+            <span className="absolute top-3 right-3 bg-coral text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full">
+              Más popular
             </span>
-          ))}
+          )}
+          <AnimatePresence>
+            {mode === "sub" && (
+              <motion.span
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                className="absolute top-3 left-3 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-full"
+                style={{ background: meta.color }}
+              >
+                {freqBadge}
+              </motion.span>
+            )}
+          </AnimatePresence>
+          <div className="relative w-64 h-64">
+            <Image
+              src={product.image}
+              alt={`Novapatch ${product.title}`}
+              fill
+              sizes="144px"
+              loading="lazy"
+              className="object-contain drop-shadow-md"
+            />
+          </div>
         </div>
 
-        {/* Selector de frecuencia (solo en modo suscripción) */}
-        <AnimatePresence>
-          {mode === "sub" && (
-            <motion.div
-              key="freq-picker"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.22, ease: "easeInOut" }}
-              className="overflow-hidden"
-            >
-              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#9CA3AF] mb-2 mt-1">
-                Frecuencia de entrega
-              </p>
-              <FrequencyPicker
-                selected={freq}
-                color={meta.color}
-                bg={meta.bg}
-                taglineColor={meta.taglineColor}
-                onChange={onFreqChange}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Precio + CTA */}
-        <div className="mt-auto pt-3 border-t border-black/[0.05]">
-          <div className="flex items-baseline gap-2 mb-3">
-            <span className="text-[26px] font-black tracking-tight text-navy-light">
-              {formatPrice(displayPrice, currency)}
-            </span>
-            <AnimatePresence>
-              {mode === "sub" && (
-                <motion.span
-                  key="original-price"
-                  initial={{ opacity: 0, x: -4 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -4 }}
-                  className="text-[14px] text-[#C0C0C0] line-through"
-                >
-                  {formatPrice(product.price, currency)}
-                </motion.span>
-              )}
-            </AnimatePresence>
+        <div className="p-5 flex flex-col gap-3 flex-1">
+          <div>
+            <h3 className="text-[22px] font-black tracking-tight leading-none text-navy-light">
+              {product.title}
+            </h3>
+            <p className="text-[13px] font-semibold leading-snug mt-1" style={{ color: meta.taglineColor }}>
+              {product.description}
+            </p>
           </div>
 
-          <button
-            onClick={handleAddToCart}
-            className="product-card-btn w-full py-3 rounded-xl border-2 text-[14px] font-bold transition-all duration-200 active:scale-[0.97]"
-            style={{ "--btn-accent": meta.color, borderColor: meta.color } as React.CSSProperties}
-          >
-            {mode === "sub" ? "Suscribirse" : "Agregar al carrito"}
-          </button>
+          {/* Nueva sección Pack + Ingredientes */}
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-gray-400 mb-1">
+              Pack de 30 parches
+            </p>
+            <p className="text-[12px] text-gray-500 leading-[1.5]">
+              {meta.ingredients.join(" · ")}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-1.5">
+            {meta.tags.map((tag) => (
+              <span
+                key={tag}
+                className="text-[11px] font-bold px-2.5 py-1 rounded-full border-[1.5px]"
+                style={{ borderColor: meta.color, color: meta.color }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          <AnimatePresence>
+            {mode === "sub" && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#9CA3AF] mb-2 mt-1">
+                  Frecuencia de entrega
+                </p>
+                <FrequencyPicker
+                  selected={freq}
+                  color={meta.color}
+                  bg={meta.bg}
+                  taglineColor={meta.taglineColor}
+                  onChange={onFreqChange}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div className="mt-auto pt-3 border-t border-black/[0.05]">
+            <div className="flex items-baseline gap-2 mb-3">
+              <span className="text-[26px] font-black tracking-tight text-navy-light">
+                {formatPrice(displayPrice, currency)}
+              </span>
+              {mode === "sub" && (
+                <span className="text-[14px] text-[#C0C0C0] line-through">
+                  {formatPrice(product.price, currency)}
+                </span>
+              )}
+            </div>
+
+            <button
+              onClick={handleAddToCart}
+              className="product-card-btn w-full py-3 rounded-xl border-2 text-[14px] font-bold transition-all duration-200 active:scale-[0.97]"
+              style={{ "--btn-accent": meta.color, borderColor: meta.color } as React.CSSProperties}
+            >
+              {mode === "sub" ? "Suscribirse" : "Agregar al carrito"}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
 // ─── Componente principal ────────────────────────────────────────────────────
 
-export default function TiendaExperience({ products, currency = "MXN" }: { products: Product[], currency?: string }) {
+export default function TiendaExperience({ 
+  products, 
+  currency = "MXN",
+  locale = "mx" 
+}: { 
+  products: Product[], 
+  currency?: string;
+  locale?: string;
+}) {
   const [mode, setMode] = useState<Mode>("once");
   const [freqs, setFreqs] = useState<Record<string, Freq>>({});
 
@@ -331,7 +331,7 @@ export default function TiendaExperience({ products, currency = "MXN" }: { produ
   return (
     <main className="min-h-screen" style={{ background: "#F8F3EC" }}>
 
-      {/* ── Hero ── */}
+      {/* Hero */}
       <section className="pt-32 pb-12 px-6 text-center">
         <motion.p
           initial={{ opacity: 0, y: 10 }}
@@ -359,19 +359,13 @@ export default function TiendaExperience({ products, currency = "MXN" }: { produ
           Seis fórmulas. Un solo formato: pega, olvida y deja que trabaje.
         </motion.p>
 
-        {/* Toggle Una vez / Suscripción */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, delay: 0.19 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.19 }}>
           <ModeToggle mode={mode} onChange={setMode} />
         </motion.div>
 
         <AnimatePresence>
           {mode === "sub" && (
             <motion.p
-              key="sub-hint"
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
@@ -384,7 +378,7 @@ export default function TiendaExperience({ products, currency = "MXN" }: { produ
         </AnimatePresence>
       </section>
 
-      {/* ── Grid de productos ── */}
+      {/* Grid de productos */}
       <section className="px-4 pb-24 max-w-[1200px] mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           {products.map((product, i) => (
@@ -392,11 +386,7 @@ export default function TiendaExperience({ products, currency = "MXN" }: { produ
               key={product.slug}
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay: i * 0.07,
-                duration: 0.55,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+              transition={{ delay: i * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
               className={`flex ${i === 0 ? "sm:col-span-2 md:col-span-1" : ""}`}
             >
               <ProductCard
@@ -405,13 +395,14 @@ export default function TiendaExperience({ products, currency = "MXN" }: { produ
                 freq={getFreq(product.slug)}
                 onFreqChange={(f) => setFreq(product.slug, f)}
                 currency={currency}
+                locale={locale}
               />
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* ── Banda de beneficios suscripción ── */}
+      {/* Banda de beneficios suscripción */}
       <AnimatePresence>
         {mode === "sub" && (
           <motion.section
@@ -426,38 +417,23 @@ export default function TiendaExperience({ products, currency = "MXN" }: { produ
             <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
               {[
                 {
-                  icon: (
-                    <svg width="24" height="24" fill="none" stroke="var(--color-coral)" strokeWidth="1.8" viewBox="0 0 24 24">
-                      <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  ),
+                  icon: "🔄",
                   title: "Sin interrupciones",
                   desc: "Tu parche llega antes de que se te acabe.",
                 },
                 {
-                  icon: (
-                    <svg width="24" height="24" fill="none" stroke="var(--color-coral)" strokeWidth="1.8" viewBox="0 0 24 24">
-                      <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  ),
+                  icon: "💰",
                   title: "Precio de suscriptor",
                   desc: "Siempre más bajo que la compra individual.",
                 },
                 {
-                  icon: (
-                    <svg width="24" height="24" fill="none" stroke="var(--color-coral)" strokeWidth="1.8" viewBox="0 0 24 24">
-                      <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  ),
+                  icon: "🎛️",
                   title: "Tú controlas",
                   desc: "Pausa, cambia o cancela sin llamadas ni penalizaciones.",
                 },
-              ].map((b) => (
-                <div key={b.title} className="flex flex-col items-center gap-3">
-                  <div className="w-11 h-11 rounded-full bg-[#FFF0ED] flex items-center justify-center">
-                    {b.icon}
-                  </div>
+              ].map((b, i) => (
+                <div key={i} className="flex flex-col items-center gap-3">
+                  <div className="text-4xl mb-2">{b.icon}</div>
                   <p className="text-[14px] font-bold text-ocean">{b.title}</p>
                   <p className="text-[13px] text-[#6B7280] leading-relaxed">{b.desc}</p>
                 </div>
