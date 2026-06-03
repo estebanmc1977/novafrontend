@@ -300,7 +300,7 @@ export default function ProductDetail({
       </section>
 
       {/* Banner de atributos */}
-      <AttributeBar accent={product.color} />
+      <AttributeBar accent={product.color} current={selectedImage}/>
     </main>
   );
 }
