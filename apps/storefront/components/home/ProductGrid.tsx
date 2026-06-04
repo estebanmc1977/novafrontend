@@ -42,7 +42,7 @@ const products = [
     tags: ["Bienestar desde adentro", "Constancia"],
     color: "#C94030",
     bg: "#FAF0EE",
-    popular: true,
+    popular: true,        // ← Glow marcado como popular
     imgSrc: "/products/Glow_thumb.webp",
   },
   {
@@ -119,17 +119,25 @@ function ProductCard({
         href={`/${locale}/tienda/${p.slug}`}
         className="block h-full group"
       >
-        <div className="group flex flex-col bg-white rounded-[20px] overflow-hidden border border-black/[0.06] shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:-translate-y-[5px] transition-all duration-300 h-full">
+        <div className="group flex flex-col bg-white rounded-[20px] overflow-hidden border border-black/[0.06] shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:-translate-y-[5px] transition-all duration-300 h-full relative">
+          
+          {/* Badge "Más popular" */}
+          {p.popular && (
+            <span className="absolute top-4 right-4 bg-coral text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full z-10">
+              Más popular
+            </span>
+          )}
+
           <div
             className="relative flex items-center justify-center"
             style={{ background: p.bg, padding: "36px 24px" }}
           >
-            <div className="relative w-64 h-64">
+            <div className="relative w-44 h-44">
               <Image
                 src={p.imgSrc}
                 alt={`NovaPatch ${p.name}`}
                 fill
-                sizes="160px"
+                sizes="176px"
                 loading="lazy"
                 className="object-contain group-hover:scale-[1.06] transition-transform duration-300"
               />
@@ -229,10 +237,7 @@ export default function ProductGrid({
           transition={{ duration: 0.6 }}
           className="text-center mb-14"
         >
-          <h2
-            className="font-black text-ocean tracking-[-0.02em] mb-3"
-            style={{ fontSize: "clamp(26px,3vw,38px)" }}
-          >
+          <h2 className="font-black text-ocean tracking-[-0.02em] mb-3" style={{ fontSize: "clamp(26px,3vw,38px)" }}>
             Elige el parche que tu cuerpo necesita
           </h2>
           <p className="text-[16px] text-gray-500 max-w-[480px] mx-auto leading-[1.6]">
@@ -240,7 +245,6 @@ export default function ProductGrid({
           </p>
         </motion.div>
 
-        {/* Grid uniforme de 3 columnas */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           {products.map((p, i) => (
             <ProductCard
