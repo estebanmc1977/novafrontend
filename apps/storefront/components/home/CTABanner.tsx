@@ -42,30 +42,37 @@ export default async function CTABanner({ basePrice = 750, currency = "MXN" }: {
           <div className="grid grid-cols-1 gap-6">
             {[
               {
-                icon: "🔄",
+                icon: "/features/ctabanner_suscripcion/1.png",
                 title: "Sin interrupciones",
                 desc: "Tu parche llega antes de que se te acabe. Sin acordarte. Sin perder el ritmo."
               },
               {
-                icon: "💰",
+                icon: "/features/ctabanner_suscripcion/2.png",
                 title: "Precio de suscriptor",
                 desc: "Siempre más bajo que la compra individual. El hábito que sostiene, conviene."
               },
               {
-                icon: "🎛️",
+                icon: "/features/ctabanner_suscripcion/3.png",
                 title: "Tú controlas",
                 desc: "Pausa, cambia o cancela cuando quieras. Sin llamadas, sin penalizaciones."
               }
             ].map((b, i) => (
-              <div key={i} className="flex gap-5">
-                <div className="text-4xl flex-shrink-0 mt-1">{b.icon}</div>
-                <div>
-                  <h4 className="font-bold text-xl text-ocean">{b.title}</h4>
-                  <p className="text-gray-600 mt-1 leading-relaxed">{b.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+    <div key={i} className="flex gap-5 items-start">
+      <div className="flex-shrink-0 mt-1 w-12 h-12 relative">
+        <Image
+          src={b.icon}
+          alt={b.title}
+          fill
+          className="object-contain"
+        />
+      </div>
+      <div>
+        <h4 className="font-bold text-xl text-ocean">{b.title}</h4>
+        <p className="text-gray-600 mt-1 leading-relaxed">{b.desc}</p>
+      </div>
+    </div>
+  ))}
+</div>
 
           {/* CTA */}
           <div className="pt-4">
