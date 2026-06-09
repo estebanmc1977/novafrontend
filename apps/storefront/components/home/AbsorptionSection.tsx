@@ -38,18 +38,61 @@ function SkinDiagram({ shouldAnimate }: { shouldAnimate: boolean }) {
         </filter>
       </defs>
 
-      {/* ── Patch ── */}
-      <rect x="28" y="10" width="324" height="60" rx="12" fill="var(--color-gold)" />
-      <rect x="28" y="10" width="324" height="60" rx="12" fill="url(#patchShine)" />
-      {/* perforation dots */}
+            {/* ── Patch Mejorado ── */}
+      <rect 
+        x="28" 
+        y="10" 
+        width="324" 
+        height="60" 
+        rx="14" 
+        fill="#F8F7F4" 
+        stroke="#E5E3DD" 
+        strokeWidth="6"
+      />
+      
+      {/* Shine effect */}
+      <rect 
+        x="28" 
+        y="10" 
+        width="324" 
+        height="60" 
+        rx="14" 
+        fill="url(#patchShine)" 
+      />
+
+      {/* Perforation dots (más suaves) */}
       {[55, 90, 125, 160, 195, 230, 265, 300, 335].map((x) => (
-        <circle key={`t${x}`} cx={x} cy="10" r="2.8" fill="rgba(0,0,0,0.18)" />
+        <circle key={`t${x}`} cx={x} cy="18" r="4.5" fill="#D1CFC7" />
       ))}
       {[55, 90, 125, 160, 195, 230, 265, 300, 335].map((x) => (
-        <circle key={`b${x}`} cx={x} cy="70" r="2.8" fill="rgba(0,0,0,0.18)" />
+        <circle key={`b${x}`} cx={x} cy="62" r="4.5" fill="#D1CFC7" />
       ))}
-      <text x="190" y="39" textAnchor="middle" fontFamily="Outfit,system-ui,sans-serif" fontSize="13" fontWeight="800" fill="var(--color-ocean)" letterSpacing="1.5">NOVAPATCH</text>
-      <text x="190" y="57" textAnchor="middle" fontFamily="Outfit,system-ui,sans-serif" fontSize="10" fill="rgba(0,0,0,0.48)" fontWeight="500">Liberación controlada · 10–12 horas</text>
+
+      {/* Logo text */}
+      <text 
+        x="190" 
+        y="37" 
+        textAnchor="middle" 
+        fontFamily="Outfit, system-ui, sans-serif" 
+        fontSize="13.5" 
+        fontWeight="800" 
+        fill="#1E3A5F" 
+        letterSpacing="1.8"
+      >
+        NOVAPATCH
+      </text>
+      
+      <text 
+        x="190" 
+        y="53" 
+        textAnchor="middle" 
+        fontFamily="Outfit, system-ui, sans-serif" 
+        fontSize="11.5" 
+        fill="#6B7A8F" 
+        fontWeight="500"
+      >
+        Liberación controlada · 8–12 horas
+      </text>
 
       {/* dashed connectors patch → skin */}
       {[88, 148, 195, 248, 298].map((x) => (

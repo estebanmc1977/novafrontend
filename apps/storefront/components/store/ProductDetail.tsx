@@ -77,7 +77,7 @@ export default function ProductDetail({
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`relative w-20 h-20 flex-shrink-0 rounded-2xl overflow-hidden border-2 transition-all duration-200 ${
+                    className={`relative w-20 h-24 flex-shrink-0 rounded-2xl overflow-hidden border-2 transition-all duration-200 ${
                       selectedImage === index 
                         ? 'border-transparent scale-105'           
                         : 'border-transparent hover:border-[color:var(--accent-color)]'
@@ -88,7 +88,7 @@ export default function ProductDetail({
                       src={img}
                       alt={`${product.name} vista ${index + 1}`}
                       fill
-                      className="object-contain p-2 bg-white"
+                      className="object-cover"
                     />
                   </button>
                 ))}

@@ -5,77 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/format";
+import { getOrderedMeta, type ProductMeta } from "@/lib/product-meta";
 
 const SUB_DISCOUNT = 0.2;
-
-const products = [
-  {
-    name: "Energy",
-    slug: "energy",
-    tagline: "Energía celular sostenida",
-    taglineColor: "#1A5C9A",
-    tags: ["Energía sostenida", "Sin picos ni caídas"],
-    color: "#2B7CC1",
-    bg: "#EBF4FB",
-    popular: false,
-    imgSrc: "/products/Energy_thumb.webp",
-  },
-  {
-    name: "Sleep",
-    slug: "sleep",
-    tagline: "Sueño profundo y reparador",
-    taglineColor: "#0F6B5C",
-    tags: ["Descanso nocturno", "Sin somníferos"],
-    color: "#138A75",
-    bg: "#EBF7F5",
-    popular: false,
-    imgSrc: "/products/Sleep_thumb.webp",
-  },
-  {
-    name: "Glow",
-    slug: "glow",
-    tagline: "Belleza y juventud para una piel visiblemente renovada",
-    taglineColor: "#B83525",
-    tags: ["Bienestar desde adentro", "Constancia"],
-    color: "#C94030",
-    bg: "#FAF0EE",
-    popular: true,
-    imgSrc: "/products/Glow_thumb.webp",
-  },
-  {
-    name: "Shield",
-    slug: "shield",
-    tagline: "Fortaleza inmune natural",
-    taglineColor: "#8C6000",
-    tags: ["Cuidado preventivo", "Uso diario"],
-    color: "#A07000",
-    bg: "#FAF6E9",
-    popular: false,
-    imgSrc: "/products/Shield_thumb.webp",
-  },
-  {
-    name: "Zen",
-    slug: "zen",
-    tagline: "Calma mental diaria",
-    taglineColor: "#2A5490",
-    tags: ["Calma funcional", "Días intensos"],
-    color: "#3A6FA8",
-    bg: "#EBF0F9",
-    popular: false,
-    imgSrc: "/products/Zen_thumb.webp",
-  },
-  {
-    name: "Woman",
-    slug: "woman",
-    tagline: "Bienestar hormonal femenino",
-    taglineColor: "#6B3080",
-    tags: ["Bienestar femenino", "Ritmos naturales"],
-    color: "#8A3EBE",
-    bg: "#F3EBF9",
-    popular: false,
-    imgSrc: "/products/Woman_thumb.webp",
-  },
-];
 
 function ProductCard({
   product,
@@ -84,32 +16,31 @@ function ProductCard({
   currency,
   locale,
 }: {
-  product: (typeof products)[0];
+  product: ProductMeta;
   onAdd: () => void;
   basePrice: number;
   currency: string;
   locale: string;
 }) {
   const subPrice = Math.round(basePrice * (1 - SUB_DISCOUNT));
-  const p = product;
 
   return (
     <Link 
-      href={`/${locale}/tienda/${p.slug}`}
+      href={`/${locale}/tienda/${product.slug}`}
       className="block group min-w-[260px] sm:min-w-[300px] snap-start"
     >
       <div className="bg-white rounded-3xl overflow-hidden border border-black/[0.06] shadow-sm hover:shadow-xl h-full flex flex-col transition-all">
         
         {/* Imagen grande */}
-        <div className="relative h-64 flex items-center justify-center p-6" style={{ background: p.bg }}>
-          {p.popular && (
+        <div className="relative h-64 flex items-center justify-center p-6" style={{ background: product.bg }}>
+          {product.popular && (
             <span className="absolute top-4 right-4 bg-red-500 text-white text-[10px] font-bold px-3 py-1 rounded-full z-10">
               MÁS POPULAR
             </span>
           )}
           <Image
-            src={p.imgSrc}
-            alt={p.name}
+            src={product.imgSrc}
+            alt={product.name}
             width={190}
             height={190}
             className="object-contain group-hover:scale-105 transition-transform duration-500"
@@ -118,15 +49,17 @@ function ProductCard({
 
         {/* Contenido */}
         <div className="p-6 flex-1 flex flex-col">
-          <p className="text-2xl font-black" style={{ color: p.taglineColor }}>{p.name}</p>
-          <p className="text-sm text-gray-600 mt-1 line-clamp-2">{p.tagline}</p>
+          <p className="text-2xl font-black" style={{ color: product.taglineColor }}>
+            {product.name}
+          </p>
+          <p className="text-sm text-gray-600 mt-1 line-clamp-2">{product.tagline}</p>
 
           <div className="flex flex-wrap gap-2 mt-4">
-            {p.tags.map((tag, i) => (
+            {product.tags.map((tag, i) => (
               <span 
                 key={i} 
                 className="text-xs px-3 py-1 rounded-full border" 
-                style={{ color: p.color, borderColor: p.color }}
+                style={{ color: product.color, borderColor: product.color }}
               >
                 {tag}
               </span>
@@ -135,20 +68,21 @@ function ProductCard({
 
           <div className="mt-auto pt-6">
             <div className="flex items-baseline gap-1.5">
-              <span className="text-2xl font-black" style={{ color: p.taglineColor }}>
+              <span className="text-2xl font-black" style={{ color: product.taglineColor }}>
                 {formatPrice(basePrice, currency)}
               </span>
             </div>
-            <p className="text-green-600 text-sm">Desde {formatPrice(subPrice, currency)} con suscripción</p>
+            <p className="text-green-600 text-sm">
+              Desde {formatPrice(subPrice, currency)} con suscripción
+            </p>
 
-            {/* Botón Agregar al carrito */}
             <button
               onClick={(e) => { 
                 e.preventDefault(); 
                 onAdd(); 
               }}
               className="mt-5 w-full py-3.5 rounded-2xl text-sm font-bold border-2 hover:bg-gray-50 active:scale-[0.97] transition-all"
-              style={{ borderColor: p.color, color: p.color }}
+              style={{ borderColor: product.color, color: product.color }}
             >
               Agregar al carrito
             </button>
@@ -169,8 +103,9 @@ export default function ProductGrid({
   locale?: string;
 }) {
   const { addToCart } = useCart();
+  const products = getOrderedMeta();
 
-  const handleAdd = (p: (typeof products)[0]) => {
+  const handleAdd = (p: ProductMeta) => {
     addToCart({
       slug: p.slug,
       title: p.name,

@@ -1,75 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/commerce";
 import { formatPrice } from "@/lib/format";
-
-// ─── UI metadata por producto ───────────────────────────────────────────────
-
-const META: Record<string, {
-  color: string;
-  bg: string;
-  taglineColor: string;
-  quote: string;
-  tags: string[];
-  ingredients: string[];
-  popular?: boolean;
-}> = {
-  energy: {
-    color: "#2B7CC1",
-    bg: "#EBF4FB",
-    taglineColor: "#2B7CC1",
-    quote: '"Tu día no para. Tu energía tampoco."',
-    tags: ["Energía sostenida", "Sin picos ni caídas"],
-    ingredients: ["Vitamina C", "L-Carnitina", "Extracto de Té Verde", "Extracto de Ginseng", "Vitamina B2", "Ácido Fólico", "Vitamina E"],
-  },
-  sleep: {
-    color: "#138A75",
-    bg: "#EBF7F5",
-    taglineColor: "#138A75",
-    quote: '"Porque descansar también es cuidarse."',
-    tags: ["Descanso nocturno", "Sin somníferos"],
-    ingredients: ["Triptófano", "Magnesio", "Inositol", "Vitamina B6", "Glicina"],
-  },
-  glow: {
-    color: "#C94030",
-    bg: "#FAF0EE",
-    taglineColor: "#C94030",
-    quote: '"La piel también refleja cómo te cuidas."',
-    tags: ["Bienestar desde adentro", "Constancia"],
-    ingredients: ["Vitamina C", "Ácido Hialurónico", "Colágeno Hidrolizado", "Biotina", "Vitamina B3", "Extracto de Centella Asiática", "Vitamina E"],
-    popular: true,
-  },
-  shield: {
-    color: "#A07000",
-    bg: "#FAF6E9",
-    taglineColor: "#A07000",
-    quote: '"Tu rutina de cuidado empieza hoy, no cuando algo pasa."',
-    tags: ["Cuidado preventivo", "Uso diario"],
-    ingredients: ["Vitamina C", "Zinc", "Vitamina D3", "Vitamina E", "Niacinamida"],
-  },
-  zen: {
-    color: "#3A6FA8",
-    bg: "#EBF0F9",
-    taglineColor: "#3A6FA8",
-    quote: '"El equilibrio que no se ve, pero se siente."',
-    tags: ["Calma funcional", "Días intensos"],
-    ingredients: ["Triptófano", "Magnesio", "Taurina", "Extracto de Manzanilla", "Vitamina B6"],
-  },
-  woman: {
-    color: "#8A3EBE",
-    bg: "#F3EBF9",
-    taglineColor: "#8A3EBE",
-    quote: '"Escucharte también es una forma de cuidarte."',
-    tags: ["Bienestar femenino", "Ritmos naturales"],
-    ingredients: ["Extracto de Soya", "Vitamina B6", "Magnesio", "Ácido Fólico", "Hierro"],
-  },
-};
-
-// ─── Componente principal ────────────────────────────────────────────────────
+import { getOrderedMeta, type ProductMeta } from "@/lib/product-meta";
 
 export default function TiendaExperience({ 
   products, 
@@ -114,7 +51,7 @@ export default function TiendaExperience({
       <section className="px-4 pb-24 max-w-[1200px] mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           {products.map((product, i) => {
-            const meta = META[product.slug];
+            const meta = getOrderedMeta().find(m => m.slug === product.slug);
             if (!meta) return null;
 
             return (
@@ -160,10 +97,10 @@ export default function TiendaExperience({
 
                       <div>
                         <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-gray-400 mb-1">
-                          Pack de 30 parches6
+                          Pack de 30 parches
                         </p>
                         <p className="text-[12px] text-gray-500 leading-[1.5]">
-                          {meta.ingredients.join(" · ")}
+                          {meta.ingredients.map(ing => ing.name).join(" · ")}
                         </p>
                       </div>
 
@@ -179,14 +116,17 @@ export default function TiendaExperience({
                         ))}
                       </div>
 
-                     {/* Precio Full + "desde" suscripción */}
+                      {/* Precio Full + "desde" suscripción */}
                       <div className="mt-auto pt-3 border-t border-black/[0.05]">
                         <span className="text-[26px] font-black tracking-tight text-navy-light">
-                        {formatPrice(product.price, currency)}
+                          {formatPrice(product.price, currency)}
                         </span>
-  
                         <div className="mt-1">
-                        <p className="text-[14px] text-gray-600">desde {formatPrice(Math.round(product.price * 0.8), currency)} con suscripción</p>
+                          <p className="text-[14px] text-gray-600">
+                            desde <span className="font-semibold text-green-600">
+                              {formatPrice(Math.round(product.price * 0.8), currency)}
+                            </span> con suscripción
+                          </p>
                         </div>
                       </div>
                     </div>

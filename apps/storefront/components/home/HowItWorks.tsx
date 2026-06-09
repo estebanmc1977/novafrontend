@@ -30,32 +30,35 @@ export default async function HowItWorks() {
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
           </div>
-          {/* Badge — 30-day grid */}
+                    {/* Badge — 30-day grid */}
           <div
-            className="absolute top-6 right-6 rounded-[20px] p-4 flex flex-col items-center gap-2.5"
-            style={{ background: "var(--color-gold)", boxShadow: "0 4px 20px rgba(0,0,0,0.15)" }}
+            className="absolute top-7 right-7 rounded-[20px] p-4 flex flex-col items-center gap-2.5 border border-white/40"
+            style={{ 
+              background: "rgba(255, 255, 255, 0.3)", 
+              boxShadow: "0 4px 20px rgba(0,0,0,0.12)" 
+            }}
           >
-            {/* 5 × 6 grid — one square per day, number centered */}
+            {/* 5 × 6 grid — one square per day */}
             <div className="relative grid gap-[0.25em]" style={{ gridTemplateColumns: "repeat(6, 0.7em)" }}>
               {Array.from({ length: 30 }).map((_, i) => (
                 <div
                   key={i}
-                  className="w-[0.7em] h-[0.7em]"
-                  style={{ background: "rgba(0, 0, 0, 0.2)", borderRadius: "3px" }}
+                  className="w-[0.8em] h-[0.8em]"
+                  style={{ background: "rgba(0, 0, 0, 0.15)", borderRadius: "3px" }}
                 />
               ))}
               {/* Number centered over the grid */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-[30px] font-black leading-none text-gray-900 tracking-tight"
-                  style={{ textShadow: "0 0 12px var(--color-gold), 0 0 4px var(--color-gold)" }}>
+                <span className="text-[30px] font-black leading-none text-gray-900 tracking-tight">
                   30
                 </span>
               </div>
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-navy/60 leading-none">
+            <span className="text-[10px] font-bold uppercase tracking-[0.08em] text-gray-600 leading-none">
               un día · un parche
             </span>
           </div>
+
         </FadeIn>
 
         {/* Content — right */}
