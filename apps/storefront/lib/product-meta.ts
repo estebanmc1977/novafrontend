@@ -38,7 +38,8 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "/products/Energy_thumb.webp",
       "/products/Energy_1.webp",
       "/products/Energy_2.webp",
-      "/products/Energy_3.webp"
+      "/products/Energy_3.webp",
+      "/products/Energy_4.webp"
     ],
     ingredients: [
       { name: "Vitamina C", benefit: "Asociada con el apoyo a la reducción de fatiga y al bienestar energético." },
@@ -88,7 +89,8 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "/products/Sleep_thumb.webp",
       "/products/Sleep_1.webp",
       "/products/Sleep_2.webp",
-      "/products/Sleep_3.webp"
+      "/products/Sleep_3.webp",
+      "/products/Sleep_4.webp"
     ],
     ingredients: [
       { name: "Triptófano", benefit: "Asociado con el apoyo a la producción natural de melatonina y serotonina." },
@@ -133,7 +135,8 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "/products/Glow_thumb.webp",
       "/products/Glow_1.webp",
       "/products/Glow_2.webp",
-      "/products/Glow_3.webp"
+      "/products/Glow_3.webp",
+      "/products/Glow_4.webp"
     ],
     ingredients: [
       { name: "Vitamina C", benefit: "Asociada con el apoyo a la producción de colágeno y luminosidad." },
@@ -180,7 +183,8 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "/products/Shield_thumb.webp",
       "/products/Shield_1.webp",
       "/products/Shield_2.webp",
-      "/products/Shield_3.webp"
+      "/products/Shield_3.webp",
+      "/products/Shield_4.webp"
     ],
     ingredients: [
       { name: "Vitamina C", benefit: "Asociada con el apoyo al bienestar general y las defensas naturales." },
@@ -225,7 +229,8 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "/products/Zen_thumb.webp",
       "/products/Zen_1.webp",
       "/products/Zen_2.webp",
-      "/products/Zen_3.webp"
+      "/products/Zen_3.webp",
+      "/products/Zen_4.webp"
     ],
     ingredients: [
       { name: "Triptófano", benefit: "Asociado con el apoyo a la producción de serotonina y equilibrio emocional." },
@@ -270,7 +275,8 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "/products/Woman_thumb.webp",
       "/products/Woman_1.webp",
       "/products/Woman_2.webp",
-      "/products/Woman_3.webp"
+      "/products/Woman_3.webp",
+      "/products/Woman_4.webp"
     ],
     ingredients: [
       { name: "Extracto de Soya", benefit: "Asociado con el apoyo al equilibrio hormonal natural." },
@@ -286,7 +292,7 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "Contribuye al confort físico y emocional"
     ],
     howItWorks: "Novapatch Woman libera nutrientes específicos de forma sostenida, acompañando los ritmos hormonales naturales del cuerpo femenino y apoyando el bienestar físico y emocional mes a mes.",
-    
+
     usage: [
   "Aplica 1 parche diario en un área limpia como el brazo, abdomen o muslo. Puedes usarlo en cualquier momento del día.",
   "Déjalo actuar entre 8 y 12 horas. El parche libera los nutrientes de forma sostenida.",

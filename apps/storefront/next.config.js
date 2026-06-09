@@ -7,7 +7,6 @@ const withNextIntl = createNextIntlPlugin('./i18n/request.ts')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    // Serve AVIF first (20-30% smaller than WebP), then WebP as fallback
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
@@ -16,6 +15,28 @@ const nextConfig = {
       },
     ],
   },
+
+  // === CONFIGURACIONES IMPORTANTES PARA CODESPACES ===
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
+  },
+
+  // Ayuda con el error de x-forwarded-host en Codespaces
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'x-forwarded-host',
+            value: 'localhost:3000',
+          },
+        ],
+      },
+    ]
+  },
 }
 
 module.exports = withSentryConfig(
@@ -23,9 +44,9 @@ module.exports = withSentryConfig(
   {
     org: process.env.SENTRY_ORG,
     project: process.env.SENTRY_PROJECT,
-    silent: true,               // sin spam en CI
+    silent: true,
     widenClientFileUpload: true,
-    hideSourceMaps: true,       // no exponer source maps al browser
-    autoInstrumentMiddleware: false, // evita overhead de Sentry en cada request del middleware
+    hideSourceMaps: true,
+    autoInstrumentMiddleware: false,
   }
 )

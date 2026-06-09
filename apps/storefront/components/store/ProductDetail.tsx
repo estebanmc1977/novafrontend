@@ -59,14 +59,14 @@ export default function ProductDetail({
       >
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-start">
           
-          {/* GALERÍA DE IMÁGENES */}
+                    {/* GALERÍA DE IMÁGENES */}
           <div className="space-y-6">
-            <div className="relative aspect-square bg-white rounded-3xl overflow-hidden shadow-xl">
+            <div className="relative aspect-[4/5] bg-white rounded-3xl overflow-hidden shadow-xl">
               <Image
                 src={images[selectedImage]}
                 alt={product.name}
                 fill
-                className="object-contain p-8"
+                className="object-cover"   // ← Reducimos el padding
                 priority
               />
             </div>
