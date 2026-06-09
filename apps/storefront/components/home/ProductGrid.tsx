@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useCart } from "@/contexts/CartContext";
 import { formatPrice } from "@/lib/format";
 import { getOrderedMeta, type ProductMeta } from "@/lib/product-meta";
+import { useState } from "react";
 
 const SUB_DISCOUNT = 0.2;
 
@@ -31,7 +32,6 @@ function ProductCard({
     >
       <div className="bg-white rounded-3xl overflow-hidden border border-black/[0.06] shadow-sm hover:shadow-xl h-full flex flex-col transition-all">
         
-        {/* Imagen grande */}
         <div className="relative h-64 flex items-center justify-center p-6" style={{ background: product.bg }}>
           {product.popular && (
             <span className="absolute top-4 right-4 bg-red-500 text-white text-[10px] font-bold px-3 py-1 rounded-full z-10">
@@ -47,7 +47,6 @@ function ProductCard({
           />
         </div>
 
-        {/* Contenido */}
         <div className="p-6 flex-1 flex flex-col">
           <p className="text-2xl font-black" style={{ color: product.taglineColor }}>
             {product.name}
@@ -104,6 +103,16 @@ export default function ProductGrid({
 }) {
   const { addToCart } = useCart();
   const products = getOrderedMeta();
+  const [scrollContainer, setScrollContainer] = useState<HTMLDivElement | null>(null);
+
+  const scroll = (direction: "left" | "right") => {
+    if (!scrollContainer) return;
+    const scrollAmount = 320; // ancho aproximado de una card
+    scrollContainer.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth"
+    });
+  };
 
   const handleAdd = (p: ProductMeta) => {
     addToCart({
@@ -130,19 +139,46 @@ export default function ProductGrid({
           </p>
         </div>
 
-        {/* Carrusel Horizontal */}
-        <div className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide">
-          {products.map((p) => (
-            <ProductCard
-              key={p.slug}
-              product={p}
-              onAdd={() => handleAdd(p)}
-              basePrice={basePrice}
-              currency={currency}
-              locale={locale}
-            />
-          ))}
+                <div className="relative">
+          {/* Flechas de navegación - Estilo consistente con HeroSection */}
+          <button
+            onClick={() => scroll("left")}
+            className="hidden sm:flex absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/90 items-center justify-center text-[#111827] shadow-[0_4px_16px_rgba(0,0,0,0.10)] hover:bg-white hover:scale-105 transition-all duration-200"
+            aria-label="Anterior"
+          >
+            <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+
+          <button
+            onClick={() => scroll("right")}
+            className="hidden sm:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white/90 items-center justify-center text-[#111827] shadow-[0_4px_16px_rgba(0,0,0,0.10)] hover:bg-white hover:scale-105 transition-all duration-200"
+            aria-label="Siguiente"
+          >
+            <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+
+          {/* Carrusel */}
+          <div 
+            ref={setScrollContainer}
+            className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide scroll-smooth"
+          >
+            {products.map((p) => (
+              <ProductCard
+                key={p.slug}
+                product={p}
+                onAdd={() => handleAdd(p)}
+                basePrice={basePrice}
+                currency={currency}
+                locale={locale}
+              />
+            ))}
+          </div>
         </div>
+
       </div>
     </section>
   );
