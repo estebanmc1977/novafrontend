@@ -17,24 +17,22 @@ export default function ProductDetail({
 }) {
   const { addToCart } = useCart();
   const [mode, setMode] = useState<"once" | "sub">("sub");
-  const [freq, setFreq] = useState<30 | 60 | 90>(30); // 30 = mensual
+  const [freq, setFreq] = useState<30 | 60 | 90>(30);
 
   const [selectedImage, setSelectedImage] = useState(0);
 
   const basePrice = 750;
 
-  // Calcular precio según frecuencia
   const getDiscount = (days: 30 | 60 | 90) => {
     if (days === 30) return 0.20;
     if (days === 60) return 0.15;
-    return 0.10; // 90 días
+    return 0.10;
   };
 
   const currentPrice = mode === "once" 
     ? basePrice 
     : Math.round(basePrice * (1 - getDiscount(freq)));
 
-  // Usa el array de imágenes o fallback
   const images = product.images && product.images.length > 0 
     ? product.images 
     : [product.imgSrc];
@@ -53,7 +51,7 @@ export default function ProductDetail({
   };
 
   return (
-    <main className="bg-[#F8F7F4] min-h-screen ">
+    <main className="bg-[#F8F7F4] min-h-screen">
       {/* Hero Section con Galería */}
       <section 
         className="pt-24 pb-16 px-6"
@@ -73,30 +71,29 @@ export default function ProductDetail({
               />
             </div>
 
-            {/* Miniaturas */}
-{images.length > 1 && (
-  <div className="flex gap-4 justify-center md:justify-start overflow-x-auto pb-2">
-    {images.map((img, index) => (
-      <button
-        key={index}
-        onClick={() => setSelectedImage(index)}
-        className={`relative w-20 h-20 flex-shrink-0 rounded-2xl overflow-hidden border-2 transition-all duration-200 ${
-          selectedImage === index 
-            ? 'border-transparent scale-105'           // Seleccionado = sin borde
-            : 'border-transparent hover:border-[color:var(--accent-color)]'
-        }`}
-        style={{ '--accent-color': product.color } as React.CSSProperties}
-      >
-        <Image
-          src={img}
-          alt={`${product.name} vista ${index + 1}`}
-          fill
-          className="object-contain p-2 bg-white"
-        />
-      </button>
-    ))}
-  </div>
-)}
+            {images.length > 1 && (
+              <div className="flex gap-4 justify-center md:justify-start overflow-x-auto pb-2">
+                {images.map((img, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImage(index)}
+                    className={`relative w-20 h-20 flex-shrink-0 rounded-2xl overflow-hidden border-2 transition-all duration-200 ${
+                      selectedImage === index 
+                        ? 'border-transparent scale-105'           
+                        : 'border-transparent hover:border-[color:var(--accent-color)]'
+                    }`}
+                    style={{ '--accent-color': product.color } as React.CSSProperties}
+                  >
+                    <Image
+                      src={img}
+                      alt={`${product.name} vista ${index + 1}`}
+                      fill
+                      className="object-contain p-2 bg-white"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* INFORMACIÓN DEL PRODUCTO */}
@@ -168,8 +165,7 @@ export default function ProductDetail({
         </div>
       </section>
 
-{/* Banner de Beneficios Suscripción con transición suave */}
-
+      {/* Banner de Beneficios Suscripción */}
       <AnimatePresence mode="wait">
         {mode === "sub" && (
           <motion.section
@@ -229,57 +225,97 @@ export default function ProductDetail({
         )}
       </AnimatePresence>
 
-      {/* Resto de secciones (sin cambios) */}
+      {/* Sección ¿Cómo te acompaña? con iconos específicos */}
       <section className="max-w-5xl mx-auto px-6 py-16">
         <h2 className="text-3xl font-bold text-center mb-12">¿Cómo te acompaña?</h2>
-        <div className="grid md:grid-cols-2 gap-6">
-          {product.benefits.map((benefit, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} className="bg-white p-8 rounded-3xl border border-black/5">
-              <div className="w-12 h-12 rounded-2xl mb-6" style={{ background: product.bg }} />
-              <p className="text-xl leading-tight">{benefit}</p>
-            </motion.div>
-          ))}
+        
+        <div className="grid md:grid-cols-2 gap-8">
+          {product.benefits.map((benefit, i) => {
+            // Ruta dinámica del icono según el producto y el índice
+            const iconPath = `/features/${product.slug}_icons/${product.slug}${i === 0 ? '' : i + 1}_bk.png`;
+            
+            return (
+              <motion.div 
+                key={i} 
+                initial={{ opacity: 0, y: 20 }} 
+                whileInView={{ opacity: 1, y: 0 }} 
+                className="flex gap-6 items-start"
+              >
+                <div className="flex-shrink-0 mt-1">
+                  <Image 
+                    src={iconPath} 
+                    alt={`Beneficio ${i + 1}`}
+                    width={40} 
+                    height={40} 
+                    className="object-contain"
+                  />
+                </div>
+                <p className="text-[17px] leading-relaxed text-gray-700 pt-1">{benefit}</p>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 
       <section className="bg-white py-16">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-3xl font-bold text-center mb-4">Cómo funciona</h2>
-          <p className="text-center text-gray-600 max-w-2xl mx-auto mb-12">Los parches Novapatch liberan sus ingredientes activos de forma gradual directamente a través de la piel hacia el torrente sanguíneo. </p>
-          <div className="text-center prose prose-lg mx-auto text-gray-700">{product.howItWorks}</div>
+          <p className="text-center text-gray-600 max-w-2xl mx-auto mb-12">Los parches Novapatch liberan sus ingredientes activos de forma gradual directamente a través de la piel hacia el torrente sanguíneo.</p>
+          <div className="text-center prose prose-lg mx-auto text-gray-600">{product.howItWorks}</div>
         </div>
       </section>
 
-      <section className="max-w-5xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-16">
-        <div>
-          <h3 className="text-2xl font-bold mb-8">Ingredientes clave</h3>
-          <ul className="space-y-6">
-            {product.ingredients.map((ing, i) => (
-              <li key={i} className="flex gap-4">
-                <span className="text-2xl mt-1" style={{ color: product.color }}>•</span>
-                <span className="text-lg">{ing}</span>
-              </li>
-            ))}
-          </ul>
+      {/* === SECCIÓN INGREDIENTES ACTUALIZADA === */}
+      <section className="max-w-5xl mx-auto px-6 py-20">
+        <h3 className="text-3xl font-bold text-center mb-12">Ingredientes clave</h3>
+        <div className="grid md:grid-cols-2 gap-x-12 gap-y-10">
+          {product.ingredients.map((ing, i) => (
+            <div key={i} className="flex gap-5">
+              <span className="text-3xl mt-1 flex-shrink-0" style={{ color: product.color }}>•</span>
+              <div>
+                <p className="text-xl font-semibold text-gray-900">{ing.name}</p>
+                <p className="text-[15px] text-gray-600 mt-1.5 leading-relaxed">{ing.benefit}</p>
+              </div>
+            </div>
+          ))}
         </div>
+      </section>
 
-        <div>
-          <h3 className="text-2xl font-bold mb-8">Modo de uso</h3>
-          <ol className="space-y-8">
+      {/* Sección Modo de uso - 3 columnas */}
+      <section className="bg-white py-20">
+        <div className="max-w-5xl mx-auto px-6">
+          <h3 className="text-3xl font-bold text-center mb-12">Modo de uso</h3>
+          
+          <div className="grid md:grid-cols-3 gap-8">
             {product.usage.map((step, i) => (
-              <li key={i} className="flex gap-5">
-                <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold border-2" style={{ borderColor: product.color, color: product.color }}>
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="flex flex-col items-center text-center"
+              >
+                <div 
+                  className="w-12 h-12 rounded-2xl flex items-center justify-center text-xl font-bold mb-5 flex-shrink-0"
+                  style={{ 
+                    border: `2px solid ${product.color}`,
+                    color: product.color 
+                  }}
+                >
                   {i + 1}
                 </div>
-                <p className="text-lg leading-relaxed">{step}</p>
-              </li>
+                
+                <p className="text-[17px] leading-relaxed text-gray-700">
+                  {step}
+                </p>
+              </motion.div>
             ))}
-          </ol>
+          </div>
         </div>
       </section>
 
       {product.faqs.length > 0 && (
-        <section className="max-w-3xl mx-auto px-6 pb-20">
+        <section className="max-w-3xl mx-auto px-6 pb-20 py-20">
           <h2 className="text-3xl font-bold text-center mb-10">Preguntas frecuentes</h2>
           <div className="space-y-6">
             {product.faqs.map((faq, i) => (
@@ -300,7 +336,7 @@ export default function ProductDetail({
       </section>
 
       {/* Banner de atributos */}
-      <AttributeBar accent={product.color} current={selectedImage}/>
+      <AttributeBar accent={product.color} current={selectedImage} />
     </main>
   );
 }
