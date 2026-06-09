@@ -63,7 +63,7 @@ export default function ProductDetail({
           <div className="space-y-6 relative">
             <div className="relative aspect-[4/5] bg-white rounded-3xl overflow-hidden shadow-xl group">
               <Image
-                src={images[selectedImage]}
+                src={product.heroImage || images[0]}   // ← Usamos heroImage primero
                 alt={product.name}
                 fill
                 className="object-cover"

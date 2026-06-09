@@ -13,6 +13,7 @@ export type ProductMeta = {
   bg: string;
   taglineColor: string;
   imgSrc: string;
+  heroImage: string;        // ← NUEVO: Imagen principal para PDP
   images?: string[];
   ingredients: Array<{ name: string; benefit: string }>;   // ← Cambiado
   benefits: string[];
@@ -34,8 +35,9 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
     bg: "#EBF4FB",
     taglineColor: "#83B5F4",
     imgSrc: "/products/Energy_thumb.webp",
+    heroImage: "/products/Energy_0.webp",     // ← Imagen PDP
     images: [
-      "/products/Energy_thumb.webp",
+      "/products/Energy_0.webp",
       "/products/Energy_1.webp",
       "/products/Energy_2.webp",
       "/products/Energy_3.webp",
@@ -85,8 +87,9 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
     bg: "#EBF7F5",
     taglineColor: "#1EB1BC",
     imgSrc: "/products/Sleep_thumb.webp",
+    heroImage: "/products/Sleep_0.webp",     // ← Imagen PDP
     images: [
-      "/products/Sleep_thumb.webp",
+      "/products/Sleep_0.webp",
       "/products/Sleep_1.webp",
       "/products/Sleep_2.webp",
       "/products/Sleep_3.webp",
@@ -131,8 +134,9 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
     bg: "#FAF0EE",
     taglineColor: "#F25C54",
     imgSrc: "/products/Glow_thumb.webp",
+    heroImage: "/products/Glow_0.webp",     // ← Imagen PDP
     images: [
-      "/products/Glow_thumb.webp",
+      "/products/Glow_0.webp",
       "/products/Glow_1.webp",
       "/products/Glow_2.webp",
       "/products/Glow_3.webp",
@@ -179,8 +183,9 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
     bg: "#FAF6E9",
     taglineColor: "#FFA849",
     imgSrc: "/products/Shield_thumb.webp",
+    heroImage: "/products/Shield_0.webp",     // ← Imagen PDP
     images: [
-      "/products/Shield_thumb.webp",
+      "/products/Shield_0.webp",
       "/products/Shield_1.webp",
       "/products/Shield_2.webp",
       "/products/Shield_3.webp",
@@ -225,8 +230,9 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
     bg: "#EBF0F9",
     taglineColor: "#4E82BC",
     imgSrc: "/products/Zen_thumb.webp",
+    heroImage: "/products/Zen_0.webp",     // ← Imagen PDP
     images: [
-      "/products/Zen_thumb.webp",
+      "/products/Zen_0.webp",
       "/products/Zen_1.webp",
       "/products/Zen_2.webp",
       "/products/Zen_3.webp",
@@ -271,8 +277,9 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
     bg: "#F3EBF9",
     taglineColor: "#C693C4",
     imgSrc: "/products/Woman_thumb.webp",
+    heroImage: "/products/Woman_0.webp",     // ← Imagen PDP
     images: [
-      "/products/Woman_thumb.webp",
+      "/products/Woman_0.webp",
       "/products/Woman_1.webp",
       "/products/Woman_2.webp",
       "/products/Woman_3.webp",
