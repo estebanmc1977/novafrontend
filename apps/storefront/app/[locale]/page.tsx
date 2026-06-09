@@ -22,7 +22,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const market = MARKETS[locale as Locale] ?? MARKETS.mx;
   const regionId = market.medusaRegionId || undefined;
   const currency = market.currency;
-
   const products = await getProducts(regionId, currency);
   const basePrice = products[0]?.price ?? 750;
 
@@ -30,21 +29,32 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     <>
       <Navbar />
       <main>
-        {/* 1. Hero + Features Bar — shared carousel state */}
+        {/* 1. Hero + Features Bar */}
         <HeroWithBar />
-        {/* 3. Cómo Funciona — how it works, 3 steps */}
+
+        {/* 2. Carrusel de Productos - Justo debajo del Hero (como pediste) */}
+        <ProductGrid 
+          basePrice={basePrice} 
+          currency={currency} 
+          locale={locale} 
+        />
+
+        {/* 3. Cómo Funciona */}
         <HowItWorks />
-        {/* 4. Absorción — science section, dark blue bg */}
+
+        {/* 4. Absorción */}
         <AbsorptionSection />
-        {/* 5. Comparativo — comparison table */}
+
+        {/* 5. Comparativo */}
         <ComparisonTable />
-        {/* 6. Cards de Producto — product grid */}
-        <ProductGrid basePrice={basePrice} currency={currency} />
-        {/* 7. Suscripciones — subscription plans */}
+
+        {/* 6. Suscripciones */}
         <CTABanner basePrice={basePrice} currency={currency} />
-        {/* 8. Social Proof — testimonials */}
+
+        {/* 7. Testimonios */}
         <Testimonials />
-        {/* 9. FAQ */}
+
+        {/* 8. FAQ */}
         <HomeFAQ />
       </main>
       <Footer />

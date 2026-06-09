@@ -41,7 +41,7 @@ export default async function HowItWorks() {
                 <div
                   key={i}
                   className="w-[0.7em] h-[0.7em]"
-                  style={{ background: "rgba(0,0,0,0.20)", borderRadius: "3px" }}
+                  style={{ background: "rgba(0, 0, 0, 0.2)", borderRadius: "3px" }}
                 />
               ))}
               {/* Number centered over the grid */}
