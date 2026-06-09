@@ -56,8 +56,8 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "Acompaña tu rendimiento sin nerviosismo ni bajones"
     ],
     
-    howItWorks: "Novapatch Energy ayuda manteniendo niveles estables de energía sin los picos y caídas típicos de cafés o bebidas energéticas.",
-    
+    howItWorks: "Novapatch Energy libera sus ingredientes de forma gradual a través de la piel, manteniendo niveles estables de energía durante todo el día sin los picos ni caídas típicos de cafés o bebidas energéticas.",
+
     usage: [
   "Aplica 1 parche por la mañana en un área limpia y seca como el brazo, hombro o parte baja de la espalda. Presiona firmemente durante 10 segundos para asegurar una buena adherencia.",
   "Déjalo actuar entre 8 y 12 horas. Puedes realizar tus actividades normales mientras el parche libera los ingredientes de forma gradual.",
@@ -103,8 +103,8 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "Ayuda a reducir la mente inquieta por la noche",
       "Favorece despertar con mayor sensación de descanso"
     ],
-    howItWorks: "Los ingredientes actúan de forma natural apoyando los procesos de relajación del cuerpo, sin generar dependencia.",
-    
+    howItWorks: "Novapatch Sleep libera sus ingredientes de forma controlada durante la noche, apoyando los procesos naturales de relajación del cuerpo para favorecer un sueño más profundo y reparador.",
+
     usage: [
   "Aplica 1 parche 1 hora antes de acostarte en el brazo, abdomen o parte superior de la espalda. Elige una zona cómoda donde no interfiera con tu sueño.",
   "Déjalo actuar durante toda la noche. El parche libera los ingredientes de forma controlada mientras descansas.",
@@ -149,7 +149,8 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "Acompaña el bienestar general de la piel",
       "Favorece una apariencia más radiante con el uso constante"
     ],
-    howItWorks: "Los nutrientes se absorben a través de la piel y apoyan los procesos internos que se reflejan hacia afuera con el tiempo.",
+    howItWorks: "Novapatch Glow libera nutrientes clave de manera sostenida a través de la piel, apoyando desde adentro los procesos que ayudan a una piel más hidratada, elástica y radiante con el tiempo.",
+    
     usage: [
   "Aplica 1 parche preferiblemente por la noche en una zona limpia como el brazo, abdomen o muslo. Presiona bien para asegurar adherencia.",
   "Déjalo actuar durante 8-12 horas (puedes dormir con él). El parche trabaja mientras tu cuerpo se regenera.",
@@ -194,7 +195,8 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "Acompaña tu bienestar diario",
       "Ayuda en la protección contra el estrés oxidativo"
     ],
-    howItWorks: "Proporciona nutrientes clave de forma sostenida que ayudan al organismo a mantenerse fuerte día a día.",
+    howItWorks: "Novapatch Shield libera de forma gradual vitaminas y minerales esenciales, apoyando diariamente el funcionamiento normal del sistema inmune y las defensas naturales del organismo.",
+
     usage: [
   "Aplica 1 parche cualquier momento del día en un área limpia (brazo, hombro o abdomen). Es ideal usarlo por la mañana.",
   "Déjalo actuar entre 8 y 12 horas. Puedes llevarlo durante tus actividades habituales sin problema.",
@@ -238,7 +240,8 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "Favorece un estado de equilibrio",
       "Apoya el manejo de días de alta demanda"
     ],
-    howItWorks: "Apoya la regulación natural del estrés sin adormecer ni desconectar.",
+    howItWorks: "Novapatch Zen libera sus ingredientes de manera controlada, ayudando a regular la respuesta natural al estrés y favoreciendo un estado de calma funcional sin adormecer ni generar dependencia.",
+
     usage: [
   "Aplica 1 parche cuando sientas que el día está muy cargado (mañana o tarde) en el brazo, nuca o hombro.",
   "Déjalo actuar entre 6 y 10 horas. Puedes seguir trabajando o realizando tus actividades normalmente.",
@@ -282,7 +285,8 @@ export const PRODUCT_META: Record<string, ProductMeta> = {
       "Apoya los niveles de energía y ánimo",
       "Contribuye al confort físico y emocional"
     ],
-    howItWorks: "Proporciona nutrientes clave que apoyan los cambios naturales del cuerpo femenino.",
+    howItWorks: "Novapatch Woman libera nutrientes específicos de forma sostenida, acompañando los ritmos hormonales naturales del cuerpo femenino y apoyando el bienestar físico y emocional mes a mes.",
+    
     usage: [
   "Aplica 1 parche diario en un área limpia como el brazo, abdomen o muslo. Puedes usarlo en cualquier momento del día.",
   "Déjalo actuar entre 8 y 12 horas. El parche libera los nutrientes de forma sostenida.",
