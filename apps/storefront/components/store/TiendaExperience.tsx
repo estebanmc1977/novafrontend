@@ -186,7 +186,7 @@ export default function TiendaExperience({
                         </span>
   
                         <div className="mt-1">
-                        <p className="text-[13px] text-gray-500">desde {formatPrice(Math.round(product.price * 0.8), currency)} con suscripción mensual</p>
+                        <p className="text-[14px] text-gray-600">desde {formatPrice(Math.round(product.price * 0.8), currency)} con suscripción</p>
                         </div>
                       </div>
                     </div>
