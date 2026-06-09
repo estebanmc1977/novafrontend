@@ -59,18 +59,44 @@ export default function ProductDetail({
       >
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-start">
           
-                    {/* GALERÍA DE IMÁGENES */}
-          <div className="space-y-6">
-            <div className="relative aspect-[4/5] bg-white rounded-3xl overflow-hidden shadow-xl">
+                    {/* GALERÍA DE IMÁGENES CON FLECHAS */}
+          <div className="space-y-6 relative">
+            <div className="relative aspect-[4/5] bg-white rounded-3xl overflow-hidden shadow-xl group">
               <Image
                 src={images[selectedImage]}
                 alt={product.name}
                 fill
-                className="object-cover"   // ← Reducimos el padding
+                className="object-cover"
                 priority
               />
+
+              {/* Flechas de navegación - Estilo consistente con HeroSection */}
+              {images.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setSelectedImage((prev) => (prev - 1 + images.length) % images.length)}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center text-[#111827] shadow-[0_4px_16px_rgba(0,0,0,0.10)] hover:bg-white hover:scale-105 transition-all duration-200 hidden sm:flex"
+                    aria-label="Imagen anterior"
+                  >
+                    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                  </button>
+
+                  <button
+                    onClick={() => setSelectedImage((prev) => (prev + 1) % images.length)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 flex items-center justify-center text-[#111827] shadow-[0_4px_16px_rgba(0,0,0,0.10)] hover:bg-white hover:scale-105 transition-all duration-200 hidden sm:flex"
+                    aria-label="Siguiente imagen"
+                  >
+                    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
+                  </button>
+                </>
+              )}
             </div>
 
+            {/* Miniaturas */}
             {images.length > 1 && (
               <div className="flex gap-4 justify-center md:justify-start overflow-x-auto pb-2">
                 {images.map((img, index) => (
