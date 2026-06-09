@@ -179,14 +179,17 @@ export default function TiendaExperience({
                         ))}
                       </div>
 
-                     {/* Precio con "desde" - Precio de suscripción mensual */}
-                      <div className="mt-auto pt-3 border-t border-black/[0.05]">
-                        <p className="text-[13px] text-gray-500">desde</p>
-                        <span className="text-[26px] font-black tracking-tight text-navy-light">
-                          {formatPrice(Math.round(product.price * 0.8), currency)}
-                        </span>
-                        <p className="text-[12px] text-green-600 font-medium">con suscripción mensual</p>
-                      </div>
+                     {/* Precio Full + "desde" suscripción */}
+<div className="mt-auto pt-3 border-t border-black/[0.05]">
+  <span className="text-[26px] font-black tracking-tight text-navy-light">
+    {formatPrice(product.price, currency)}
+  </span>
+  
+  <div className="mt-1">
+    <p className="text-[13px] text-gray-500">desde {formatPrice(Math.round(product.price * 0.8), currency)} con suscripción mensual</p>
+    
+  </div>
+</div>
                     </div>
                   </div>
                 </Link>
