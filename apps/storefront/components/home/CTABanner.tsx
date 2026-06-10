@@ -31,7 +31,7 @@ export default async function CTABanner({ basePrice = 750, currency = "MXN" }: {
               SUSCRIPCIÓN
             </span>
             <h2 className="font-black text-ocean text-4xl md:text-5xl leading-[1.1] tracking-[-0.02em]">
-              Suscríbete y ahorra
+              Suscríbete y ahorra hasta 20%
             </h2>
             <p className="text-xl text-gray-600 mt-4 leading-relaxed">
               Recibe tus parches cómodamente en casa. Sin preocuparte. Sin olvidarte.
@@ -44,17 +44,17 @@ export default async function CTABanner({ basePrice = 750, currency = "MXN" }: {
               {
                 icon: "/features/ctabanner_suscripcion/1.png",
                 title: "Sin interrupciones",
-                desc: "Tu parche llega antes de que se te acabe. Sin acordarte. Sin perder el ritmo."
+                desc: "Tu próximo envío llega automáticamente antes de que se te acaben. Así mantienes el hábito sin perder el ritmo."
               },
               {
                 icon: "/features/ctabanner_suscripcion/2.png",
                 title: "Precio de suscriptor",
-                desc: "Siempre más bajo que la compra individual. El hábito que sostiene, conviene."
+                desc: "Disfruta de descuentos de hasta 20% sobre el precio normal. El hábito que sostienes, conviene más."
               },
               {
                 icon: "/features/ctabanner_suscripcion/3.png",
-                title: "Tú controlas",
-                desc: "Pausa, cambia o cancela cuando quieras. Sin llamadas, sin penalizaciones."
+                title: "Tú tienes el control",
+                desc: "Pausa, cambia la frecuencia, modifica tu selección o cancela cuando quieras. Sin penalizaciones, sin llamadas y sin complicaciones."
               }
             ].map((b, i) => (
     <div key={i} className="flex gap-5 items-start">
