@@ -312,10 +312,10 @@ export default function ProductDetail({
             </div>
           </div>
 
-          {/* Imagen grande a la derecha */}
+          {/* Imagen grande a la derecha - Aspect 4/5 */}
           {product.ingredientsImage && (
             <div className="md:col-span-1 flex justify-center md:justify-end">
-              <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl">
+              <div className="relative w-full max-w-md aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
                 <Image
                   src={product.ingredientsImage}
                   alt={`Ingredientes de ${product.name}`}
