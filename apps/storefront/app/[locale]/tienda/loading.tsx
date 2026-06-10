@@ -8,8 +8,8 @@ export default function TiendaLoading() {
         <Image
           src="/logos/logo.webp"           // ← Cambia la ruta si tu logo está en otro lugar
           alt="Novapatch"
-          width={110}
-          height={110}
+          width={130}
+          height={130}
           className="animate-pulse"
           priority
         />
