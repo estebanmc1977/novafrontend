@@ -1,47 +1,50 @@
-export default async function ProductDetailLoading() {   // ← fijate que sea async
-  // Delay para poder ver el loading
-  await new Promise(resolve => setTimeout(resolve, 3000));
+// apps/storefront/app/[locale]/tienda/loading.tsx
+import Image from "next/image";
 
+export default function TiendaLoading() {
   return (
-    <main className="min-h-screen bg-[#F8F7F4] pt-24 pb-20">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-12">
-          
-          {/* Galería skeleton */}
-          <div className="space-y-6">
-            <div className="aspect-[4/5] bg-white rounded-3xl overflow-hidden shadow-xl">
-              <div className="w-full h-full bg-gray-200 animate-pulse" />
-            </div>
-            <div className="flex gap-4">
-              {[1,2,3,4].map(i => (
-                <div key={i} className="w-20 h-24 bg-gray-200 rounded-2xl animate-pulse" />
-              ))}
-            </div>
+    <main className="min-h-screen bg-[#F8F7F4] px-6 pt-32 pb-24">
+      <div className="mx-auto max-w-6xl">
+        
+        {/* Logo + Título */}
+        <div className="text-center mb-12">
+          <div className="flex justify-center mb-6">
+            <Image
+              src="/logos/logo.webp"        // ← Ajusta si tu logo está en otra ruta
+              alt="Novapatch"
+              width={180}
+              height={48}
+              className="opacity-90"
+            />
           </div>
-
-          {/* Info skeleton */}
-          <div className="pt-6 space-y-8">
-            <div className="space-y-3">
-              <div className="h-12 w-48 bg-gray-200 rounded-xl animate-pulse" />
-              <div className="h-8 w-80 bg-gray-200 rounded-xl animate-pulse" />
-            </div>
-            
-            <div className="h-28 bg-gray-200 rounded-2xl animate-pulse" />
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-28 bg-gray-200 rounded-2xl animate-pulse" />
-              ))}
-            </div>
-
-            <div className="h-14 w-full bg-gray-200 rounded-2xl animate-pulse" />
-          </div>
+          <div className="h-8 w-64 mx-auto bg-gray-200 rounded-xl animate-pulse" />
+          <div className="h-5 w-96 mx-auto mt-3 bg-gray-200 rounded-xl animate-pulse" />
         </div>
-      </div>
 
-      {/* Delay artificial - solo para probar */}
-      <div className="fixed bottom-6 right-6 bg-black text-white text-xs px-4 py-2 rounded-full">
-        Loading PDP (3 segundos de delay)
+        {/* Product grid skeleton */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="bg-white rounded-[28px] overflow-hidden border border-[#E8D7BF] shadow-[0_4px_20px_rgba(0,0,0,0.05)]"
+            >
+              <div className="h-48 w-full bg-gray-200 animate-pulse" />
+              <div className="p-6 flex flex-col gap-3">
+                <div className="h-6 w-32 bg-gray-200 rounded-xl animate-pulse" />
+                <div className="h-4 w-48 bg-gray-200 rounded-xl animate-pulse" />
+                <div className="h-4 w-36 bg-gray-200 rounded-xl animate-pulse" />
+                
+                <div className="flex gap-2 mt-2">
+                  <div className="h-7 w-20 bg-gray-200 rounded-full animate-pulse" />
+                  <div className="h-7 w-20 bg-gray-200 rounded-full animate-pulse" />
+                </div>
+                
+                <div className="h-8 w-28 mt-3 bg-gray-200 rounded-xl animate-pulse" />
+                <div className="h-12 w-full rounded-xl bg-gray-200 animate-pulse mt-2" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </main>
   );
