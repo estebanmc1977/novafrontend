@@ -291,19 +291,40 @@ export default function ProductDetail({
         </div>
       </section>
 
-      {/* === SECCIÓN INGREDIENTES ACTUALIZADA === */}
-      <section className="max-w-5xl mx-auto px-6 py-20">
+            {/* === SECCIÓN INGREDIENTES CON IMAGEN === */}
+      <section className="max-w-6xl mx-auto px-6 py-20">
         <h3 className="text-3xl font-bold text-center mb-12">Ingredientes clave</h3>
-        <div className="grid md:grid-cols-2 gap-x-12 gap-y-10">
-          {product.ingredients.map((ing, i) => (
-            <div key={i} className="flex gap-5">
-              <span className="text-3xl mt-1 flex-shrink-0" style={{ color: product.color }}>•</span>
-              <div>
-                <p className="text-xl font-semibold text-gray-900">{ing.name}</p>
-                <p className="text-[15px] text-gray-600 mt-1.5 leading-relaxed">{ing.benefit}</p>
+        
+        <div className="grid md:grid-cols-3 gap-10 lg:gap-16 items-start">
+          
+          {/* Lista de ingredientes - ocupa 2 columnas */}
+          <div className="md:col-span-2">
+            <div className="grid md:grid-cols-2 gap-x-12 gap-y-10">
+              {product.ingredients.map((ing, i) => (
+                <div key={i} className="flex gap-5">
+                  <span className="text-3xl mt-1 flex-shrink-0" style={{ color: product.color }}>•</span>
+                  <div>
+                    <p className="text-xl font-semibold text-gray-900">{ing.name}</p>
+                    <p className="text-[15px] text-gray-600 mt-1.5 leading-relaxed">{ing.benefit}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Imagen grande a la derecha */}
+          {product.ingredientsImage && (
+            <div className="md:col-span-1 flex justify-center md:justify-end">
+              <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl">
+                <Image
+                  src={product.ingredientsImage}
+                  alt={`Ingredientes de ${product.name}`}
+                  fill
+                  className="object-cover"
+                />
               </div>
             </div>
-          ))}
+          )}
         </div>
       </section>
 
